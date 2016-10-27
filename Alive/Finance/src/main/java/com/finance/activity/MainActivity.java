@@ -1,14 +1,13 @@
 package com.finance.activity;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.finance.R;
 import com.finance.helper.ComputeHelper;
-import com.yline.log.LogFileUtil;
+import com.yline.base.BaseActivity;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
 {
 	private ComputeHelper computeHelper;
 
@@ -19,22 +18,43 @@ public class MainActivity extends AppCompatActivity
 		setContentView(R.layout.activity_main);
 
 		computeHelper = new ComputeHelper();
-		findViewById(R.id.btn_compute_equal).setOnClickListener(new View.OnClickListener()
+		findViewById(R.id.btn_equal_alipay).setOnClickListener(new View.OnClickListener()
 		{
+
 			@Override
 			public void onClick(View v)
 			{
-				LogFileUtil.v("btn_compute_equal");
-				computeHelper.testEqual(12 * 10000, 4.86f / 100 / 12, 10 * 12);
+				computeHelper.calculateEqualMonthlyAlipay(10000, ComputeHelper.interestDay2Month(4.0f), 12);
 			}
 		});
-		findViewById(R.id.btn_compute_matching).setOnClickListener(new View.OnClickListener()
+
+		findViewById(R.id.btn_equal).setOnClickListener(new View.OnClickListener()
 		{
+			
 			@Override
 			public void onClick(View v)
 			{
-				LogFileUtil.v("btn_compute_matching");
-				computeHelper.testMatching(12 * 10000, 4.86f / 100 / 12, 10 * 12);
+				computeHelper.calculateEqualMonthly(10000, ComputeHelper.interestDay2Month(4.0f), 12);
+			}
+		});
+
+		findViewById(R.id.btn_first_alipay).setOnClickListener(new View.OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v)
+			{
+				computeHelper.calculateFirstInterestAlipay(10000, ComputeHelper.interestDay2Month(4.0f), 12);
+			}
+		});
+
+		findViewById(R.id.btn_matching).setOnClickListener(new View.OnClickListener()
+		{
+
+			@Override
+			public void onClick(View v)
+			{
+				computeHelper.calculateMatching(10000, ComputeHelper.interestDay2Month(4.0f), 12);
 			}
 		});
 	}

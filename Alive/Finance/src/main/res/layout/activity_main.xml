@@ -3,21 +3,30 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin">
+    android:orientation="vertical">
 
     <Button
-        android:id="@+id/btn_compute_equal"
+        android:id="@+id/btn_equal_alipay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="等额本息"/>
+        android:text="支付宝-每月等额"/>
 
     <Button
-        android:id="@+id/btn_compute_matching"
+        android:id="@+id/btn_equal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="等额本金"/>
+        android:text="常规-等额本息"/>
+
+    <Button
+        android:id="@+id/btn_first_alipay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="支付宝-先息后本"/>
+
+    <Button
+        android:id="@+id/btn_matching"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="常规-等额本金"/>
+
 </LinearLayout>
