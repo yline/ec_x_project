@@ -1,42 +1,75 @@
 package com.info.file.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.info.file.R;
 import com.info.file.activity.MainActivity;
 import com.info.file.adapter.FileListAdapter;
 import com.info.file.bean.FileInfos;
-import com.yline.base.BaseFragment;
+import com.info.file.helper.FileLoader;
+import com.yline.base.BaseListFragment;
 import com.yline.utils.FileUtil;
+
+import java.util.List;
 
 /**
  * Created by yline on 2017/1/23.
  */
-public class MainFragment extends BaseFragment
+public class MainFragment extends BaseListFragment implements LoaderManager.LoaderCallbacks<List<FileInfos>>
 {
-	private ListView listView;
+	/**
+	 * Interface to listen for events.
+	 */
+	public interface Callbacks
+	{
+		/**
+		 * Called when a file is selected from the list.
+		 * @param fileInfos The file selected
+		 */
+		public void onFileSelected(FileInfos fileInfos);
+	}
 
-	private FileListAdapter fileListAdapter;
+	private static final int LOADER_ID = 0;
 
-	private String path;
+	private FileListAdapter mAdapter;
 
+	private String mPath;
+
+	private Callbacks mListener;
+
+	/**
+	 * Create a new instance with the given file path.
+	 * @param path The absolute path of the file (directory) to display.
+	 * @return A new Fragment with the given file path.
+	 */
 	public static MainFragment newInstance(String path)
 	{
-		MainFragment mainFragment = new MainFragment();
+		MainFragment fragment = new MainFragment();
+		Bundle args = new Bundle();
+		args.putString(MainActivity.getTagPath(), path);
+		fragment.setArguments(args);
 
-		Bundle bundle = new Bundle();
-		bundle.putString(MainActivity.getTagPath(), path);
-		mainFragment.setArguments(bundle);
+		return fragment;
+	}
 
-		return mainFragment;
+	@Override
+	public void onAttach(Activity activity)
+	{
+		super.onAttach(activity);
+
+		try
+		{
+			mListener = (Callbacks) activity;
+		}
+		catch (ClassCastException e)
+		{
+			throw new ClassCastException(activity.toString() + " must implement FileListFragment.Callbacks");
+		}
 	}
 
 	@Override
@@ -44,64 +77,58 @@ public class MainFragment extends BaseFragment
 	{
 		super.onCreate(savedInstanceState);
 
-		if (null == getArguments())
+		mAdapter = new FileListAdapter(getActivity());
+		mPath = getArguments() != null ? getArguments().getString(MainActivity.getTagPath()) : FileUtil.getPath();
+	}
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState)
+	{
+		setEmptyText(getString(R.string.empty_directory));
+		setListAdapter(mAdapter);
+		setListShown(false);
+
+		getLoaderManager().initLoader(LOADER_ID, null, this);
+
+		super.onActivityCreated(savedInstanceState);
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id)
+	{
+		FileListAdapter adapter = (FileListAdapter) l.getAdapter();
+		if (adapter != null)
 		{
-			this.path = FileUtil.getPath();
+			FileInfos fileInfo = (FileInfos) adapter.getItem(position);
+			mPath = fileInfo.getFile().getAbsolutePath();
+			mListener.onFileSelected(fileInfo);
+		}
+	}
+
+	@Override
+	public Loader<List<FileInfos>> onCreateLoader(int id, Bundle args)
+	{
+		return new FileLoader(getActivity(), mPath);
+	}
+
+	@Override
+	public void onLoadFinished(Loader<List<FileInfos>> loader, List<FileInfos> data)
+	{
+		mAdapter.set(data);
+
+		if (isResumed())
+		{
+			setListShown(true);
 		}
 		else
 		{
-			this.path = getArguments().getString(MainActivity.getTagPath());
+			setListShownNoAnimation(true);
 		}
 	}
 
-	@Nullable
 	@Override
-	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
+	public void onLoaderReset(Loader<List<FileInfos>> loader)
 	{
-		return inflater.inflate(R.layout.fragment_main, container, false);
-	}
-
-	@Override
-	public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
-	{
-		listView = (ListView) view.findViewById(R.id.lv_file);
-
-		fileListAdapter = new FileListAdapter(getContext());
-		listView.setAdapter(fileListAdapter);
-
-		listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-		{
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-			{
-				if (null != parent.getAdapter())
-				{
-					FileInfos fileInfos = (FileInfos) parent.getAdapter().getItem(position);
-					path = fileInfos.getFile().getPath();
-					// 通知Activity更改内容
-				}
-			}
-		});
-
-		getLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks()
-		{
-			@Override
-			public Loader onCreateLoader(int id, Bundle args)
-			{
-				return null;
-			}
-
-			@Override
-			public void onLoadFinished(Loader loader, Object data)
-			{
-
-			}
-
-			@Override
-			public void onLoaderReset(Loader loader)
-			{
-
-			}
-		});
+		mAdapter.clear();
 	}
 }

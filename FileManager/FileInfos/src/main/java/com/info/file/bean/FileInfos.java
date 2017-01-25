@@ -28,7 +28,12 @@ public class FileInfos
 
 	private long fileSize;
 
-	public void setFile(File file)
+	public FileInfos(File file)
+	{
+		setFile(file);
+	}
+
+	private void setFile(File file)
 	{
 		this.file = file;
 		if (null != file)

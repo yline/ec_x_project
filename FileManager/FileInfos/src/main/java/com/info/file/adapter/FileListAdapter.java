@@ -20,7 +20,7 @@ public class FileListAdapter extends CommonListAdapter<FileInfos>
 	@Override
 	protected int getItemRes(int i)
 	{
-		return android.R.layout.simple_list_item_1;
+		return R.layout.item_file_list;
 	}
 
 	@Override

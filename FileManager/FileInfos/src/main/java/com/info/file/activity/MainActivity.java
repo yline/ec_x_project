@@ -1,49 +1,80 @@
 package com.info.file.activity;
 
+import android.app.ActionBar;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import com.info.file.R;
 import com.info.file.application.IApplication;
+import com.info.file.bean.FileInfos;
 import com.info.file.fragment.MainFragment;
-import com.yline.base.BaseAppCompatActivity;
-import com.yline.log.LogFileUtil;
+import com.yline.base.BaseFragmentActivity;
 import com.yline.utils.FileUtil;
 
-public class MainActivity extends BaseAppCompatActivity implements FragmentManager.OnBackStackChangedListener
+public class MainActivity extends BaseFragmentActivity implements FragmentManager.OnBackStackChangedListener, MainFragment.Callbacks
 {
-	private static final String TAG_PATH = "Path";
+	private static final String TAG_PATH = "path";
 
-	private FragmentManager fragmentManager;
+	private static final boolean HAS_ACTIONBAR = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 
-	/** 当前位置的 path */
-	private String path;
-	
+	private FragmentManager mFragmentManager;
+
+	private BroadcastReceiver mStorageListener = new BroadcastReceiver()
+	{
+		@Override
+		public void onReceive(Context context, Intent intent)
+		{
+			IApplication.toast(context.getResources().getText(R.string.storage_removed).toString());
+			finishWithResult(null);
+		}
+	};
+
+	private String mPath;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 
-		fragmentManager = getSupportFragmentManager();
-		fragmentManager.addOnBackStackChangedListener(this);
+		mFragmentManager = getSupportFragmentManager();
+		mFragmentManager.addOnBackStackChangedListener(this);
 
-		if (null == savedInstanceState)
+		if (savedInstanceState == null)
 		{
-			path = FileUtil.getPath();
-			if (null == path)
-			{
-				IApplication.toast("SDCard cannot be used");
-				// update the fragment
-
-				MainFragment mainFragment = MainFragment.newInstance(path);
-				fragmentManager.beginTransaction().add(android.R.id.content, mainFragment).commit();
-			}
+			mPath = FileUtil.getPath();
+			addFragment();
 		}
 		else
 		{
-			path = savedInstanceState.getString(TAG_PATH);
+			mPath = savedInstanceState.getString(TAG_PATH);
 		}
 
-		setTitle(path);
+		setTitle(mPath);
+	}
+
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+
+		unregisterStorageListener();
+	}
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+
+		registerStorageListener();
 	}
 
 	@Override
@@ -51,13 +82,140 @@ public class MainActivity extends BaseAppCompatActivity implements FragmentManag
 	{
 		super.onSaveInstanceState(outState);
 
-		outState.putString(TAG_PATH, path);
+		outState.putString(TAG_PATH, mPath);
 	}
 
 	@Override
 	public void onBackStackChanged()
 	{
-		LogFileUtil.v("Fragment onBackStackChanged");
+
+		int count = mFragmentManager.getBackStackEntryCount();
+		if (count > 0)
+		{
+			FragmentManager.BackStackEntry fragment = mFragmentManager.getBackStackEntryAt(count - 1);
+			mPath = fragment.getName();
+		}
+		else
+		{
+			mPath = FileUtil.getPath();
+		}
+
+		setTitle(mPath);
+		if (HAS_ACTIONBAR)
+		{
+			invalidateOptionsMenu();
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		if (HAS_ACTIONBAR)
+		{
+			boolean hasBackStack = mFragmentManager.getBackStackEntryCount() > 0;
+
+			ActionBar actionBar = getActionBar();
+			actionBar.setDisplayHomeAsUpEnabled(hasBackStack);
+			actionBar.setHomeButtonEnabled(hasBackStack);
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case android.R.id.home:
+				mFragmentManager.popBackStack();
+				return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	/**
+	 * Add the initial Fragment with given path.
+	 */
+	private void addFragment()
+	{
+		MainFragment fragment = MainFragment.newInstance(mPath);
+		mFragmentManager.beginTransaction().add(android.R.id.content, fragment).commit();
+	}
+
+	/**
+	 * "Replace" the existing Fragment with a new one using given path. We're
+	 * really adding a Fragment to the back stack.
+	 * @param fileInfos The file (directory) to display.
+	 */
+	private void replaceFragment(FileInfos fileInfos)
+	{
+		mPath = fileInfos.getFile().getAbsolutePath();
+
+		MainFragment fragment = MainFragment.newInstance(mPath);
+		mFragmentManager.beginTransaction().replace(android.R.id.content, fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(mPath).commit();
+	}
+
+	/**
+	 * Finish this Activity with a result code and URI of the selected file.
+	 * @param fileInfos The file selected.
+	 */
+	private void finishWithResult(FileInfos fileInfos)
+	{
+		if (fileInfos != null)
+		{
+			Uri uri = Uri.fromFile(fileInfos.getFile());
+			setResult(RESULT_OK, new Intent().setData(uri));
+			finish();
+		}
+		else
+		{
+			setResult(RESULT_CANCELED);
+			finish();
+		}
+	}
+
+	/**
+	 * Called when the user selects a File
+	 * @param fileInfos The file that was selected
+	 */
+	@Override
+	public void onFileSelected(FileInfos fileInfos)
+	{
+		if (fileInfos != null)
+		{
+			if (fileInfos.getFile().isDirectory())
+			{
+				replaceFragment(fileInfos);
+			}
+			else
+			{
+				finishWithResult(fileInfos);
+			}
+		}
+		else
+		{
+			IApplication.toast(getResources().getText(R.string.error_selecting_file).toString());
+		}
+	}
+
+	/**
+	 * Register the external storage BroadcastReceiver.
+	 */
+	private void registerStorageListener()
+	{
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Intent.ACTION_MEDIA_REMOVED);
+		registerReceiver(mStorageListener, filter);
+	}
+
+	/**
+	 * Unregister the external storage BroadcastReceiver.
+	 */
+	private void unregisterStorageListener()
+	{
+		unregisterReceiver(mStorageListener);
 	}
 
 	public static String getTagPath()
