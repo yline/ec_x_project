@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -17,10 +16,10 @@ import com.info.file.R;
 import com.info.file.application.IApplication;
 import com.info.file.bean.FileInfos;
 import com.info.file.fragment.MainFragment;
-import com.yline.base.BaseFragmentActivity;
+import com.yline.base.BaseAppCompatActivity;
 import com.yline.utils.FileUtil;
 
-public class MainActivity extends BaseFragmentActivity implements FragmentManager.OnBackStackChangedListener, MainFragment.Callbacks
+public class MainActivity extends BaseAppCompatActivity implements FragmentManager.OnBackStackChangedListener, MainFragment.Callbacks
 {
 	private static final String TAG_PATH = "path";
 
@@ -88,7 +87,6 @@ public class MainActivity extends BaseFragmentActivity implements FragmentManage
 	@Override
 	public void onBackStackChanged()
 	{
-
 		int count = mFragmentManager.getBackStackEntryCount();
 		if (count > 0)
 		{
@@ -115,8 +113,11 @@ public class MainActivity extends BaseFragmentActivity implements FragmentManage
 			boolean hasBackStack = mFragmentManager.getBackStackEntryCount() > 0;
 
 			ActionBar actionBar = getActionBar();
-			actionBar.setDisplayHomeAsUpEnabled(hasBackStack);
-			actionBar.setHomeButtonEnabled(hasBackStack);
+			if (null != actionBar)
+			{
+				actionBar.setDisplayHomeAsUpEnabled(hasBackStack);
+				actionBar.setHomeButtonEnabled(hasBackStack);
+			}
 		}
 
 		return true;
@@ -151,7 +152,7 @@ public class MainActivity extends BaseFragmentActivity implements FragmentManage
 	 */
 	private void replaceFragment(FileInfos fileInfos)
 	{
-		mPath = fileInfos.getFile().getAbsolutePath();
+		mPath = fileInfos.getAbsolutePath();
 
 		MainFragment fragment = MainFragment.newInstance(mPath);
 		mFragmentManager.beginTransaction().replace(android.R.id.content, fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(mPath).commit();
@@ -165,8 +166,8 @@ public class MainActivity extends BaseFragmentActivity implements FragmentManage
 	{
 		if (fileInfos != null)
 		{
-			Uri uri = Uri.fromFile(fileInfos.getFile());
-			setResult(RESULT_OK, new Intent().setData(uri));
+			Intent intent = new Intent().putExtra(MainActivity.getTagPath(), fileInfos.getAbsolutePath());
+			setResult(RESULT_OK, intent);
 			finish();
 		}
 		else
@@ -185,7 +186,7 @@ public class MainActivity extends BaseFragmentActivity implements FragmentManage
 	{
 		if (fileInfos != null)
 		{
-			if (fileInfos.getFile().isDirectory())
+			if (fileInfos.isDirectory())
 			{
 				replaceFragment(fileInfos);
 			}

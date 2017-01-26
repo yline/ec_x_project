@@ -18,6 +18,16 @@ public class FileListAdapter extends CommonListAdapter<FileInfos>
 	}
 
 	@Override
+	public int getCount()
+	{
+		if (null == sList)
+		{
+			return 0;
+		}
+		return super.getCount();
+	}
+
+	@Override
 	protected int getItemRes(int i)
 	{
 		return R.layout.item_file_list;
@@ -28,6 +38,6 @@ public class FileListAdapter extends CommonListAdapter<FileInfos>
 	{
 		viewHolder.get(R.id.iv_type).setBackgroundResource(sList.get(i).getImageResId());
 		viewHolder.setText(R.id.tv_name, sList.get(i).getFileName());
-		viewHolder.setText(R.id.tv_info, sList.get(i).getFileInfo());
+		viewHolder.setText(R.id.tv_info, sList.get(i).getFileMessage());
 	}
 }

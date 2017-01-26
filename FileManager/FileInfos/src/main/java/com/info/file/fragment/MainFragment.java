@@ -100,7 +100,7 @@ public class MainFragment extends BaseListFragment implements LoaderManager.Load
 		if (adapter != null)
 		{
 			FileInfos fileInfo = (FileInfos) adapter.getItem(position);
-			mPath = fileInfo.getFile().getAbsolutePath();
+			mPath = fileInfo.getAbsolutePath();
 			mListener.onFileSelected(fileInfo);
 		}
 	}

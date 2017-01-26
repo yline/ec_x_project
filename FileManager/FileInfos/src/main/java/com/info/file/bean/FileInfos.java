@@ -1,6 +1,8 @@
 package com.info.file.bean;
 
 import com.info.file.R;
+import com.info.file.helper.FileSizeUtil;
+import com.yline.utils.FileUtil;
 
 import java.io.File;
 
@@ -15,18 +17,14 @@ public class FileInfos
 
 	private int imageResId = ICON_FILE;
 
-	private File file;
-
 	public String fileName;
 
 	/** 文件内容 */
-	public String fileInfo;
+	public String fileMessage;
 
-	private int fileCount;
+	private String path;
 
-	private int folderCount;
-
-	private long fileSize;
+	private boolean isDirectory;
 
 	public FileInfos(File file)
 	{
@@ -35,41 +33,55 @@ public class FileInfos
 
 	private void setFile(File file)
 	{
-		this.file = file;
 		if (null != file)
 		{
-			if (file.isDirectory())
+			this.isDirectory = file.isDirectory();
+			this.fileName = file.getName();
+			this.path = file.getAbsolutePath();
+
+			if (isDirectory)
 			{
 				this.imageResId = ICON_FOLDER;
+
+				int dirCount = file.listFiles(FileUtil.getsDirFilter()).length;
+				int fileCount = file.listFiles(FileUtil.getsFileFilter()).length;
+				
+				this.fileMessage = String.format("文件夹：%d，文件：%d，大小：%s", dirCount, fileCount, FileSizeUtil.getFileOrDirAutoSize(file) + "b");
 			}
 			else
 			{
 				this.imageResId = ICON_FILE;
+				this.fileMessage = String.format("大小：%s", FileSizeUtil.getFileOrDirAutoSize(file) + "b");
+
 			}
-
-			this.fileName = file.getName();
-
-			this.fileInfo = String.format("文件：%s，文件夹：%s，大小：%s", "0", "0", "0");
 		}
 	}
 
+	/** 显示图片的内容 */
 	public int getImageResId()
 	{
 		return imageResId;
 	}
 
+	/** 当前文件名 */
 	public String getFileName()
 	{
 		return fileName;
 	}
 
-	public String getFileInfo()
+	/** 获取当前文件的绝对路径 */
+	public String getAbsolutePath()
 	{
-		return fileInfo;
+		return path;
 	}
 
-	public File getFile()
+	public boolean isDirectory()
 	{
-		return file;
+		return isDirectory;
+	}
+
+	public String getFileMessage()
+	{
+		return fileMessage;
 	}
 }
