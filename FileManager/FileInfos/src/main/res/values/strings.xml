@@ -4,4 +4,7 @@
     <string name="storage_removed">SD卡已被移除</string>
     <string name="error_selecting_file">选择目标不存在</string>
     <string name="empty_directory">文件夹为空</string>
+
+    <!-- Menu -->
+    <string name="title_activity_settings">Settings</string>
 </resources>
