@@ -36,6 +36,12 @@ public class FileListFragment extends BaseListFragment implements FileTempLoader
 		return fragment;
 	}
 
+	public void refreshFragment(String path)
+	{
+		setListShown(false);
+		fileHelper.getFileList(this, path);
+	}
+
 	private String initPath()
 	{
 		if (null != getArguments())
@@ -77,8 +83,10 @@ public class FileListFragment extends BaseListFragment implements FileTempLoader
 			FileBean fileBean = (FileBean) l.getAdapter().getItem(position);
 			path = fileBean.getFileAbsolutePath();
 
-			setListShown(false);
-			fileHelper.getFileList(this, path);
+			if (getActivity() instanceof onFileSelectedCallback)
+			{
+				((onFileSelectedCallback) getActivity()).onFileSelected(path);
+			}
 		}
 
 		l.getAdapter().getItem(position);
@@ -98,5 +106,10 @@ public class FileListFragment extends BaseListFragment implements FileTempLoader
 		{
 			setListShownNoAnimation(true);
 		}
+	}
+
+	public interface onFileSelectedCallback
+	{
+		public void onFileSelected(String path);
 	}
 }

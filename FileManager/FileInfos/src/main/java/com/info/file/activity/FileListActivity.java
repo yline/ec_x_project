@@ -14,13 +14,18 @@ import com.info.file.application.IApplication;
 import com.info.file.bean.FileBean;
 import com.info.file.fragment.FileListFragment;
 import com.yline.base.BaseAppCompatActivity;
+import com.yline.log.LogFileUtil;
 import com.yline.utils.FileUtil;
 
-public class FileListActivity extends BaseAppCompatActivity
+import java.io.File;
+
+public class FileListActivity extends BaseAppCompatActivity implements FragmentManager.OnBackStackChangedListener, FileListFragment.onFileSelectedCallback
 {
 	private static final String TAG_PATH = "path";
 
 	private FragmentManager mFragmentManager;
+
+	private FileListFragment fileListFragment;
 
 	private BroadcastReceiver mStorageListener = new BroadcastReceiver()
 	{
@@ -40,6 +45,7 @@ public class FileListActivity extends BaseAppCompatActivity
 		super.onCreate(savedInstanceState);
 
 		mFragmentManager = getSupportFragmentManager();
+		mFragmentManager.addOnBackStackChangedListener(this);
 
 		if (savedInstanceState == null)
 		{
@@ -89,13 +95,31 @@ public class FileListActivity extends BaseAppCompatActivity
 		registerStorageListener();
 	}
 
+	@Override
+	public void onBackStackChanged()
+	{
+		int count = mFragmentManager.getBackStackEntryCount();
+		if (count > 0)
+		{
+			FragmentManager.BackStackEntry entry = mFragmentManager.getBackStackEntryAt(count - 1);
+			mPath = entry.getName();
+		}
+		else
+		{
+			mPath = FileUtil.getPath();
+		}
+
+		fileListFragment.refreshFragment(mPath);
+		setTitle(mPath);
+	}
+
 	/**
 	 * Add the initial Fragment with given path.
 	 */
 	private void addFragment()
 	{
-		FileListFragment fragment = FileListFragment.newInstance(mPath);
-		mFragmentManager.beginTransaction().add(android.R.id.content, fragment).commit();
+		fileListFragment = FileListFragment.newInstance(mPath);
+		mFragmentManager.beginTransaction().add(android.R.id.content, fileListFragment).commit();
 	}
 
 	/**
@@ -138,5 +162,23 @@ public class FileListActivity extends BaseAppCompatActivity
 	public static String getTagPath()
 	{
 		return TAG_PATH;
+	}
+
+	@Override
+	public void onFileSelected(String path)
+	{
+		File file = new File(path);
+		if (file.isDirectory())
+		{
+			this.mPath = path;
+			mFragmentManager.beginTransaction().addToBackStack(path).commit();
+
+			fileListFragment.refreshFragment(path);
+		}
+		else
+		{
+			IApplication.toast("文件名为：" + file.getName());
+			LogFileUtil.v("path = " + file.getAbsolutePath());
+		}
 	}
 }
