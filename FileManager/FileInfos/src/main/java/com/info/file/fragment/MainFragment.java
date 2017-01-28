@@ -9,7 +9,7 @@ import android.widget.ListView;
 
 import com.info.file.R;
 import com.info.file.activity.MainActivity;
-import com.info.file.adapter.FileListAdapter;
+import com.info.file.adapter.FileListAdapterTemp;
 import com.info.file.bean.FileInfos;
 import com.info.file.helper.FileLoader;
 import com.yline.base.BaseListFragment;
@@ -36,7 +36,7 @@ public class MainFragment extends BaseListFragment implements LoaderManager.Load
 
 	private static final int LOADER_ID = 0;
 
-	private FileListAdapter mAdapter;
+	private FileListAdapterTemp mAdapter;
 
 	private String mPath;
 
@@ -77,7 +77,7 @@ public class MainFragment extends BaseListFragment implements LoaderManager.Load
 	{
 		super.onCreate(savedInstanceState);
 
-		mAdapter = new FileListAdapter(getActivity());
+		mAdapter = new FileListAdapterTemp(getActivity());
 		mPath = getArguments() != null ? getArguments().getString(MainActivity.getTagPath()) : FileUtil.getPath();
 	}
 
@@ -96,7 +96,7 @@ public class MainFragment extends BaseListFragment implements LoaderManager.Load
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id)
 	{
-		FileListAdapter adapter = (FileListAdapter) l.getAdapter();
+		FileListAdapterTemp adapter = (FileListAdapterTemp) l.getAdapter();
 		if (adapter != null)
 		{
 			FileInfos fileInfo = (FileInfos) adapter.getItem(position);

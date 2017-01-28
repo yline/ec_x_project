@@ -7,6 +7,8 @@ import com.info.file.R;
  */
 public class FileBean
 {
+	private final static String DEFAULT_FILE_SIZE = "Loading...";
+
 	private final static int ICON_FOLDER = R.drawable.filechooser_folder;
 
 	private final static int ICON_FILE = R.drawable.filechooser_file;
@@ -45,6 +47,11 @@ public class FileBean
 		this.isDirectory = false;
 		this.fileName = fileName;
 		this.fileAbsolutePath = fileAbsolutePath;
+
+		if (null == fileSize)
+		{
+			fileSize = DEFAULT_FILE_SIZE;
+		}
 		this.childMessage = String.format("大小：%s", fileSize);
 	}
 
@@ -61,6 +68,11 @@ public class FileBean
 		this.isDirectory = true;
 		this.fileName = fileName;
 		this.fileAbsolutePath = fileAbsolutePath;
+
+		if (null == dirSize)
+		{
+			dirSize = DEFAULT_FILE_SIZE;
+		}
 		this.childMessage = String.format("文件夹：%d，文件：%d，大小：%s", dirCount, fileCount, dirSize);
 	}
 

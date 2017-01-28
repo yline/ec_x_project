@@ -4,17 +4,27 @@ import android.content.Context;
 import android.view.ViewGroup;
 
 import com.info.file.R;
-import com.info.file.bean.FileBean;
+import com.info.file.bean.FileInfos;
 import com.yline.base.common.CommonListAdapter;
 
 /**
- * Created by yline on 2017/1/28.
+ * Created by yline on 2017/1/23.
  */
-public class FileListAdapter extends CommonListAdapter<FileBean>
+public class FileListAdapterTemp extends CommonListAdapter<FileInfos>
 {
-	public FileListAdapter(Context context)
+	public FileListAdapterTemp(Context context)
 	{
 		super(context);
+	}
+
+	@Override
+	public int getCount()
+	{
+		if (null == sList)
+		{
+			return 0;
+		}
+		return super.getCount();
 	}
 
 	@Override
@@ -26,8 +36,8 @@ public class FileListAdapter extends CommonListAdapter<FileBean>
 	@Override
 	protected void setViewContent(int i, ViewGroup viewGroup, ViewHolder viewHolder)
 	{
-		viewHolder.setImage(R.id.iv_type, sList.get(i).getImageId());
+		viewHolder.get(R.id.iv_type).setBackgroundResource(sList.get(i).getImageResId());
 		viewHolder.setText(R.id.tv_name, sList.get(i).getFileName());
-		viewHolder.setText(R.id.tv_info, sList.get(i).getChildMessage());
+		viewHolder.setText(R.id.tv_info, sList.get(i).getFileMessage());
 	}
 }

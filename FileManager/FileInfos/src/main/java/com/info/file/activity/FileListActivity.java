@@ -94,7 +94,7 @@ public class FileListActivity extends BaseAppCompatActivity
 	 */
 	private void addFragment()
 	{
-		FileListFragment fragment = new FileListFragment();
+		FileListFragment fragment = FileListFragment.newInstance(mPath);
 		mFragmentManager.beginTransaction().add(android.R.id.content, fragment).commit();
 	}
 
