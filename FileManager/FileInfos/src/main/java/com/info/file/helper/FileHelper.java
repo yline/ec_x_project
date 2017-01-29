@@ -1,5 +1,13 @@
 package com.info.file.helper;
 
+import com.info.file.application.IApplication;
+import com.info.file.bean.FileBean;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * 这里负责加载数据
  * 缓存结束:则读取缓存
@@ -9,10 +17,71 @@ package com.info.file.helper;
  */
 public class FileHelper
 {
-	public void getFileList(FileTempLoader.LoadListener listener, String path)
+	public void getFileList(LoadListener listener, String path)
 	{
-		FileTempLoader loader = new FileTempLoader();
-		loader.setLoadListener(listener);
-		loader.execute(path);
+		if (FileLoadService.isCached(IApplication.getApplication()))
+		{
+			FileDbLoader loader = new FileDbLoader();
+			loader.setLoadListener(listener);
+			loader.execute(path);
+		}
+		else
+		{
+			FileTempLoader loader = new FileTempLoader();
+			loader.setLoadListener(listener);
+			loader.execute(path);
+		}
+	}
+
+	public interface LoadListener
+	{
+		public void onLoadFinish(List<FileBean> fileBeanList);
+	}
+
+	private static Comparator<File> sComparator = new Comparator<File>()
+	{
+		public int compare(File f1, File f2)
+		{
+			return f1.getName().toLowerCase().compareTo(f2.getName().toLowerCase());
+		}
+	};
+
+	private static FileFilter sFileFilter = new FileFilter()
+	{
+		public boolean accept(File file)
+		{
+			/*
+			String fileName = file.getName();
+			return file.isFile() && !fileName.startsWith(".");
+			*/
+			return file.isFile();
+		}
+	};
+
+	private static FileFilter sDirFilter = new FileFilter()
+	{
+		public boolean accept(File file)
+		{
+			/*
+			String fileName = file.getName();
+			return file.isDirectory() && !fileName.startsWith(".");
+			*/
+			return file.isDirectory();
+		}
+	};
+
+	public static Comparator<File> getsComparator()
+	{
+		return sComparator;
+	}
+
+	public static FileFilter getsFileFilter()
+	{
+		return sFileFilter;
+	}
+
+	public static FileFilter getsDirFilter()
+	{
+		return sDirFilter;
 	}
 }

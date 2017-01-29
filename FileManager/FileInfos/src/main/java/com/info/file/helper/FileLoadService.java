@@ -1,28 +1,40 @@
 package com.info.file.helper;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 
 import com.info.file.application.IApplication;
 import com.info.file.bean.FileBean;
+import com.info.file.db.DbManager;
 import com.yline.log.LogFileUtil;
 import com.yline.utils.FileUtil;
+import com.yline.utils.SPUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yline on 2017/1/28.
  */
 public class FileLoadService extends Service
 {
-	public void setIsCached()
+	private static final String KEY_IS_CACHE = "FileLoad_Switch";
+
+	private void setIsCached(Context context, boolean isCached)
 	{
+		SPUtil.put(context, KEY_IS_CACHE, isCached);
+	}
+
+	public static boolean isCached(Context context)
+	{
+		return (boolean) SPUtil.get(context, KEY_IS_CACHE, false);
 	}
 
 	@Override
@@ -36,7 +48,7 @@ public class FileLoadService extends Service
 	{
 		super.onCreate();
 
-		new Thread(new FileLoadRunnable()).start();
+		new Thread(new FileLoadRunnable(this)).start();
 	}
 
 	@Override
@@ -51,22 +63,30 @@ public class FileLoadService extends Service
 
 		private static final int ERROR_SIZE = -1;
 
-		private HashMap<String, FileBean> map = new HashMap<>();
+		private List<FileBean> resultBean = new ArrayList<>();
+
+		private Context context;
+
+		public FileLoadRunnable(Context context)
+		{
+			this.context = context;
+		}
 
 		@Override
 		public void run()
 		{
-			IApplication.toast("yeah");
+			setIsCached(context, false);
 
 			String rootPath = FileUtil.getPath();
 			long startTime = System.currentTimeMillis();
+			LogFileUtil.v("rootPath = " + rootPath + ",startTime = " + startTime);
 
 			if (null != rootPath)
 			{
 				final File rootFile = new File(rootPath);
 				long size = getDirSize(rootFile);
 
-				LogFileUtil.v(TAG, formatFileAutoSize(size));
+				LogFileUtil.v(TAG, "DirSize = " + formatFileAutoSize(size));
 			}
 			else
 			{
@@ -74,13 +94,13 @@ public class FileLoadService extends Service
 				LogFileUtil.v(TAG, "rootPath is null");
 			}
 
-			LogFileUtil.v(TAG, "speedTime1 = " + (System.currentTimeMillis() - startTime));
+			LogFileUtil.v(TAG, "ReadTime = " + (System.currentTimeMillis() - startTime) + ",fileNumber = " + resultBean.size());
 			startTime = System.currentTimeMillis();
 
+			DbManager.getInstance().fileBeanInsertAtSameMoment(resultBean);
+			LogFileUtil.v(TAG, "WriteTime = " + (System.currentTimeMillis() - startTime));
 
-			LogFileUtil.v(TAG, map.keySet().size() + "");
-
-			LogFileUtil.v(TAG, "speedTime2 = " + (System.currentTimeMillis() - startTime));
+			setIsCached(context, true);
 		}
 
 		/** 一次性,全部读取所有的信息 */
@@ -107,15 +127,15 @@ public class FileLoadService extends Service
 					{
 						totalSize += tempSize;
 					}
-					final String fileKey = childFiles[i].getAbsolutePath();
-					map.put(fileKey, new FileBean(childFiles[i].getName(), fileKey, formatFileAutoSize(tempSize)));
+
+					resultBean.add(new FileBean(childFiles[i].getName(), childFiles[i].getAbsolutePath(), formatFileAutoSize(tempSize)));
 				}
 			}
 
-			final String fileKey = file.getAbsolutePath();
-			int dirCount = file.listFiles(FileUtil.getsDirFilter()).length;
-			int fileCount = file.listFiles(FileUtil.getsFileFilter()).length;
-			map.put(fileKey, new FileBean(file.getName(), fileKey, dirCount, fileCount, formatFileAutoSize(totalSize)));
+			resultBean.add(new FileBean(file.getName(), file.getAbsolutePath(),
+					file.listFiles(FileUtil.getsDirFilter()).length,
+					file.listFiles(FileUtil.getsFileFilter()).length,
+					formatFileAutoSize(totalSize)));
 
 			return totalSize;
 		}
@@ -130,8 +150,7 @@ public class FileLoadService extends Service
 				try
 				{
 					fis = new FileInputStream(file);
-					int size = fis.available();
-					return size;
+					return fis.available();
 				}
 				catch (FileNotFoundException e)
 				{

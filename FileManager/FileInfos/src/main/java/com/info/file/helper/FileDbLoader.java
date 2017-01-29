@@ -3,6 +3,7 @@ package com.info.file.helper;
 import android.os.AsyncTask;
 
 import com.info.file.bean.FileBean;
+import com.info.file.db.DbManager;
 import com.yline.log.LogFileUtil;
 
 import java.io.File;
@@ -11,13 +12,11 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 加载临时的数据,没有文件大小
- * @author yline 2017/1/28 --> 12:24
- * @version 1.0.0
+ * Created by yline on 2017/1/29.
  */
-public class FileTempLoader extends AsyncTask<String, Void, List<FileBean>>
+public class FileDbLoader extends AsyncTask<String, Void, List<FileBean>>
 {
-	private FileHelper.LoadListener listener;
+	private FileHelper.LoadListener loadListener;
 
 	@Override
 	protected void onPreExecute()
@@ -42,10 +41,9 @@ public class FileTempLoader extends AsyncTask<String, Void, List<FileBean>>
 
 			for (File dirFile : dirs)
 			{
-				resultList.add(new FileBean(dirFile.getName(), dirFile.getAbsolutePath(),
-						dirFile.listFiles(FileHelper.getsDirFilter()).length,
-						dirFile.listFiles(FileHelper.getsFileFilter()).length,
-						null));
+				FileBean bean = DbManager.getInstance().fileBeanQueryByPath(dirFile.getAbsolutePath());
+				
+				resultList.add(bean);
 			}
 		}
 
@@ -56,7 +54,9 @@ public class FileTempLoader extends AsyncTask<String, Void, List<FileBean>>
 
 			for (File file : files)
 			{
-				resultList.add(new FileBean(file.getName(), file.getAbsolutePath(), null));
+				FileBean bean = DbManager.getInstance().fileBeanQueryByPath(file.getAbsolutePath());
+
+				resultList.add(bean);
 			}
 		}
 
@@ -64,25 +64,23 @@ public class FileTempLoader extends AsyncTask<String, Void, List<FileBean>>
 	}
 
 	@Override
-	protected void onPostExecute(List<FileBean> fileBeen)
+	protected void onPostExecute(List<FileBean> been)
 	{
-		super.onPostExecute(fileBeen);
+		super.onPostExecute(been);
 
-		callLoadListener(fileBeen);
+		callLoadListener(been);
 	}
 
-	public void callLoadListener(List<FileBean> fileBeen)
+	public void setLoadListener(FileHelper.LoadListener loadListener)
 	{
-		if (null != listener)
+		this.loadListener = loadListener;
+	}
+
+	private void callLoadListener(List<FileBean> fileBeanList)
+	{
+		if (null != loadListener)
 		{
-			listener.onLoadFinish(fileBeen);
+			loadListener.onLoadFinish(fileBeanList);
 		}
 	}
-
-	public void setLoadListener(FileHelper.LoadListener listener)
-	{
-		this.listener = listener;
-	}
-
-
 }

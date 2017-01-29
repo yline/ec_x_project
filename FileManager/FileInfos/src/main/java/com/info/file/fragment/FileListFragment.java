@@ -9,7 +9,6 @@ import com.info.file.activity.FileListActivity;
 import com.info.file.adapter.FileListAdapter;
 import com.info.file.bean.FileBean;
 import com.info.file.helper.FileHelper;
-import com.info.file.helper.FileTempLoader;
 import com.yline.base.BaseListFragment;
 import com.yline.utils.FileUtil;
 
@@ -18,7 +17,7 @@ import java.util.List;
 /**
  * Created by yline on 2017/1/27.
  */
-public class FileListFragment extends BaseListFragment implements FileTempLoader.LoadListener
+public class FileListFragment extends BaseListFragment implements FileHelper.LoadListener
 {
 	private String path;
 
