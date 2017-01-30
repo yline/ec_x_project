@@ -98,6 +98,8 @@ public class FileListActivity extends BaseAppCompatActivity implements FragmentM
 	@Override
 	public void onBackStackChanged()
 	{
+		LogFileUtil.v("onBackStackChanged");
+
 		int count = mFragmentManager.getBackStackEntryCount();
 		if (count > 0)
 		{
@@ -167,13 +169,14 @@ public class FileListActivity extends BaseAppCompatActivity implements FragmentM
 	@Override
 	public void onFileSelected(String path)
 	{
+		LogFileUtil.v("select path = " + path);
+
 		File file = new File(path);
 		if (file.isDirectory())
 		{
 			this.mPath = path;
+			// 以下方法会调用 onBackStackChanged,因此不需要再次手动刷新一次FileListFragment
 			mFragmentManager.beginTransaction().addToBackStack(path).commit();
-
-			fileListFragment.refreshFragment(path);
 		}
 		else
 		{

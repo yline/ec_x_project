@@ -2,6 +2,7 @@ package com.info.file.helper;
 
 import com.info.file.application.IApplication;
 import com.info.file.bean.FileBean;
+import com.yline.log.LogFileUtil;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -17,19 +18,24 @@ import java.util.List;
  */
 public class FileHelper
 {
+	public FileHelper()
+	{
+	}
+
 	public void getFileList(LoadListener listener, String path)
 	{
+		LogFileUtil.v("path = " + path);
 		if (FileLoadService.isCached(IApplication.getApplication()))
 		{
-			FileDbLoader loader = new FileDbLoader();
-			loader.setLoadListener(listener);
-			loader.execute(path);
+			FileDbLoader dbLoader = new FileDbLoader();
+			dbLoader.setLoadListener(listener);
+			dbLoader.execute(path);
 		}
 		else
 		{
-			FileTempLoader loader = new FileTempLoader();
-			loader.setLoadListener(listener);
-			loader.execute(path);
+			FileTempLoader tempLoader = new FileTempLoader();
+			tempLoader.setLoadListener(listener);
+			tempLoader.execute(path);
 		}
 	}
 

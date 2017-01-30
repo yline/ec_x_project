@@ -60,7 +60,7 @@ public class DbManager
 		database.endTransaction();
 		database.close();
 	}
-
+	
 	public void fileBeanInsert(FileBean bean)
 	{
 		database = sqLiteHelper.getWritableDatabase();
@@ -79,8 +79,8 @@ public class DbManager
 	public FileBean fileBeanQueryByPath(String path)
 	{
 		Cursor cursor = sqLiteHelper.getWritableDatabase().query(SQLiteHelper.getFileTableName(), null,
-				SQLiteHelper.getFileAbsolutePath() + "=" + path, null, null, null, null);
-		if (null != cursor)
+				SQLiteHelper.getFileAbsolutePath() + "=?", new String[]{path}, null, null, null);
+		if (null != cursor && cursor.moveToFirst())
 		{
 			boolean isDirectory = (cursor.getInt(cursor.getColumnIndex(SQLiteHelper.getFileIsDirectory())) > 0);
 			String name = cursor.getString(cursor.getColumnIndex(SQLiteHelper.getFileName()));

@@ -21,11 +21,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by yline on 2017/1/28.
+ * 数据库更新采取两种措施:
+ * 1,遍历数据时,如果发现不存在在数据库中的文件夹,则进行小批量更新数据库
+ * 2,每间隔一个礼拜,进行扫描一次,并且扫描时,并且采取的是,完全替换表的方式
+ * @author yline 2017/1/30 --> 0:54
+ * @version 1.0.0
  */
 public class FileLoadService extends Service
 {
+	private static final String KEY_FILE_NAME = "FileLoadService";
+
+	/** 记录是否更新完毕,替换表时,读取不到文件大小 */
 	private static final String KEY_IS_CACHE = "FileLoad_Switch";
+
+	/** 记录新的更新时间 */
+	private static final String KEY_LAST_SCAN_TIME = "LastScanTime";
+
+	/** 更新间隔时间 */
+	private static final long UPDATE_DURATION = 86400 * 1000 * 7; // ms
+
+	private boolean isStartCache()
+	{
+
+		return false;
+	}
+
+	private void endCache()
+	{
+
+	}
 
 	private void setIsCached(Context context, boolean isCached)
 	{
@@ -37,6 +61,7 @@ public class FileLoadService extends Service
 		return (boolean) SPUtil.get(context, KEY_IS_CACHE, false);
 	}
 
+
 	@Override
 	public IBinder onBind(Intent intent)
 	{
@@ -47,13 +72,19 @@ public class FileLoadService extends Service
 	public void onCreate()
 	{
 		super.onCreate();
-
-		new Thread(new FileLoadRunnable(this)).start();
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
+		// 判断是否进行 加载文件
+		boolean isStartCache = isStartCache();
+		LogFileUtil.v("isStartCache = " + isStartCache);
+		if (isStartCache)
+		{
+			new Thread(new FileLoadRunnable(this)).start();
+		}
+
 		return super.onStartCommand(intent, flags, startId);
 	}
 

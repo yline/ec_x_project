@@ -10,6 +10,7 @@ import com.info.file.adapter.FileListAdapter;
 import com.info.file.bean.FileBean;
 import com.info.file.helper.FileHelper;
 import com.yline.base.BaseListFragment;
+import com.yline.log.LogFileUtil;
 import com.yline.utils.FileUtil;
 
 import java.util.List;
@@ -58,6 +59,8 @@ public class FileListFragment extends BaseListFragment implements FileHelper.Loa
 	{
 		super.onViewCreated(view, savedInstanceState);
 
+		LogFileUtil.v("onViewCreated");
+
 		path = initPath();
 
 		fileHelper = new FileHelper();
@@ -87,8 +90,6 @@ public class FileListFragment extends BaseListFragment implements FileHelper.Loa
 				((onFileSelectedCallback) getActivity()).onFileSelected(path);
 			}
 		}
-
-		l.getAdapter().getItem(position);
 	}
 
 	@Override
