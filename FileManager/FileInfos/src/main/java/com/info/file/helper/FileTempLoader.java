@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 
 import com.info.file.bean.FileBean;
 import com.yline.log.LogFileUtil;
+import com.yline.utils.FileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -35,28 +36,28 @@ public class FileTempLoader extends AsyncTask<String, Void, List<FileBean>>
 
 		final File pathDir = new File(path);
 
-		final File[] dirs = pathDir.listFiles(FileHelper.getsDirFilter());
+		final File[] dirs = pathDir.listFiles(FileUtil.getsDirFilter());
 		if (null != dirs)
 		{
-			Arrays.sort(dirs, FileHelper.getsComparator());
+			Arrays.sort(dirs, FileUtil.getsComparator());
 
 			for (File dirFile : dirs)
 			{
 				resultList.add(new FileBean(dirFile.getName(), dirFile.getAbsolutePath(),
-						dirFile.listFiles(FileHelper.getsDirFilter()).length,
-						dirFile.listFiles(FileHelper.getsFileFilter()).length,
-						null));
+						dirFile.listFiles(FileUtil.getsDirFilter()).length,
+						dirFile.listFiles(FileUtil.getsFileFilter()).length,
+						FileBean.getDefaultFileSize()));
 			}
 		}
 
-		final File[] files = pathDir.listFiles(FileHelper.getsFileFilter());
+		final File[] files = pathDir.listFiles(FileUtil.getsFileFilter());
 		if (null != files)
 		{
-			Arrays.sort(files, FileHelper.getsComparator());
+			Arrays.sort(files, FileUtil.getsComparator());
 
 			for (File file : files)
 			{
-				resultList.add(new FileBean(file.getName(), file.getAbsolutePath(), null));
+				resultList.add(new FileBean(file.getName(), file.getAbsolutePath(), FileBean.getDefaultFileSize()));
 			}
 		}
 
@@ -83,6 +84,4 @@ public class FileTempLoader extends AsyncTask<String, Void, List<FileBean>>
 	{
 		this.listener = listener;
 	}
-
-
 }

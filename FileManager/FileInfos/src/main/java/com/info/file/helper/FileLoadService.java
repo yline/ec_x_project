@@ -7,16 +7,13 @@ import android.os.IBinder;
 
 import com.info.file.application.IApplication;
 import com.info.file.bean.FileBean;
-import com.info.file.db.DbManager;
+import com.info.file.db.DbFileBeanManager;
 import com.yline.log.LogFileUtil;
+import com.yline.utils.FileSizeUtil;
 import com.yline.utils.FileUtil;
 import com.yline.utils.SPUtil;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +98,7 @@ public class FileLoadService extends Service
 	{
 		private static final String TAG = "FileLoadRunnable";
 
-		private static final int ERROR_SIZE = -1;
+		private static final int ERROR_SIZE = 0;
 
 		private List<FileBean> resultBean = new ArrayList<>();
 
@@ -119,7 +116,7 @@ public class FileLoadService extends Service
 				final File rootFile = new File(rootPath);
 				long size = getDirSize(rootFile);
 
-				LogFileUtil.v(TAG, "DirSize = " + formatFileAutoSize(size));
+				LogFileUtil.v(TAG, "DirSize = " + FileSizeUtil.formatFileAutoSize(size));
 			}
 			else
 			{
@@ -130,7 +127,7 @@ public class FileLoadService extends Service
 			LogFileUtil.v(TAG, "ReadTime = " + (System.currentTimeMillis() - startTime) + ",fileNumber = " + resultBean.size());
 			startTime = System.currentTimeMillis();
 
-			DbManager.getInstance().fileBeanInsertAtSameMoment(resultBean);
+			DbFileBeanManager.getInstance().insertAtSameMoment(resultBean);
 			LogFileUtil.v(TAG, "WriteTime = " + (System.currentTimeMillis() - startTime));
 
 			endCache();
@@ -148,20 +145,15 @@ public class FileLoadService extends Service
 				if (childFiles[i].isDirectory())
 				{
 					tempSize = getDirSize(childFiles[i]);
-					if (tempSize != ERROR_SIZE)
-					{
-						totalSize += tempSize;
-					}
+					totalSize += tempSize;
 				}
 				else
 				{
-					tempSize = getFileSize(childFiles[i]);
-					if (tempSize != ERROR_SIZE)
-					{
-						totalSize += tempSize;
-					}
+					tempSize = FileSizeUtil.getFileSize(childFiles[i]);
+					tempSize = tempSize == FileSizeUtil.getErrorSize() ? 0 : tempSize;
+					totalSize += tempSize;
 
-					resultBean.add(new FileBean(childFiles[i].getName(), childFiles[i].getAbsolutePath(), formatFileAutoSize(tempSize)));
+					resultBean.add(new FileBean(childFiles[i].getName(), childFiles[i].getAbsolutePath(), tempSize));
 				}
 			}
 
@@ -169,84 +161,9 @@ public class FileLoadService extends Service
 			resultBean.add(new FileBean(file.getName(), file.getAbsolutePath(),
 					file.listFiles(FileUtil.getsDirFilter()).length,
 					file.listFiles(FileUtil.getsFileFilter()).length,
-					formatFileAutoSize(totalSize)));
+					totalSize));
 
 			return totalSize;
-		}
-
-		/** 读取文件的大小 */
-		private long getFileSize(File file)
-		{
-			if (null != file && file.exists())
-			{
-				FileInputStream fis = null;
-
-				try
-				{
-					fis = new FileInputStream(file);
-					return fis.available();
-				}
-				catch (FileNotFoundException e)
-				{
-					e.printStackTrace();
-					return ERROR_SIZE;
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-					return ERROR_SIZE;
-				}
-				finally
-				{
-					if (null != fis)
-					{
-						try
-						{
-							fis.close();
-						}
-						catch (IOException e)
-						{
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-
-			return ERROR_SIZE;
-		}
-
-		private String formatFileAutoSize(long size)
-		{
-			DecimalFormat df = new DecimalFormat("0.00");
-			String fileSizeStr = "0.00B";
-
-			if (ERROR_SIZE == size)
-			{
-				return fileSizeStr;
-			}
-
-			if (size < 1024)
-			{
-				fileSizeStr = df.format(size) + "B";
-			}
-			else if (size < 1048576)
-			{
-				fileSizeStr = df.format(size / 1024.0) + "KB";
-			}
-			else if (size < 1073741824)
-			{
-				fileSizeStr = df.format(size / 1048576.0) + "MB";
-			}
-			else if (size < 1099511627776l)
-			{
-				fileSizeStr = df.format(size / 1073741824.0) + "GB";
-			}
-			else
-			{
-				fileSizeStr = df.format(size / 1099511627776.0) + "TB";
-			}
-
-			return fileSizeStr;
 		}
 	}
 }

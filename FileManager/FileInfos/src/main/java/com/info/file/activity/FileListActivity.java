@@ -73,7 +73,6 @@ public class FileListActivity extends BaseAppCompatActivity implements FragmentM
 		switch (item.getItemId())
 		{
 			case android.R.id.home:
-				// mFragmentManager.popBackStack();
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -160,12 +159,7 @@ public class FileListActivity extends BaseAppCompatActivity implements FragmentM
 			finish();
 		}
 	}
-
-	public static String getTagPath()
-	{
-		return TAG_PATH;
-	}
-
+	
 	@Override
 	public void onFileSelected(String path)
 	{
@@ -183,5 +177,15 @@ public class FileListActivity extends BaseAppCompatActivity implements FragmentM
 			IApplication.toast("文件名为：" + file.getName());
 			LogFileUtil.v("path = " + file.getAbsolutePath());
 		}
+	}
+
+	public static String getTagPath()
+	{
+		return TAG_PATH;
+	}
+
+	public static void actionStart(Context context)
+	{
+		context.startActivity(new Intent(context, FileListActivity.class));
 	}
 }

@@ -3,8 +3,9 @@ package com.info.file.helper;
 import android.os.AsyncTask;
 
 import com.info.file.bean.FileBean;
-import com.info.file.db.DbManager;
+import com.info.file.db.DbFileBeanManager;
 import com.yline.log.LogFileUtil;
+import com.yline.utils.FileSizeUtil;
 import com.yline.utils.FileUtil;
 
 import java.io.File;
@@ -12,9 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by yline on 2017/1/29.
- */
 public class FileDbLoader extends AsyncTask<String, Void, List<FileBean>>
 {
 	private FileHelper.LoadListener loadListener;
@@ -35,14 +33,14 @@ public class FileDbLoader extends AsyncTask<String, Void, List<FileBean>>
 
 		final File pathDir = new File(path);
 
-		final File[] dirs = pathDir.listFiles(FileHelper.getsDirFilter());
+		final File[] dirs = pathDir.listFiles(FileUtil.getsDirFilter());
 		if (null != dirs)
 		{
-			Arrays.sort(dirs, FileHelper.getsComparator());
+			Arrays.sort(dirs, FileUtil.getsComparator());
 
 			for (File dirFile : dirs)
 			{
-				FileBean bean = DbManager.getInstance().fileBeanQueryByPath(dirFile.getAbsolutePath());
+				FileBean bean = DbFileBeanManager.getInstance().queryByAbsolutePath(dirFile.getAbsolutePath());
 				// 更新数据
 				if (null == bean)
 				{
@@ -50,25 +48,26 @@ public class FileDbLoader extends AsyncTask<String, Void, List<FileBean>>
 							dirFile.listFiles(FileUtil.getsDirFilter()).length,
 							dirFile.listFiles(FileUtil.getsFileFilter()).length,
 							FileSizeUtil.getFileOrDirAutoSize(dirFile));
-					DbManager.getInstance().fileBeanInsert(bean);
+
+					DbFileBeanManager.getInstance().insert(bean);
 				}
 				resultList.add(bean);
 			}
 		}
-		
-		final File[] files = pathDir.listFiles(FileHelper.getsFileFilter());
+
+		final File[] files = pathDir.listFiles(FileUtil.getsFileFilter());
 		if (null != files)
 		{
-			Arrays.sort(files, FileHelper.getsComparator());
+			Arrays.sort(files, FileUtil.getsComparator());
 
 			for (File file : files)
 			{
-				FileBean bean = DbManager.getInstance().fileBeanQueryByPath(file.getAbsolutePath());
+				FileBean bean = DbFileBeanManager.getInstance().queryByAbsolutePath(file.getAbsolutePath());
 				// 更新数据
 				if (null == bean)
 				{
 					bean = new FileBean(file.getName(), file.getAbsolutePath(), FileSizeUtil.getFileOrDirAutoSize(file));
-					DbManager.getInstance().fileBeanInsert(bean);
+					DbFileBeanManager.getInstance().insert(bean);
 				}
 				resultList.add(bean);
 			}

@@ -4,9 +4,6 @@ import com.info.file.application.IApplication;
 import com.info.file.bean.FileBean;
 import com.yline.log.LogFileUtil;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -21,7 +18,7 @@ public class FileHelper
 	public FileHelper()
 	{
 	}
-
+	
 	public void getFileList(LoadListener listener, String path)
 	{
 		LogFileUtil.v("path = " + path);
@@ -42,52 +39,5 @@ public class FileHelper
 	public interface LoadListener
 	{
 		public void onLoadFinish(List<FileBean> fileBeanList);
-	}
-
-	private static Comparator<File> sComparator = new Comparator<File>()
-	{
-		public int compare(File f1, File f2)
-		{
-			return f1.getName().toLowerCase().compareTo(f2.getName().toLowerCase());
-		}
-	};
-
-	private static FileFilter sFileFilter = new FileFilter()
-	{
-		public boolean accept(File file)
-		{
-			/*
-			String fileName = file.getName();
-			return file.isFile() && !fileName.startsWith(".");
-			*/
-			return file.isFile();
-		}
-	};
-
-	private static FileFilter sDirFilter = new FileFilter()
-	{
-		public boolean accept(File file)
-		{
-			/*
-			String fileName = file.getName();
-			return file.isDirectory() && !fileName.startsWith(".");
-			*/
-			return file.isDirectory();
-		}
-	};
-
-	public static Comparator<File> getsComparator()
-	{
-		return sComparator;
-	}
-
-	public static FileFilter getsFileFilter()
-	{
-		return sFileFilter;
-	}
-
-	public static FileFilter getsDirFilter()
-	{
-		return sDirFilter;
 	}
 }
