@@ -42,25 +42,34 @@ public class FileLoadService extends Service
 
 	private boolean isStartCache()
 	{
-
+		long oldTime = (long) SPUtil.get(this, KEY_LAST_SCAN_TIME, 0l, KEY_FILE_NAME);
+		if (System.currentTimeMillis() - oldTime > UPDATE_DURATION)
+		{
+			return true;
+		}
 		return false;
+	}
+
+	private void startCache()
+	{
+		setIsCached(this, false);
 	}
 
 	private void endCache()
 	{
-
+		setIsCached(this, true);
+		SPUtil.put(this, KEY_LAST_SCAN_TIME, System.currentTimeMillis(), KEY_FILE_NAME);
 	}
 
 	private void setIsCached(Context context, boolean isCached)
 	{
-		SPUtil.put(context, KEY_IS_CACHE, isCached);
+		SPUtil.put(context, KEY_IS_CACHE, isCached, KEY_FILE_NAME);
 	}
 
 	public static boolean isCached(Context context)
 	{
-		return (boolean) SPUtil.get(context, KEY_IS_CACHE, false);
+		return (boolean) SPUtil.get(context, KEY_IS_CACHE, false, KEY_FILE_NAME);
 	}
-
 
 	@Override
 	public IBinder onBind(Intent intent)
@@ -82,7 +91,7 @@ public class FileLoadService extends Service
 		LogFileUtil.v("isStartCache = " + isStartCache);
 		if (isStartCache)
 		{
-			new Thread(new FileLoadRunnable(this)).start();
+			new Thread(new FileLoadRunnable()).start();
 		}
 
 		return super.onStartCommand(intent, flags, startId);
@@ -96,17 +105,10 @@ public class FileLoadService extends Service
 
 		private List<FileBean> resultBean = new ArrayList<>();
 
-		private Context context;
-
-		public FileLoadRunnable(Context context)
-		{
-			this.context = context;
-		}
-
 		@Override
 		public void run()
 		{
-			setIsCached(context, false);
+			startCache();
 
 			String rootPath = FileUtil.getPath();
 			long startTime = System.currentTimeMillis();
@@ -131,7 +133,7 @@ public class FileLoadService extends Service
 			DbManager.getInstance().fileBeanInsertAtSameMoment(resultBean);
 			LogFileUtil.v(TAG, "WriteTime = " + (System.currentTimeMillis() - startTime));
 
-			setIsCached(context, true);
+			endCache();
 		}
 
 		/** 一次性,全部读取所有的信息 */
@@ -163,6 +165,7 @@ public class FileLoadService extends Service
 				}
 			}
 
+			// 储存目录的 信息
 			resultBean.add(new FileBean(file.getName(), file.getAbsolutePath(),
 					file.listFiles(FileUtil.getsDirFilter()).length,
 					file.listFiles(FileUtil.getsFileFilter()).length,
