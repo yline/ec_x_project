@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Alives" />
+            <option value="$PROJECT_DIR$/Calendar" />
             <option value="$PROJECT_DIR$/Finance" />
           </set>
         </option>
@@ -16,6 +17,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Alives" />
+            <option value="$PROJECT_DIR$/Calendar" />
             <option value="$PROJECT_DIR$/Finance" />
           </set>
         </option>
