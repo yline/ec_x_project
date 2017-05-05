@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Launcher.iml" filepath="$PROJECT_DIR$/Launcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Launcher4.4/Launcher4.4.iml" filepath="$PROJECT_DIR$/Launcher4.4/Launcher4.4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Launcher4.4Lib/Launcher4.4Lib.iml" filepath="$PROJECT_DIR$/Launcher4.4Lib/Launcher4.4Lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Launcher4.4Test/Launcher4.4Test.iml" filepath="$PROJECT_DIR$/Launcher4.4Test/Launcher4.4Test.iml" />
+    </modules>
+  </component>
+</project>
