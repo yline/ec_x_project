@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.android.launcher3.view.PageIndicator 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3.view"
+    android:animateLayoutChanges="true"
+    launcher:windowSize="@integer/config_maxNumberOfPageIndicatorsToShow" >
+</com.android.launcher3.view.PageIndicator>
