@@ -13,14 +13,7 @@
             <option value="$PROJECT_DIR$/Finance" />
           </set>
         </option>
-        <option name="myModules">
-          <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/Alives" />
-            <option value="$PROJECT_DIR$/Calendar" />
-            <option value="$PROJECT_DIR$/Finance" />
-          </set>
-        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>
