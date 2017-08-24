@@ -4,42 +4,78 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.calendar.R;
 import com.calendar.util.LunarCalendar;
-import com.yline.base.BaseActivity;
 import com.yline.log.LogFileUtil;
+import com.yline.test.BaseTestActivity;
 
 import java.util.Arrays;
+import java.util.Calendar;
 
-public class MainActivity extends BaseActivity
+import static com.calendar.util.LunarCalendar.lunarToSolar;
+
+public class MainActivity extends BaseTestActivity
 {
-	private TextView tvCalendar;
-
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
+	public void testStart(View view, Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-
-		initView();
-
-		findViewById(R.id.btn_test_calendar).setOnClickListener(new View.OnClickListener()
+		final TextView tvLunarCalendar = addTextView("");
+		addButton("测试 公历阴历 转换", new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View v)
 			{
-				String result = testCalendar();
-				tvCalendar.setText(result);
+				String result = launcherCalendar();
+				tvLunarCalendar.setText(result);
+			}
+		});
+
+		final TextView tvDistanceCalendar = addTextView("");
+		addButton("距离截止日期还有几天", new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				String result = distanceCalendar();
+				tvDistanceCalendar.setText(result);
 			}
 		});
 	}
-	
-	private void initView()
+
+	/**
+	 * 计算距离截至日期的天数
+	 *
+	 * @return
+	 */
+	public String distanceCalendar()
 	{
-		tvCalendar = (TextView) findViewById(R.id.tv_calendar);
+		// 计算 非闰月 日期
+		int[] days = LunarCalendar.lunarToSolar(2020, 4, 7, false);
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(days[0], (days[1] - 1), days[2]);
+		long aimMillis = calendar.getTimeInMillis(); // 获取到的时间，小时、分钟、秒都和获取的时间相同
+		long diffMillis = aimMillis - System.currentTimeMillis();
+
+		LogFileUtil.v("aimDay = " + Arrays.toString(days) + ", aimMillis = " + aimMillis + ", currentTimeMillis = " + System.currentTimeMillis());
+
+		int diffDay;
+		if (diffMillis > 0)
+		{
+			diffDay = (int) (diffMillis / 1000 / 60 / 60 / 24);
+		}
+		else
+		{
+			diffDay = (int) ((-diffMillis) / 1000 / 60 / 60 / 24);
+		}
+		return "diffDay = " + diffDay;
 	}
 
-	public String testCalendar()
+	/**
+	 * 日历转换
+	 *
+	 * @return
+	 */
+	public String launcherCalendar()
 	{
 		// 打印常量
 		LogFileUtil.v("MIN_YEAR = " + LunarCalendar.MIN_YEAR);
@@ -53,7 +89,7 @@ public class MainActivity extends BaseActivity
 		LogFileUtil.v("");
 
 		// 测试正常转化:
-		int[] day1 = LunarCalendar.lunarToSolar(2017, 1, 10, false);
+		int[] day1 = lunarToSolar(2017, 1, 10, false);
 		LogFileUtil.v("2017, 1, 10 阳历 = " + Arrays.toString(day1)); // 2017, 1, 10 阳历 = [2017, 2, 6]
 
 		int[] day2 = LunarCalendar.solarToLunar(2017, 2, 6);
@@ -64,12 +100,12 @@ public class MainActivity extends BaseActivity
 
 		// 测试不知是否是闰月时,转化 闰月
 		int leapMonth = LunarCalendar.leapMonth(2020); // 获取 润的月份
-		int[] day3 = LunarCalendar.lunarToSolar(2020, 4, 7, false); // 假设没有 润,获取 该月份
+		int[] day3 = lunarToSolar(2020, 4, 7, false); // 假设没有 润,获取 该月份
 		boolean isLeap = (leapMonth == day3[1]);
 		LogFileUtil.v(isLeap ? "当月是闰月" : "当月不是闰月");
 		if (isLeap)
 		{
-			int[] day4 = LunarCalendar.lunarToSolar(2020, 4, 7, true);
+			int[] day4 = lunarToSolar(2020, 4, 7, true);
 			LogFileUtil.v("day : " + Arrays.toString(day4));
 			stringBuffer.append(Arrays.toString(day4));
 		}
@@ -81,4 +117,5 @@ public class MainActivity extends BaseActivity
 
 		return stringBuffer.toString();
 	}
+
 }
