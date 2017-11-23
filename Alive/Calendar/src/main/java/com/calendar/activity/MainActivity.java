@@ -11,8 +11,6 @@ import com.yline.test.BaseTestActivity;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import static com.calendar.util.LunarCalendar.lunarToSolar;
-
 public class MainActivity extends BaseTestActivity
 {
 	@Override
@@ -89,7 +87,7 @@ public class MainActivity extends BaseTestActivity
 		LogFileUtil.v("");
 
 		// 测试正常转化:
-		int[] day1 = lunarToSolar(2017, 1, 10, false);
+		int[] day1 = LunarCalendar.lunarToSolar(2017, 1, 10, false);
 		LogFileUtil.v("2017, 1, 10 阳历 = " + Arrays.toString(day1)); // 2017, 1, 10 阳历 = [2017, 2, 6]
 
 		int[] day2 = LunarCalendar.solarToLunar(2017, 2, 6);
@@ -100,12 +98,12 @@ public class MainActivity extends BaseTestActivity
 
 		// 测试不知是否是闰月时,转化 闰月
 		int leapMonth = LunarCalendar.leapMonth(2020); // 获取 润的月份
-		int[] day3 = lunarToSolar(2020, 4, 7, false); // 假设没有 润,获取 该月份
+		int[] day3 = LunarCalendar.lunarToSolar(2020, 4, 7, false); // 假设没有 润,获取 该月份
 		boolean isLeap = (leapMonth == day3[1]);
 		LogFileUtil.v(isLeap ? "当月是闰月" : "当月不是闰月");
 		if (isLeap)
 		{
-			int[] day4 = lunarToSolar(2020, 4, 7, true);
+			int[] day4 = LunarCalendar.lunarToSolar(2020, 4, 7, true);
 			LogFileUtil.v("day : " + Arrays.toString(day4));
 			stringBuffer.append(Arrays.toString(day4));
 		}
