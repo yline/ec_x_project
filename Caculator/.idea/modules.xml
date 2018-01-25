@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/Caculator.iml" filepath="$PROJECT_DIR$/Caculator.iml" />
-      <module fileurl="file://$PROJECT_DIR$/KeyBoardCustomCalculator/KeyBoardCustomCalculator.iml" filepath="$PROJECT_DIR$/KeyBoardCustomCalculator/KeyBoardCustomCalculator.iml" />
-    </modules>
-  </component>
-</project>
