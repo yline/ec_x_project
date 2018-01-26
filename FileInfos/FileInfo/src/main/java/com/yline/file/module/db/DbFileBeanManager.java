@@ -19,6 +19,7 @@ import java.util.List;
 public class DbFileBeanManager extends DbBaseManager<FileBean> {
     /* 数据表 FileBean常量 */
     private static final String TABLE_NAME = "FileBean";
+
     private static final String IS_DIRECTORY = "isDirectory";
     private static final String FILE_NAME = "fileName";
     private static final String FILE_ABSOLUTE_PATH = "absolutePath";
