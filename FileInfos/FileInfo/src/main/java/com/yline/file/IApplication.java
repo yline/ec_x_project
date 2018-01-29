@@ -1,7 +1,5 @@
 package com.yline.file;
 
-import android.content.Intent;
-
 import com.yline.application.BaseApplication;
 import com.yline.file.module.db.DbFileBeanManager;
 import com.yline.file.module.file.helper.FileLoadService;
@@ -23,6 +21,6 @@ public class IApplication extends BaseApplication {
         DbFileBeanManager.getInstance().init(this);
 
         // 开启Service服务,准备缓存文件
-        startService(new Intent(this, FileLoadService.class));
+        FileLoadService.launcher(this, true);
     }
 }

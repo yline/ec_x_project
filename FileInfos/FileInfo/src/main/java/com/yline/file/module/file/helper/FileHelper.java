@@ -1,6 +1,5 @@
 package com.yline.file.module.file.helper;
 
-import com.yline.file.IApplication;
 import com.yline.file.module.file.model.FileModel;
 import com.yline.log.LogFileUtil;
 
@@ -15,20 +14,11 @@ import java.util.List;
  * @version 1.0.0
  */
 public class FileHelper {
-    public FileHelper() {
-    }
-
-    public void getFileList(LoadListener listener, String path) {
+    public static void getFileList(LoadListener listener, String path) {
         LogFileUtil.v("path = " + path);
-        if (FileLoadService.isCached(IApplication.getApplication())) {
-            FileDbLoader dbLoader = new FileDbLoader();
-            dbLoader.setLoadListener(listener);
-            dbLoader.execute(path);
-        } else {
-            FileTempLoader tempLoader = new FileTempLoader();
-            tempLoader.setLoadListener(listener);
-            tempLoader.execute(path);
-        }
+        FileDbLoader dbLoader = new FileDbLoader();
+        dbLoader.setLoadListener(listener);
+        dbLoader.execute(path);
     }
 
     public interface LoadListener {

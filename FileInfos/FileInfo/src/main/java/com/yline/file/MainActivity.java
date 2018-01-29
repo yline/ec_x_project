@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.yline.file.module.file.FileListActivity;
+import com.yline.file.module.file.helper.FileLoadService;
 import com.yline.test.BaseTestActivity;
 
 /**
@@ -22,5 +23,12 @@ public class MainActivity extends BaseTestActivity {
                 FileListActivity.launcher(MainActivity.this);
             }
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        FileLoadService.launcher(IApplication.getApplication(), false);
     }
 }

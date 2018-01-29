@@ -13,15 +13,10 @@ import com.yline.utils.FileUtil;
 
 import java.util.List;
 
-/**
- * Created by yline on 2017/1/27.
- */
 public class FileListFragment extends BaseListFragment implements FileHelper.LoadListener {
     private String path;
 
     private FileListAdapter mAdapter;
-
-    private FileHelper fileHelper;
 
     public static FileListFragment newInstance(String path) {
         FileListFragment fragment = new FileListFragment();
@@ -34,7 +29,7 @@ public class FileListFragment extends BaseListFragment implements FileHelper.Loa
 
     public void refreshFragment(String path) {
         setListShown(false);
-        fileHelper.getFileList(this, path);
+        FileHelper.getFileList(this, path);
     }
 
     private String initPath() {
@@ -53,8 +48,6 @@ public class FileListFragment extends BaseListFragment implements FileHelper.Loa
 
         path = initPath();
 
-        fileHelper = new FileHelper();
-
         mAdapter = new FileListAdapter(getActivity());
         setListAdapter(mAdapter);
 
@@ -62,7 +55,7 @@ public class FileListFragment extends BaseListFragment implements FileHelper.Loa
         setListShown(false);
 
         // 获取数据
-        fileHelper.getFileList(this, path);
+        FileHelper.getFileList(this, path);
     }
 
     @Override
