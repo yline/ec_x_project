@@ -22,7 +22,7 @@ import java.util.List;
  * @version 1.0.0
  */
 public class FileDbLoader extends AsyncTask<String, Void, List<FileModel>> {
-    public static void getFileList(OnLoadListener listener, String path) {
+    public static void getFileList( String path, OnLoadListener listener) {
         LogFileUtil.v("path = " + path);
         FileDbLoader dbLoader = new FileDbLoader();
         dbLoader.setLoadListener(listener);

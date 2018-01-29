@@ -3,6 +3,7 @@ package com.yline.file;
 import android.os.Bundle;
 import android.view.View;
 
+import com.yline.file.module.file.FileInfoActivity;
 import com.yline.file.module.file.FileListActivity;
 import com.yline.file.module.file.helper.FileLoadService;
 import com.yline.test.BaseTestActivity;
@@ -21,6 +22,13 @@ public class MainActivity extends BaseTestActivity {
             @Override
             public void onClick(View v) {
                 FileListActivity.launcher(MainActivity.this);
+            }
+        });
+
+        addButton("FileInfoActivity", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FileInfoActivity.launcher(MainActivity.this);
             }
         });
     }

@@ -29,7 +29,7 @@ public class FileListFragment extends BaseListFragment implements FileDbLoader.O
 
     public void refreshFragment(String path) {
         setListShown(false);
-        FileDbLoader.getFileList(this, path);
+        FileDbLoader.getFileList(path, this);
     }
 
     private String initPath() {
@@ -55,7 +55,7 @@ public class FileListFragment extends BaseListFragment implements FileDbLoader.O
         setListShown(false);
 
         // 获取数据
-        FileDbLoader.getFileList(this, path);
+        FileDbLoader.getFileList(path, this);
     }
 
     @Override

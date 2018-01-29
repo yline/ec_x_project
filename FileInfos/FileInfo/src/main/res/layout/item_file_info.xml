@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="6dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="6dp">
+
+    <ImageView
+        android:id="@+id/item_file_info_iv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:scaleType="center" />
+
+    <TextView
+        android:id="@+id/item_file_info_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/item_file_info_iv"
+        android:text="文件名"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/item_file_info_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/item_file_info_name"
+        android:layout_below="@id/item_file_info_name"
+        android:layout_marginTop="4dp"
+        android:text="文件：0，文件夹：0，大小：0"
+        android:textSize="13dp" />
+</RelativeLayout>
