@@ -20,7 +20,14 @@ import com.yline.view.recycler.holder.RecyclerViewHolder;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Stack;
 
+/**
+ * 文件信息，展示
+ *
+ * @author yline 2018/1/29 -- 20:41
+ * @version 1.0.0
+ */
 public class FileInfoActivity extends BaseAppCompatActivity {
     public static void launcher(Context context) {
         if (null != context) {
@@ -33,6 +40,7 @@ public class FileInfoActivity extends BaseAppCompatActivity {
     }
 
     private FileInfoAdapter mFileInfoAdapter;
+    private Stack<String> mPathStack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +69,17 @@ public class FileInfoActivity extends BaseAppCompatActivity {
     }
 
     private void initData() {
+        mPathStack = new Stack<>();
+
         String path = FileUtil.getPathTop();
         refreshRecycler(path);
     }
 
     private void refreshRecycler(String path) {
+        if (!mPathStack.contains(path)) {
+            mPathStack.push(path);
+        }
+
         FileDbLoader.getFileList(path, new FileDbLoader.OnLoadListener() {
             @Override
             public void onLoadFinish(List<FileModel> fileBeanList) {
@@ -74,6 +88,19 @@ public class FileInfoActivity extends BaseAppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mPathStack.isEmpty()) {
+            mPathStack.pop(); // 先，抛出，当前的
+        }
+
+        if (mPathStack.isEmpty()) {
+            super.onBackPressed();
+        } else {
+            refreshRecycler(mPathStack.pop());
+        }
     }
 
     private class FileInfoAdapter extends AbstractCommonRecyclerAdapter<FileModel> {
