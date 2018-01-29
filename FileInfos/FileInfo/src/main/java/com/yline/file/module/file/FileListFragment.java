@@ -6,14 +6,14 @@ import android.widget.ListView;
 
 import com.yline.base.BaseListFragment;
 import com.yline.file.R;
-import com.yline.file.module.file.helper.FileHelper;
+import com.yline.file.module.file.helper.FileDbLoader;
 import com.yline.file.module.file.model.FileModel;
 import com.yline.log.LogFileUtil;
 import com.yline.utils.FileUtil;
 
 import java.util.List;
 
-public class FileListFragment extends BaseListFragment implements FileHelper.LoadListener {
+public class FileListFragment extends BaseListFragment implements FileDbLoader.OnLoadListener {
     private String path;
 
     private FileListAdapter mAdapter;
@@ -29,7 +29,7 @@ public class FileListFragment extends BaseListFragment implements FileHelper.Loa
 
     public void refreshFragment(String path) {
         setListShown(false);
-        FileHelper.getFileList(this, path);
+        FileDbLoader.getFileList(this, path);
     }
 
     private String initPath() {
@@ -55,7 +55,7 @@ public class FileListFragment extends BaseListFragment implements FileHelper.Loa
         setListShown(false);
 
         // 获取数据
-        FileHelper.getFileList(this, path);
+        FileDbLoader.getFileList(this, path);
     }
 
     @Override
@@ -85,6 +85,6 @@ public class FileListFragment extends BaseListFragment implements FileHelper.Loa
     }
 
     public interface onFileSelectedCallback {
-        public void onFileSelected(String path);
+        void onFileSelected(String path);
     }
 }

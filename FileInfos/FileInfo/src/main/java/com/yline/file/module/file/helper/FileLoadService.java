@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.yline.file.IApplication;
-import com.yline.file.module.db.DbFileBeanManager;
+import com.yline.file.module.db.FileDbManager;
 import com.yline.file.module.db.SpManager;
 import com.yline.file.module.file.model.FileModel;
 import com.yline.log.LogFileUtil;
@@ -64,8 +64,6 @@ public class FileLoadService extends IntentService {
         LogUtil.v("FileInfoLoadService onDestroy");
     }
 
-    private List<FileModel> mResultBean = new ArrayList<>();
-
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         // 判断是否进行 加载文件
@@ -94,10 +92,10 @@ public class FileLoadService extends IntentService {
                 return;
             }
 
-            LogUtil.v("onHandleIntent, readTime = " + (System.currentTimeMillis() - startTime) + ", count = " + mResultBean.size());
+            LogUtil.v("onHandleIntent, readTime = " + (System.currentTimeMillis() - startTime) + ", count = " + mFileModelList.size());
             startTime = System.currentTimeMillis();
 
-            DbFileBeanManager.getInstance().insertAtSameMoment(mResultBean);
+            FileDbManager.insertOrReplaceInTx(mFileModelList);
             LogUtil.v("onHandleIntent, writeTime = " + (System.currentTimeMillis() - startTime));
             startTime = System.currentTimeMillis();
 

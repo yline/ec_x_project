@@ -27,4 +27,5 @@ dependencies {
 
     compile 'com.yline.lib:LibSDK:2.1.1'
     compile 'com.yline.lib:LibViewRecycler:1.1.1'
+    compile 'com.yline.lib:LibSqlite:1.0.2'
 }

@@ -1,12 +1,14 @@
 package com.yline.file.module.file.model;
 
+import java.io.Serializable;
+
 /**
  * 文件，管理器
  *
  * @author yline 2018/1/29 -- 17:02
  * @version 1.0.0
  */
-public class FileModel {
+public class FileModel implements Serializable {
     /**
      * 如果是文件，结尾不带 '/'
      * 如果是文件夹，结尾带 '/'

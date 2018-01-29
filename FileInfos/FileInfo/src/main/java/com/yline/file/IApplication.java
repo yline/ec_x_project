@@ -1,7 +1,7 @@
 package com.yline.file;
 
 import com.yline.application.BaseApplication;
-import com.yline.file.module.db.DbFileBeanManager;
+import com.yline.file.module.db.FileDbManager;
 import com.yline.file.module.file.helper.FileLoadService;
 
 /**
@@ -18,7 +18,9 @@ public class IApplication extends BaseApplication {
         super.onCreate();
 
         // 初始化数据库
-        DbFileBeanManager.getInstance().init(this);
+//        DbFileBeanManager.getInstance().init(this);
+
+        FileDbManager.init(this);
 
         // 开启Service服务,准备缓存文件
         FileLoadService.launcher(this, true);
