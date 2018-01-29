@@ -5,20 +5,20 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.yline.file.module.file.model.FileBean;
+import com.yline.file.module.file.model.FileModel;
 import com.yline.log.LogFileUtil;
 
 import java.util.List;
 
 /**
- * FileBean
+ * FileModel
  *
  * @author yline 2017/2/2 --> 14:42
  * @version 1.0.0
  */
-public class DbFileBeanManager extends DbBaseManager<FileBean> {
+public class DbFileBeanManager extends DbBaseManager<FileModel> {
     /* 数据表 FileBean常量 */
-    private static final String TABLE_NAME = "FileBean";
+    private static final String TABLE_NAME = "FileModel";
 
     private static final String IS_DIRECTORY = "isDirectory";
     private static final String FILE_NAME = "fileName";
@@ -44,11 +44,11 @@ public class DbFileBeanManager extends DbBaseManager<FileBean> {
     }
 
     @Override
-    public ContentValues dataToValues(FileBean bean) {
+    public ContentValues dataToValues(FileModel bean) {
         ContentValues values = new ContentValues();
         values.put(IS_DIRECTORY, bean.isDirectory());
         values.put(FILE_NAME, bean.getFileName());
-        values.put(FILE_ABSOLUTE_PATH, bean.getFileAbsolutePath());
+        values.put(FILE_ABSOLUTE_PATH, bean.getAbsolutePath());
         values.put(CHILD_DIR_COUNT, bean.getChildDirCount());
         values.put(CHILD_FILE_COUNT, bean.getChildFileCount());
         values.put(FILE_SIZE, bean.getFileSize());
@@ -56,7 +56,7 @@ public class DbFileBeanManager extends DbBaseManager<FileBean> {
     }
 
     @Override
-    public FileBean cursorToData(Cursor cursor) {
+    public FileModel cursorToData(Cursor cursor) {
         if (null != cursor && cursor.moveToFirst()) {
             boolean isDirectory = (cursor.getInt(cursor.getColumnIndex(IS_DIRECTORY)) > 0);
             String fileName = cursor.getString(cursor.getColumnIndex(FILE_NAME));
@@ -67,7 +67,7 @@ public class DbFileBeanManager extends DbBaseManager<FileBean> {
 
             cursor.close();
 
-            return new FileBean(isDirectory, fileName, fileAbsolutePath, childDirCount, childFileCount, fileSize);
+            return new FileModel(isDirectory, fileName, fileAbsolutePath, childDirCount, childFileCount, fileSize);
         }
         return null;
     }
@@ -79,13 +79,13 @@ public class DbFileBeanManager extends DbBaseManager<FileBean> {
         db.execSQL(createSql);
     }
 
-    public void insertAtSameMoment(List<FileBean> beanList) {
-        LogFileUtil.v("FileBean insert to Db, number = " + beanList.size());
+    public void insertAtSameMoment(List<FileModel> beanList) {
+        LogFileUtil.v("FileModel insert to Db, number = " + beanList.size());
 
         database = sqLiteHelper.getWritableDatabase();
         database.beginTransaction();
 
-        for (FileBean bean : beanList) {
+        for (FileModel bean : beanList) {
             ContentValues values = dataToValues(bean);
 
             database.insert(TABLE_NAME, null, values);
@@ -96,7 +96,7 @@ public class DbFileBeanManager extends DbBaseManager<FileBean> {
         database.close();
     }
 
-    public void insert(FileBean bean) {
+    public void insert(FileModel bean) {
         database = sqLiteHelper.getWritableDatabase();
 
         ContentValues values = dataToValues(bean);
@@ -105,7 +105,7 @@ public class DbFileBeanManager extends DbBaseManager<FileBean> {
         database.close();
     }
 
-    public FileBean queryByAbsolutePath(String absolutePath) {
+    public FileModel queryByAbsolutePath(String absolutePath) {
         Cursor cursor = sqLiteHelper.getWritableDatabase().query(TABLE_NAME, null,
                 FILE_ABSOLUTE_PATH + "=?", new String[]{absolutePath}, null, null, null);
         return cursorToData(cursor);

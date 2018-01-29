@@ -7,7 +7,7 @@ import android.os.IBinder;
 
 import com.yline.file.IApplication;
 import com.yline.file.module.db.DbFileBeanManager;
-import com.yline.file.module.file.model.FileBean;
+import com.yline.file.module.file.model.FileModel;
 import com.yline.log.LogFileUtil;
 import com.yline.utils.FileSizeUtil;
 import com.yline.utils.FileUtil;
@@ -44,7 +44,7 @@ public class FileLoadService extends Service {
     private static final long UPDATE_DURATION = 86400 * 1000 * 7; // ms
 
     private boolean isStartCache() {
-        long oldTime = (long) SPUtil.get(this, KEY_LAST_SCAN_TIME, 0l, KEY_FILE_NAME);
+        long oldTime = (long) SPUtil.get(this, KEY_LAST_SCAN_TIME, 0L, KEY_FILE_NAME);
         if (System.currentTimeMillis() - oldTime > UPDATE_DURATION) {
             return true;
         }
@@ -95,7 +95,7 @@ public class FileLoadService extends Service {
 
         private static final int ERROR_SIZE = 0;
 
-        private List<FileBean> resultBean = new ArrayList<>();
+        private List<FileModel> resultBean = new ArrayList<>();
 
         @Override
         public void run() {
@@ -141,12 +141,12 @@ public class FileLoadService extends Service {
                     tempSize = tempSize == FileSizeUtil.getErrorSize() ? 0 : tempSize;
                     totalSize += tempSize;
 
-                    resultBean.add(new FileBean(childFiles[i].getName(), childFiles[i].getAbsolutePath(), tempSize));
+                    resultBean.add(new FileModel(childFiles[i].getName(), childFiles[i].getAbsolutePath(), tempSize));
                 }
             }
 
             // 储存目录的 信息
-            resultBean.add(new FileBean(file.getName(), file.getAbsolutePath(),
+            resultBean.add(new FileModel(file.getName(), file.getAbsolutePath(),
                     file.listFiles(FileUtil.getsDirFilter()).length,
                     file.listFiles(FileUtil.getsFileFilter()).length,
                     totalSize));

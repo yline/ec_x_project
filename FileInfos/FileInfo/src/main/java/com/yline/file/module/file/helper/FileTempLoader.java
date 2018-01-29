@@ -2,8 +2,9 @@ package com.yline.file.module.file.helper;
 
 import android.os.AsyncTask;
 
-import com.yline.file.module.file.model.FileBean;
+import com.yline.file.module.file.model.FileModel;
 import com.yline.log.LogFileUtil;
+import com.yline.utils.FileSizeUtil;
 import com.yline.utils.FileUtil;
 
 import java.io.File;
@@ -17,7 +18,7 @@ import java.util.List;
  * @author yline 2017/1/28 --> 12:24
  * @version 1.0.0
  */
-public class FileTempLoader extends AsyncTask<String, Void, List<FileBean>> {
+public class FileTempLoader extends AsyncTask<String, Void, List<FileModel>> {
     private FileHelper.LoadListener listener;
 
     @Override
@@ -26,11 +27,11 @@ public class FileTempLoader extends AsyncTask<String, Void, List<FileBean>> {
     }
 
     @Override
-    protected List<FileBean> doInBackground(String... params) {
+    protected List<FileModel> doInBackground(String... params) {
         String path = params[0];
         LogFileUtil.v(path);
 
-        List<FileBean> resultList = new ArrayList<>();
+        List<FileModel> resultList = new ArrayList<>();
 
         final File pathDir = new File(path);
 
@@ -39,10 +40,10 @@ public class FileTempLoader extends AsyncTask<String, Void, List<FileBean>> {
             Arrays.sort(dirs, FileUtil.getsComparator());
 
             for (File dirFile : dirs) {
-                resultList.add(new FileBean(dirFile.getName(), dirFile.getAbsolutePath(),
+                resultList.add(new FileModel(dirFile.getName(), dirFile.getAbsolutePath(),
                         dirFile.listFiles(FileUtil.getsDirFilter()).length,
                         dirFile.listFiles(FileUtil.getsFileFilter()).length,
-                        FileBean.getDefaultFileSize()));
+                        FileSizeUtil.getErrorSize()));
             }
         }
 
@@ -51,7 +52,7 @@ public class FileTempLoader extends AsyncTask<String, Void, List<FileBean>> {
             Arrays.sort(files, FileUtil.getsComparator());
 
             for (File file : files) {
-                resultList.add(new FileBean(file.getName(), file.getAbsolutePath(), FileBean.getDefaultFileSize()));
+                resultList.add(new FileModel(file.getName(), file.getAbsolutePath(), FileSizeUtil.getErrorSize()));
             }
         }
 
@@ -59,13 +60,13 @@ public class FileTempLoader extends AsyncTask<String, Void, List<FileBean>> {
     }
 
     @Override
-    protected void onPostExecute(List<FileBean> fileBeen) {
+    protected void onPostExecute(List<FileModel> fileBeen) {
         super.onPostExecute(fileBeen);
 
         callLoadListener(fileBeen);
     }
 
-    public void callLoadListener(List<FileBean> fileBeen) {
+    public void callLoadListener(List<FileModel> fileBeen) {
         if (null != listener) {
             listener.onLoadFinish(fileBeen);
         }

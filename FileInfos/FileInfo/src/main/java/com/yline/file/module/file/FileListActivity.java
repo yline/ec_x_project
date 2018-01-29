@@ -13,7 +13,7 @@ import com.yline.application.SDKManager;
 import com.yline.base.BaseAppCompatActivity;
 import com.yline.file.IApplication;
 import com.yline.file.R;
-import com.yline.file.module.file.model.FileBean;
+import com.yline.file.module.file.model.FileModel;
 import com.yline.log.LogFileUtil;
 import com.yline.utils.FileUtil;
 
@@ -136,9 +136,9 @@ public class FileListActivity extends BaseAppCompatActivity implements FragmentM
      *
      * @param fileBean The file selected.
      */
-    private void finishWithResult(FileBean fileBean) {
+    private void finishWithResult(FileModel fileBean) {
         if (fileBean != null) {
-            Intent intent = new Intent().putExtra(TAG_PATH, fileBean.getFileAbsolutePath());
+            Intent intent = new Intent().putExtra(TAG_PATH, fileBean.getAbsolutePath());
             setResult(RESULT_OK, intent);
             finish();
         } else {

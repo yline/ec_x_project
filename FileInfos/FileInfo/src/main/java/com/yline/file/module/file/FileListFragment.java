@@ -7,7 +7,7 @@ import android.widget.ListView;
 import com.yline.base.BaseListFragment;
 import com.yline.file.R;
 import com.yline.file.module.file.helper.FileHelper;
-import com.yline.file.module.file.model.FileBean;
+import com.yline.file.module.file.model.FileModel;
 import com.yline.log.LogFileUtil;
 import com.yline.utils.FileUtil;
 
@@ -70,8 +70,8 @@ public class FileListFragment extends BaseListFragment implements FileHelper.Loa
         super.onListItemClick(l, v, position, id);
 
         if (null != l.getAdapter()) {
-            FileBean fileBean = (FileBean) l.getAdapter().getItem(position);
-            path = fileBean.getFileAbsolutePath();
+            FileModel fileBean = (FileModel) l.getAdapter().getItem(position);
+            path = fileBean.getAbsolutePath();
 
             if (getActivity() instanceof onFileSelectedCallback) {
                 ((onFileSelectedCallback) getActivity()).onFileSelected(path);
@@ -80,7 +80,7 @@ public class FileListFragment extends BaseListFragment implements FileHelper.Loa
     }
 
     @Override
-    public void onLoadFinish(List<FileBean> fileBeen) {
+    public void onLoadFinish(List<FileModel> fileBeen) {
         // 更新数据
         mAdapter.setDataList(fileBeen, true);
 
