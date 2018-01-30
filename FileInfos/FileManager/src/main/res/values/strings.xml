@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">FileManager</string>
-
-    <!-- file chooser -->
-    <string name="storage_removed">storage removed</string>
-    <string name="error_selecting_file">error selecting file</string>
-    <string name="empty_directory">empty directory</string>
-    <string name="internal_storage">internal storage</string>
-</resources>
