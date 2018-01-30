@@ -13,6 +13,7 @@ import com.yline.base.BaseAppCompatActivity;
 import com.yline.file.R;
 import com.yline.file.common.LoadingView;
 import com.yline.file.module.file.helper.FileDbLoader;
+import com.yline.file.module.file.helper.FileInfoLoadReceiver;
 import com.yline.file.module.file.model.FileModel;
 import com.yline.utils.FileSizeUtil;
 import com.yline.utils.FileUtil;
@@ -43,7 +44,9 @@ public class FileInfoActivity extends BaseAppCompatActivity {
 
     private FileInfoAdapter mFileInfoAdapter;
     private LoadingView mLoadingView;
+
     private Stack<String> mPathStack;
+    private FileInfoLoadReceiver mLoadReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,17 @@ public class FileInfoActivity extends BaseAppCompatActivity {
 
     private void initData() {
         mPathStack = new Stack<>();
+
+        mLoadReceiver = new FileInfoLoadReceiver();
+        FileInfoLoadReceiver.registerReceiver(mLoadReceiver);
+        mLoadReceiver.setOnFileInfoReceiverListener(new FileInfoLoadReceiver.OnFileInfoReceiverListener() {
+            @Override
+            public void onFileInfoReceiver() {
+                if (null != mPathStack && !mPathStack.isEmpty()) {
+                    refreshRecycler(mPathStack.peek());
+                }
+            }
+        });
 
         String path = FileUtil.getPathTop();
         refreshRecycler(path);
@@ -114,6 +128,12 @@ public class FileInfoActivity extends BaseAppCompatActivity {
         } else {
             refreshRecycler(mPathStack.pop());
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        FileInfoLoadReceiver.unRegisterReceiver(mLoadReceiver);
+        super.onDestroy();
     }
 
     private class FileInfoAdapter extends AbstractCommonRecyclerAdapter<FileModel> {

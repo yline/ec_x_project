@@ -20,9 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".module.file.FileListActivity" />
 
-        <service android:name=".module.file.helper.FileLoadService" />
+        <service android:name=".module.file.helper.FileInfoLoadService" />
 
         <activity android:name=".module.file.FileInfoActivity"></activity>
     </application>

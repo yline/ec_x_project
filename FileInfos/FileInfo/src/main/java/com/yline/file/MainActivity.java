@@ -4,8 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.yline.file.module.file.FileInfoActivity;
-import com.yline.file.module.file.FileListActivity;
-import com.yline.file.module.file.helper.FileLoadService;
+import com.yline.file.module.file.helper.FileInfoLoadService;
 import com.yline.test.BaseTestActivity;
 
 /**
@@ -18,13 +17,6 @@ public class MainActivity extends BaseTestActivity {
 
     @Override
     public void testStart(View view, Bundle savedInstanceState) {
-        addButton("FileListActivity", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FileListActivity.launcher(MainActivity.this);
-            }
-        });
-
         addButton("FileInfoActivity", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -37,6 +29,6 @@ public class MainActivity extends BaseTestActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        FileLoadService.launcher(IApplication.getApplication(), false);
+        FileInfoLoadService.launcher(IApplication.getApplication(), false);
     }
 }

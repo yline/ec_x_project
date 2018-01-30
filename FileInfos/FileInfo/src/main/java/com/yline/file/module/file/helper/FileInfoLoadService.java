@@ -29,14 +29,14 @@ import java.util.List;
  * @author yline 2017/1/30 --> 0:54
  * @version 1.0.0
  */
-public class FileLoadService extends IntentService {
+public class FileInfoLoadService extends IntentService {
     /**
      * 是否需要手动请求权限
      */
     public static void launcher(Context context, boolean isCheckPermission) {
         boolean isRequest = isCheckPermission && PermissionUtil.check(context, Manifest.permission.WRITE_EXTERNAL_STORAGE); // 判断是否需要请求权限
         if (!isRequest) {
-            context.startService(new Intent(context, FileLoadService.class));
+            context.startService(new Intent(context, FileInfoLoadService.class));
         } else {
             LogUtil.v("launcher, should request permission first");
         }
@@ -44,8 +44,8 @@ public class FileLoadService extends IntentService {
 
     private List<FileModel> mFileModelList;
 
-    public FileLoadService() {
-        super("FileLoadService");
+    public FileInfoLoadService() {
+        super("FileInfoLoadService");
 
         mFileModelList = new ArrayList<>();
     }
@@ -101,6 +101,8 @@ public class FileLoadService extends IntentService {
 
             SpManager.setLastLoadTime(startTime);
             SpManager.setIsFileInfoLoading(false);
+
+            FileInfoLoadReceiver.sendReceiver();
         }
     }
 

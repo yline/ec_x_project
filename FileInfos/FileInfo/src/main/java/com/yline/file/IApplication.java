@@ -2,7 +2,7 @@ package com.yline.file;
 
 import com.yline.application.BaseApplication;
 import com.yline.file.module.file.db.FileDbManager;
-import com.yline.file.module.file.helper.FileLoadService;
+import com.yline.file.module.file.helper.FileInfoLoadService;
 
 /**
  * 程序入口
@@ -23,6 +23,6 @@ public class IApplication extends BaseApplication {
         FileDbManager.init(this);
 
         // 开启Service服务,准备缓存文件
-        FileLoadService.launcher(this, true);
+        FileInfoLoadService.launcher(this, true);
     }
 }
