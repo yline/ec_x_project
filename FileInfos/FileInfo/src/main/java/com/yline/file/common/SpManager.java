@@ -1,4 +1,4 @@
-package com.yline.file.module.db;
+package com.yline.file.common;
 
 import com.yline.file.IApplication;
 import com.yline.utils.SPUtil;

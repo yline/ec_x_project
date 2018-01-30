@@ -1,4 +1,4 @@
-package com.yline.file.module.db;
+package com.yline.file.module.file.db;
 
 /**
  * 文件，数据库，储存数据

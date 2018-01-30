@@ -1,8 +1,9 @@
 package com.yline.file.module.file.helper;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
-import com.yline.file.module.db.FileDbManager;
+import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.model.FileModel;
 import com.yline.log.LogFileUtil;
 import com.yline.utils.FileSizeUtil;
@@ -93,6 +94,6 @@ public class FileDbLoader extends AsyncTask<String, Void, List<FileModel>> {
     }
 
     public interface OnLoadListener {
-        void onLoadFinish(List<FileModel> fileBeanList);
+        void onLoadFinish(@NonNull List<FileModel> fileBeanList);
     }
 }

@@ -7,4 +7,9 @@
         android:id="@+id/file_info_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <com.yline.file.common.LoadingView
+        android:id="@+id/file_info_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </RelativeLayout>

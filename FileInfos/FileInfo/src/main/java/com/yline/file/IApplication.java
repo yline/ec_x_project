@@ -1,7 +1,7 @@
 package com.yline.file;
 
 import com.yline.application.BaseApplication;
-import com.yline.file.module.db.FileDbManager;
+import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.helper.FileLoadService;
 
 /**

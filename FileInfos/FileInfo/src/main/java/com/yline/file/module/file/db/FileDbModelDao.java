@@ -1,4 +1,4 @@
-package com.yline.file.module.db;
+package com.yline.file.module.file.db;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

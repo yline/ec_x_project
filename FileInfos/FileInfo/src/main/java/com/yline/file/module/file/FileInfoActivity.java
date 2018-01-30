@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.yline.base.BaseAppCompatActivity;
 import com.yline.file.R;
+import com.yline.file.common.LoadingView;
 import com.yline.file.module.file.helper.FileDbLoader;
 import com.yline.file.module.file.model.FileModel;
 import com.yline.utils.FileSizeUtil;
@@ -40,6 +42,7 @@ public class FileInfoActivity extends BaseAppCompatActivity {
     }
 
     private FileInfoAdapter mFileInfoAdapter;
+    private LoadingView mLoadingView;
     private Stack<String> mPathStack;
 
     @Override
@@ -52,6 +55,8 @@ public class FileInfoActivity extends BaseAppCompatActivity {
     }
 
     private void initView() {
+        mLoadingView = findViewById(R.id.file_info_loading);
+
         RecyclerView recyclerView = findViewById(R.id.file_info_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mFileInfoAdapter = new FileInfoAdapter();
@@ -63,6 +68,8 @@ public class FileInfoActivity extends BaseAppCompatActivity {
                 if (fileModel.isDirectory()) {
                     String newTopPath = fileModel.getAbsolutePath();
                     refreshRecycler(newTopPath);
+                } else {
+                    // TODO 点击文件，打开
                 }
             }
         });
@@ -80,10 +87,16 @@ public class FileInfoActivity extends BaseAppCompatActivity {
             mPathStack.push(path);
         }
 
+        mLoadingView.loading();
         FileDbLoader.getFileList(path, new FileDbLoader.OnLoadListener() {
             @Override
-            public void onLoadFinish(List<FileModel> fileBeanList) {
+            public void onLoadFinish(@NonNull List<FileModel> fileBeanList) {
                 if (!isFinishing()) {
+                    if (fileBeanList.isEmpty()) {
+                        mLoadingView.loadEmpty();
+                    } else {
+                        mLoadingView.loadSuccess();
+                    }
                     mFileInfoAdapter.setDataList(fileBeanList, true);
                 }
             }

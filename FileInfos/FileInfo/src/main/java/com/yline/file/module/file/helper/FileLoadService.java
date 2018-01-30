@@ -8,8 +8,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.yline.file.IApplication;
-import com.yline.file.module.db.FileDbManager;
-import com.yline.file.module.db.SpManager;
+import com.yline.file.module.file.db.FileDbManager;
+import com.yline.file.common.SpManager;
 import com.yline.file.module.file.model.FileModel;
 import com.yline.log.LogFileUtil;
 import com.yline.utils.FileSizeUtil;
