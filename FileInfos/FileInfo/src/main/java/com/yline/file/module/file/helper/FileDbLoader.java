@@ -2,6 +2,7 @@ package com.yline.file.module.file.helper;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.model.FileModel;
@@ -23,7 +24,7 @@ import java.util.List;
  * @version 1.0.0
  */
 public class FileDbLoader extends AsyncTask<String, Void, List<FileModel>> {
-    public static void getFileList( String path, OnLoadListener listener) {
+    public static void getFileList(String path, OnLoadListener listener) {
         LogFileUtil.v("path = " + path);
         FileDbLoader dbLoader = new FileDbLoader();
         dbLoader.setLoadListener(listener);
@@ -43,37 +44,37 @@ public class FileDbLoader extends AsyncTask<String, Void, List<FileModel>> {
         LogFileUtil.v(path);
 
         List<FileModel> resultList = new ArrayList<>();
+        if (!TextUtils.isEmpty(path)) {
+            final File pathDir = new File(path);
+            final File[] dirs = pathDir.listFiles(FileUtil.getsDirFilter());
+            if (null != dirs) {
+                Arrays.sort(dirs, FileUtil.getsComparator());
 
-        final File pathDir = new File(path);
-
-        final File[] dirs = pathDir.listFiles(FileUtil.getsDirFilter());
-        if (null != dirs) {
-            Arrays.sort(dirs, FileUtil.getsComparator());
-
-            for (File dirFile : dirs) {
-                FileModel model = FileDbManager.loadFileModel(dirFile.getAbsolutePath());
-                // 更新数据
-                if (null == model) {
-                    model = new FileModel(dirFile.getName(), dirFile.getAbsolutePath(),
-                            dirFile.listFiles(FileUtil.getsDirFilter()).length,
-                            dirFile.listFiles(FileUtil.getsFileFilter()).length, FileSizeUtil.getErrorSize());
+                for (File dirFile : dirs) {
+                    FileModel model = FileDbManager.loadFileModel(dirFile.getAbsolutePath());
+                    // 更新数据
+                    if (null == model) {
+                        model = new FileModel(dirFile.getName(), dirFile.getAbsolutePath(),
+                                dirFile.listFiles(FileUtil.getsDirFilter()).length,
+                                dirFile.listFiles(FileUtil.getsFileFilter()).length, FileSizeUtil.getErrorSize());
+                    }
+                    resultList.add(model);
                 }
-                resultList.add(model);
             }
-        }
 
-        final File[] files = pathDir.listFiles(FileUtil.getsFileFilter());
-        if (null != files) {
-            Arrays.sort(files, FileUtil.getsComparator());
+            final File[] files = pathDir.listFiles(FileUtil.getsFileFilter());
+            if (null != files) {
+                Arrays.sort(files, FileUtil.getsComparator());
 
-            for (File file : files) {
-                FileModel model = FileDbManager.loadFileModel(file.getAbsolutePath());
-                // 更新数据
-                if (null == model) {
-                    model = new FileModel(file.getName(), file.getAbsolutePath(), FileSizeUtil.getFileOrDirAutoSize(file));
-                    FileDbManager.insertOrReplace(model);
+                for (File file : files) {
+                    FileModel model = FileDbManager.loadFileModel(file.getAbsolutePath());
+                    // 更新数据
+                    if (null == model) {
+                        model = new FileModel(file.getName(), file.getAbsolutePath(), FileSizeUtil.getFileOrDirAutoSize(file));
+                        FileDbManager.insertOrReplace(model);
+                    }
+                    resultList.add(model);
                 }
-                resultList.add(model);
             }
         }
 

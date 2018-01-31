@@ -16,7 +16,6 @@ import com.yline.file.module.file.helper.FileDbLoader;
 import com.yline.file.module.file.helper.FileInfoLoadReceiver;
 import com.yline.file.module.file.model.FileModel;
 import com.yline.utils.FileSizeUtil;
-import com.yline.utils.FileUtil;
 import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;
 import com.yline.view.recycler.holder.Callback;
 import com.yline.view.recycler.holder.RecyclerViewHolder;
@@ -32,9 +31,12 @@ import java.util.Stack;
  * @version 1.0.0
  */
 public class FileInfoActivity extends BaseAppCompatActivity {
-    public static void launcher(Context context) {
+    private static final String KEY_TOP_PATH = "topPath";
+
+    public static void launcher(Context context, String topPath) {
         if (null != context) {
             Intent intent = new Intent(context, FileInfoActivity.class);
+            intent.putExtra(KEY_TOP_PATH, topPath);
             if (!(context instanceof Activity)) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
@@ -92,7 +94,11 @@ public class FileInfoActivity extends BaseAppCompatActivity {
             }
         });
 
-        String path = FileUtil.getPathTop();
+        String path = "";
+        Intent intent = getIntent();
+        if (null != intent) {
+            path = intent.getStringExtra(KEY_TOP_PATH);
+        }
         refreshRecycler(path);
     }
 

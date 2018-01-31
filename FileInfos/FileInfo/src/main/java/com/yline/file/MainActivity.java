@@ -6,6 +6,7 @@ import android.view.View;
 import com.yline.file.module.file.FileInfoActivity;
 import com.yline.file.module.file.helper.FileInfoLoadService;
 import com.yline.test.BaseTestActivity;
+import com.yline.utils.FileUtil;
 
 /**
  * 程序入口
@@ -20,7 +21,8 @@ public class MainActivity extends BaseTestActivity {
         addButton("FileInfoActivity", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FileInfoActivity.launcher(MainActivity.this);
+                String topPath = FileUtil.getPathTop();
+                FileInfoActivity.launcher(MainActivity.this, topPath);
             }
         });
     }
