@@ -12,7 +12,10 @@ import com.yline.base.BaseAppCompatActivity;
 import com.yline.file.IApplication;
 import com.yline.file.R;
 import com.yline.file.module.file.FileInfoActivity;
+import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.helper.FileInfoLoadService;
+import com.yline.file.module.file.model.FileModel;
+import com.yline.utils.FileSizeUtil;
 import com.yline.utils.FileUtil;
 import com.yline.utils.LogUtil;
 import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;
@@ -61,18 +64,18 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void initViewClick() {
-        mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<String>() {
+        mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<MainModel>() {
             @Override
-            public void onItemClick(RecyclerViewHolder viewHolder, String s, int position) {
-                LogUtil.v("selected path = " + s);
-                FileInfoActivity.launcher(MainActivity.this, s);
+            public void onItemClick(RecyclerViewHolder viewHolder, MainModel itemModel, int position) {
+                LogUtil.v("selected path = " + itemModel);
+                FileInfoActivity.launcher(MainActivity.this, itemModel.getTopPath());
             }
         });
     }
 
     private void initData() {
-        List<String> pathList = new ArrayList<>();
-        pathList.add(FileUtil.getPathTop());
+        List<MainModel> pathList = new ArrayList<>();
+        pathList.add(new MainModel("内部存储", FileUtil.getPathTop()));
 
         mRecyclerAdapter.setDataList(pathList, true);
     }
@@ -84,10 +87,10 @@ public class MainActivity extends BaseAppCompatActivity {
         FileInfoLoadService.launcher(IApplication.getApplication(), false);
     }
 
-    private class MainRecyclerAdapter extends AbstractCommonRecyclerAdapter<String> {
-        private Callback.OnRecyclerItemClickListener<String> mOnItemClickListener;
+    private class MainRecyclerAdapter extends AbstractCommonRecyclerAdapter<MainModel> {
+        private Callback.OnRecyclerItemClickListener<MainModel> mOnItemClickListener;
 
-        private void setOnItemClickListener(Callback.OnRecyclerItemClickListener<String> listener) {
+        private void setOnItemClickListener(Callback.OnRecyclerItemClickListener<MainModel> listener) {
             this.mOnItemClickListener = listener;
         }
 
@@ -98,21 +101,61 @@ public class MainActivity extends BaseAppCompatActivity {
 
         @Override
         public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
-            holder.setText(R.id.item_main_name, getItem(position));
+            final MainModel itemModel = getItem(position);
+
+            holder.setText(R.id.item_main_name, itemModel.getTitle());
+            holder.setText(R.id.item_main_info, getDescString(itemModel.getTopPath()));
 
             holder.getItemView().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (null != mOnItemClickListener) {
                         int holderPosition = holder.getAdapterPosition();
-                        mOnItemClickListener.onItemClick(holder, getItem(holderPosition), holderPosition);
+                        mOnItemClickListener.onItemClick(holder, itemModel, holderPosition);
                     }
                 }
             });
         }
+
+        private String getDescString(String topPath) {
+            long totalSize = FileSizeUtil.getFileBlockSize(topPath);
+            long retainSize = FileSizeUtil.getFileAvailableSize(topPath);
+
+            String result = String.format("总共：%s 可用：%s", FileSizeUtil.formatFileAutoSize(totalSize), FileSizeUtil.formatFileAutoSize(retainSize));
+            FileModel fileModel = FileDbManager.loadFileModel(topPath);
+            if (null != fileModel) {
+                long calculateSize = fileModel.getFileSize();
+                long unCalculateSize = totalSize - retainSize - calculateSize;
+
+                return String.format("%s 统计：%s 其它：%s", result, FileSizeUtil.formatFileAutoSize(calculateSize), FileSizeUtil.formatFileAutoSize(unCalculateSize));
+            }
+            return result;
+        }
     }
 
     private static class MainModel implements Serializable {
+        private String title;
+        private String topPath;
 
+        public MainModel(String title, String topPath) {
+            this.title = title;
+            this.topPath = topPath;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getTopPath() {
+            return topPath;
+        }
+
+        public void setTopPath(String topPath) {
+            this.topPath = topPath;
+        }
     }
 }

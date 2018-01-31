@@ -1,5 +1,7 @@
 package com.yline.file.module.file.db;
 
+import java.io.File;
+
 /**
  * 文件，数据库，储存数据
  *
@@ -16,7 +18,7 @@ public class FileDbModel {
     private byte[] data;
 
     public FileDbModel(String absolutePath, boolean isDir, byte[] data) {
-        this.absolutePath = absolutePath;
+        this.absolutePath = isDir ? absolutePath + File.separator : absolutePath;
         this.isDir = isDir;
         this.data = data;
     }
