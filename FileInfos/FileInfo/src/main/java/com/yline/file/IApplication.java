@@ -1,6 +1,7 @@
 package com.yline.file;
 
 import com.yline.application.BaseApplication;
+import com.yline.file.common.BuglyConfig;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.helper.FileInfoLoadService;
 
@@ -17,9 +18,11 @@ public class IApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
 
-        // 初始化数据库
-//        DbFileBeanManager.getInstance().init(this);
+        // 初始化 Bugly
+        BuglyConfig.initConfig(this);
+        BuglyConfig.setIsDevelopmentDevice(true);
 
+        // 初始化数据库
         FileDbManager.init(this);
 
         // 开启Service服务,准备缓存文件
