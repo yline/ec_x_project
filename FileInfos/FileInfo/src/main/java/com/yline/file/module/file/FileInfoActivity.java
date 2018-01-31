@@ -143,8 +143,8 @@ public class FileInfoActivity extends BaseAppCompatActivity {
     }
 
     private class FileInfoAdapter extends AbstractCommonRecyclerAdapter<FileModel> {
-        private final static int ICON_FOLDER = R.drawable.filechooser_folder;
-        private final static int ICON_FILE = R.drawable.filechooser_file;
+        private final static int ICON_FOLDER = R.drawable.file_info_dir;
+        private final static int ICON_FILE = R.drawable.file_info_file;
 
         private Callback.OnRecyclerItemClickListener<FileModel> mItemClickListener;
 

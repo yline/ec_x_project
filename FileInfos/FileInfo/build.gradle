@@ -31,7 +31,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    compile 'com.yline.lib:LibSDK:2.1.1'
+    compile 'com.yline.lib:LibSDK:2.1.2'
     compile 'com.yline.lib:LibViewRecycler:1.1.1'
     compile 'com.yline.lib:LibSqlite:1.0.2'
 
