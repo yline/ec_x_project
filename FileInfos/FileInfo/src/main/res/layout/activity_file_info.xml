@@ -38,7 +38,8 @@
         android:id="@+id/file_info_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/file_info_rl_title" />
+        android:layout_below="@id/file_info_rl_title"
+        android:scrollbars="vertical" />
 
     <com.yline.file.common.LoadingView
         android:id="@+id/file_info_loading"

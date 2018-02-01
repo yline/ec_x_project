@@ -38,7 +38,7 @@ public class IntentUtils {
         return getIntentAll(mimeType, Uri.fromFile(file));
     }
 
-    public static Intent getIntentAll(@NonNull String mimeType, @NonNull Uri uri) {
+    private static Intent getIntentAll(@NonNull String mimeType, @NonNull Uri uri) {
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(android.content.Intent.ACTION_VIEW);
