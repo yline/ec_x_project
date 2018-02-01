@@ -7,11 +7,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.TextView;
 
 import com.yline.base.BaseAppCompatActivity;
 import com.yline.file.R;
 import com.yline.file.common.LoadingView;
+import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.helper.FileDbLoader;
 import com.yline.file.module.file.helper.FileInfoLoadReceiver;
 import com.yline.file.module.file.model.FileModel;
@@ -20,6 +23,7 @@ import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;
 import com.yline.view.recycler.holder.Callback;
 import com.yline.view.recycler.holder.RecyclerViewHolder;
 
+import java.io.File;
 import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
@@ -46,6 +50,7 @@ public class FileInfoActivity extends BaseAppCompatActivity {
 
     private FileInfoAdapter mFileInfoAdapter;
     private LoadingView mLoadingView;
+    private TextView mTvPath, mTvSize;
 
     private Stack<String> mPathStack;
     private FileInfoLoadReceiver mLoadReceiver;
@@ -61,6 +66,8 @@ public class FileInfoActivity extends BaseAppCompatActivity {
 
     private void initView() {
         mLoadingView = findViewById(R.id.file_info_loading);
+        mTvPath = findViewById(R.id.file_info_title_path);
+        mTvSize = findViewById(R.id.file_info_title_size);
 
         RecyclerView recyclerView = findViewById(R.id.file_info_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -98,16 +105,21 @@ public class FileInfoActivity extends BaseAppCompatActivity {
         Intent intent = getIntent();
         if (null != intent) {
             path = intent.getStringExtra(KEY_TOP_PATH);
+            // 如果首次传入的路径，带"/"，则去除
+            if (!TextUtils.isEmpty(path) && path.endsWith(File.separator)) {
+                path = path.substring(0, path.length() - 1);
+            }
         }
         refreshRecycler(path);
     }
 
-    private void refreshRecycler(String path) {
+    private void refreshRecycler(final String path) {
         if (!mPathStack.contains(path)) {
             mPathStack.push(path);
         }
 
         mLoadingView.loading();
+        mTvPath.setText((path + File.separator));
         FileDbLoader.getFileList(path, new FileDbLoader.OnLoadListener() {
             @Override
             public void onLoadFinish(@NonNull List<FileModel> fileBeanList) {
@@ -117,6 +129,9 @@ public class FileInfoActivity extends BaseAppCompatActivity {
                     } else {
                         mLoadingView.loadSuccess();
                     }
+
+                    long fileSize = FileDbManager.loadFileModelForSize(path + File.separator);
+                    mTvSize.setText(String.format("大小：%s", (fileSize == FileSizeUtil.getErrorSize() ? "loading" : FileSizeUtil.formatFileAutoSize(fileSize))));
                     mFileInfoAdapter.setDataList(fileBeanList, true);
                 }
             }

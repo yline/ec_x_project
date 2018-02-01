@@ -12,9 +12,7 @@ import com.yline.base.BaseAppCompatActivity;
 import com.yline.file.IApplication;
 import com.yline.file.R;
 import com.yline.file.module.file.FileInfoActivity;
-import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.helper.FileInfoLoadService;
-import com.yline.file.module.file.model.FileModel;
 import com.yline.utils.FileSizeUtil;
 import com.yline.utils.FileUtil;
 import com.yline.utils.LogUtil;
@@ -121,15 +119,7 @@ public class MainActivity extends BaseAppCompatActivity {
             long totalSize = FileSizeUtil.getFileBlockSize(topPath);
             long retainSize = FileSizeUtil.getFileAvailableSize(topPath);
 
-            String result = String.format("总共：%s 可用：%s", FileSizeUtil.formatFileAutoSize(totalSize), FileSizeUtil.formatFileAutoSize(retainSize));
-            FileModel fileModel = FileDbManager.loadFileModel(topPath);
-            if (null != fileModel) {
-                long calculateSize = fileModel.getFileSize();
-                long unCalculateSize = totalSize - retainSize - calculateSize;
-
-                return String.format("%s 统计：%s 其它：%s", result, FileSizeUtil.formatFileAutoSize(calculateSize), FileSizeUtil.formatFileAutoSize(unCalculateSize));
-            }
-            return result;
+            return String.format("总共：%s 可用：%s", FileSizeUtil.formatFileAutoSize(totalSize), FileSizeUtil.formatFileAutoSize(retainSize));
         }
     }
 

@@ -3,13 +3,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- 头部 -->
+    <RelativeLayout
+        android:id="@+id/file_info_rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:id="@+id/file_info_title_path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="/storage/emulated/0/"
+            android:textColor="@android:color/white"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/file_info_title_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/file_info_title_path"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="4dp"
+            android:text="大小："
+            android:textColor="@android:color/white"
+            android:textSize="12dp"
+            android:visibility="visible" />
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/file_info_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/file_info_rl_title" />
 
     <com.yline.file.common.LoadingView
         android:id="@+id/file_info_loading"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/file_info_rl_title"
+        android:visibility="gone" />
 </RelativeLayout>

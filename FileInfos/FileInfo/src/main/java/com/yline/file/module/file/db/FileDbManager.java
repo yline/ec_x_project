@@ -8,6 +8,7 @@ import com.yline.sqlite.SQLiteIOUtils;
 import com.yline.sqlite.SqliteManager;
 import com.yline.sqlite.common.AbstractSafelyDao;
 import com.yline.sqlite.dao.DaoManager;
+import com.yline.utils.FileSizeUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +51,14 @@ public class FileDbManager {
         if (null != dbModelDao) {
             dbModelDao.insertOrReplaceInTx(fileDbModelList);
         }
+    }
+
+    public static long loadFileModelForSize(String path) {
+        FileModel fileModel = loadFileModel(path);
+        if (null != fileModel) {
+            return fileModel.getFileSize();
+        }
+        return FileSizeUtil.getErrorSize();
     }
 
     public static FileModel loadFileModel(String path) {

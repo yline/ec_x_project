@@ -59,9 +59,10 @@ public class FileInfoLoadService extends IntentService {
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
-
+        SpManager.setIsFileInfoLoading(false); // 防止意外发生
         LogUtil.v("FileInfoLoadService onDestroy");
+
+        super.onDestroy();
     }
 
     @Override

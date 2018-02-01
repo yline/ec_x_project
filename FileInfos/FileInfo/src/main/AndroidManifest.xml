@@ -23,7 +23,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".module.main.MainActivity" />
-        <activity android:name=".module.file.FileInfoActivity" />
+        <activity
+            android:name=".module.file.FileInfoActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <service android:name=".module.file.helper.FileInfoLoadService" />
     </application>

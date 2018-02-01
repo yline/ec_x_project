@@ -51,7 +51,7 @@ public class FileDbLoader extends AsyncTask<String, Void, List<FileModel>> {
                 Arrays.sort(dirs, FileUtil.getsComparator());
 
                 for (File dirFile : dirs) {
-                    FileModel model = FileDbManager.loadFileModel(dirFile.getAbsolutePath());
+                    FileModel model = FileDbManager.loadFileModel(dirFile.getAbsolutePath() + File.separator);
                     // 更新数据
                     if (null == model) {
                         model = new FileModel(dirFile.getName(), dirFile.getAbsolutePath(),
