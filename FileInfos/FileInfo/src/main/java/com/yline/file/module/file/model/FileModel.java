@@ -1,5 +1,7 @@
 package com.yline.file.module.file.model;
 
+import com.yline.file.common.IntentUtils;
+
 import java.io.Serializable;
 
 /**
@@ -21,17 +23,7 @@ public class FileModel implements Serializable {
     private int childFileCount;
     private long fileSize;
 
-    /**
-     * 新建文件 或者 文件夹
-     */
-    public FileModel(boolean isDirectory, String fileName, String fileAbsolutePath, int childDirCount, int childFileCount, long fileSize) {
-        this.isDirectory = isDirectory;
-        this.fileName = fileName;
-        this.absolutePath = fileAbsolutePath;
-        this.childDirCount = childDirCount;
-        this.childFileCount = childFileCount;
-        this.fileSize = fileSize;
-    }
+    private int fileType;
 
     /**
      * 新建文件的信息
@@ -40,11 +32,14 @@ public class FileModel implements Serializable {
      * @param fileAbsolutePath 文件绝对路径
      * @param fileSize         文件大小
      */
-    public FileModel(String fileName, String fileAbsolutePath, long fileSize) {
+    public FileModel(String fileName, String fileAbsolutePath, long fileSize, int fileType) {
         this.isDirectory = false;
         this.fileName = fileName;
         this.absolutePath = fileAbsolutePath;
+        this.childDirCount = 0;
+        this.childFileCount = 0;
         this.fileSize = fileSize;
+        this.fileType = fileType;
     }
 
     /**
@@ -63,6 +58,7 @@ public class FileModel implements Serializable {
         this.childDirCount = dirCount;
         this.childFileCount = fileCount;
         this.fileSize = dirSize;
+        this.fileType = IntentUtils.FileType.UNKNOW.getFid();
     }
 
     public boolean isDirectory() {
@@ -111,5 +107,13 @@ public class FileModel implements Serializable {
 
     public void setFileSize(long fileSize) {
         this.fileSize = fileSize;
+    }
+
+    public int getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(int fileType) {
+        this.fileType = fileType;
     }
 }

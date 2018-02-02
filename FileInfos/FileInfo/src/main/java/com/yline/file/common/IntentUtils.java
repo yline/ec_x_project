@@ -15,6 +15,77 @@ import java.io.File;
  * @version 1.0.0
  */
 public class IntentUtils {
+    public static FileType getFileType(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return FileType.UNKNOW;
+        }
+
+        if (isFileTypeAudio(path)) {
+            return FileType.AUDIO;
+        } else if (isFileTypeVideo(path)) {
+            return FileType.VIDEO;
+        } else if (isFileTypeImage(path)) {
+            return FileType.IMAGE;
+        } else if (isFileTypeApk(path)) {
+            return FileType.APK;
+        } else if (isFileTypePPT(path)) {
+            return FileType.PPT;
+        } else if (isFileTypeExcel(path)) {
+            return FileType.EXCEL;
+        } else if (isFileTypeWord(path)) {
+            return FileType.WORD;
+        } else if (isFileTypePdf(path)) {
+            return FileType.PDF;
+        } else if (isFileTypeText(path)) {
+            return FileType.TEXT;
+        } else if (isFileTypeHtml(path)) {
+            return FileType.HTML;
+        } else {
+            return FileType.UNKNOW;
+        }
+    }
+
+    public static boolean isFileTypeAudio(String path) {
+        return (path.endsWith(".m4a") || path.endsWith(".mp3") || path.endsWith(".mpga") || path.endsWith(".ogg") || path.endsWith(".rmvb") || path.endsWith(".wav") || path.endsWith(".wma") || path.endsWith(".wmv"));
+    }
+
+    public static boolean isFileTypeVideo(@NonNull String path) {
+        return (path.endsWith(".3gp") || path.endsWith(".avi") || path.endsWith(".mov") || path.endsWith(".mp4") || path.endsWith(".mpeg") || path.endsWith(".mpg") || path.endsWith(".mpg4"));
+    }
+
+    public static boolean isFileTypeImage(@NonNull String path) {
+        return (path.endsWith(".jpg") || path.endsWith(".gif") || path.endsWith(".png") || path.endsWith(".jpeg") || path.endsWith(".bmp") || path.endsWith(".webp"));
+    }
+
+    public static boolean isFileTypeApk(@NonNull String path) {
+        return (path.endsWith(".apk"));
+    }
+
+    public static boolean isFileTypePPT(@NonNull String path) {
+        return (path.endsWith(".ppt") || path.endsWith(".pps"));
+    }
+
+    public static boolean isFileTypeExcel(@NonNull String path) {
+        return (path.endsWith(".xls") || path.endsWith(".xlsx") || path.endsWith(".xlt"));
+    }
+
+    public static boolean isFileTypeWord(@NonNull String path) {
+        return (path.endsWith(".doc") || path.endsWith(".docx"));
+    }
+
+    public static boolean isFileTypePdf(@NonNull String path) {
+        return (path.endsWith(".pdf"));
+    }
+
+    public static boolean isFileTypeText(@NonNull String path) {
+        return (path.endsWith(".c") || path.endsWith(".conf") || path.endsWith(".cpp") || path.endsWith(".h") || path.endsWith(".java")
+                || path.endsWith(".log") || path.endsWith(".prop") || path.endsWith(".rc") || path.endsWith(".sh") || path.endsWith(".txt") || path.endsWith(".xml"));
+    }
+
+    public static boolean isFileTypeHtml(@NonNull String path) {
+        return (path.endsWith(".htm") || path.endsWith(".html"));
+    }
+
     /**
      * 打开某一个文件
      */
@@ -46,6 +117,47 @@ public class IntentUtils {
         return intent;
     }
 
+    /**
+     * 文件类型
+     */
+    public enum FileType {
+        UNKNOW(0),
+        AUDIO(1, "%.m4a", "%.mp3", "%.mpga", "%.ogg", "%.rmvb", "%.wav", "%.wma", "%.wmv"), // 音频
+        VIDEO(2, "%.3gp", "%.avi", "%.mov", "%.mp4", "%.mpeg", "%.mpg", "%.mpg4"), // 视频
+        IMAGE(3, "%.jpg", "%.gif", "%.png", "%.jpeg", "%.bmp", "%.webp"), // 图片
+        APK(4, "%.apk"), // App安装包
+        PPT(5, "%.ppt", "%.pps"), // PPT
+        EXCEL(6, "%.xls", "%.xlsx", "%.xlt"), // excel
+        WORD(7, "%.doc", "%.docx"), // word
+        PDF(8, "%.pdf"), // PDF
+        TEXT(9, "%.c", "%.conf", "%.cpp", "%.h", "%.java", "%.log", "%.prop", "%.rc", "%.sh", "%.txt", "%.xml"), // txt
+        HTML(10, "%.htm", "%.html"), // html
+        ;
+
+        private int mFid;
+        private String[] mDbStr;
+
+        /**
+         * 文件类型
+         *
+         * @param fid   编号
+         * @param dbStr 用于数据过滤的后缀条件
+         */
+        FileType(int fid, String... dbStr) {
+            this.mFid = fid;
+            this.mDbStr = null == dbStr ? new String[]{} : dbStr;
+        }
+
+        public int getFid() {
+            return mFid;
+        }
+
+        @NonNull
+        public String[] getDbStr() {
+            return mDbStr;
+        }
+    }
+
     // 建立一个MIME类型与文件后缀名的匹配表
     private final static String[][] MIME_MapTable = {
             //{后缀名，    MIME类型}
@@ -60,6 +172,7 @@ public class IntentUtils {
             {".conf", "text/plain"},
             {".cpp", "text/plain"},
             {".doc", "application/msword"},
+            {".docx", "application/msword"},
             {".exe", "application/octet-stream"},
             {".gif", "image/gif"},
             {".gtar", "application/x-gtar"},
@@ -105,11 +218,14 @@ public class IntentUtils {
             {".tgz", "application/x-compressed"},
             {".txt", "text/plain"},
             {".wav", "audio/x-wav"},
+            {".webp", "image/webp"},
             {".wma", "audio/x-ms-wma"},
             {".wmv", "audio/x-ms-wmv"},
             {".wps", "application/vnd.ms-works"},
-            //{".xml",    "text/xml"},
             {".xml", "text/plain"},
+            {".xls", "application/vnd.ms-excel"},
+            {".xlsx", "application/vnd.ms-excel"},
+            {".xlt", "application/vnd.ms-excel"},
             {".z", "application/x-compress"},
             {".zip", "application/zip"},
             {"", "*/*"}

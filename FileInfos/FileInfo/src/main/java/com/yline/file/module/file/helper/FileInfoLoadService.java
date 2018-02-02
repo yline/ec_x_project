@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.yline.file.IApplication;
+import com.yline.file.common.IntentUtils;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.common.SpManager;
 import com.yline.file.module.file.model.FileModel;
@@ -96,6 +97,10 @@ public class FileInfoLoadService extends IntentService {
             LogUtil.v("onHandleIntent, readTime = " + (System.currentTimeMillis() - startTime) + ", count = " + mFileModelList.size());
             startTime = System.currentTimeMillis();
 
+            FileDbManager.deleteAll();
+            LogUtil.v("onHandleIntent, deleteTime = " + (System.currentTimeMillis() - startTime));
+            startTime = System.currentTimeMillis();
+
             FileDbManager.insertOrReplaceInTx(mFileModelList);
             LogUtil.v("onHandleIntent, writeTime = " + (System.currentTimeMillis() - startTime));
             startTime = System.currentTimeMillis();
@@ -116,6 +121,7 @@ public class FileInfoLoadService extends IntentService {
     private long getFileSize(File topFile) {
         long tempSize, totalSize = 1;
 
+        String absolutePath;
         File[] childFileArray = (null != topFile && topFile.isDirectory()) ? topFile.listFiles() : null;
         if (null != childFileArray) {
             for (File childFile : childFileArray) {
@@ -129,7 +135,8 @@ public class FileInfoLoadService extends IntentService {
                     tempSize = (tempSize == FileSizeUtil.getErrorSize() ? 1 : tempSize);
 
                     totalSize += tempSize;
-                    mFileModelList.add(new FileModel(childFile.getName(), childFile.getAbsolutePath(), tempSize));
+                    absolutePath = childFile.getAbsolutePath();
+                    mFileModelList.add(new FileModel(childFile.getName(), absolutePath, tempSize, IntentUtils.getFileType(absolutePath).getFid()));
                 }
             }
 

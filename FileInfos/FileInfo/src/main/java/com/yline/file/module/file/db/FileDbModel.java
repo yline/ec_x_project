@@ -14,11 +14,13 @@ public class FileDbModel {
      * 如果是文件夹，结尾带 '/'
      */
     private String absolutePath;
+    private int fileType;
     private boolean isDir; // 是否是文件夹，用于直接统计个数
     private byte[] data;
 
-    public FileDbModel(String absolutePath, boolean isDir, byte[] data) {
+    public FileDbModel(String absolutePath, int fileType, boolean isDir, byte[] data) {
         this.absolutePath = isDir ? absolutePath + File.separator : absolutePath;
+        this.fileType = fileType;
         this.isDir = isDir;
         this.data = data;
     }
@@ -45,5 +47,13 @@ public class FileDbModel {
 
     public void setData(byte[] data) {
         this.data = data;
+    }
+
+    public int getFileType() {
+        return fileType;
+    }
+
+    public void setFileType(int fileType) {
+        this.fileType = fileType;
     }
 }
