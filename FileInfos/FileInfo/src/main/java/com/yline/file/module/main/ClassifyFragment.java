@@ -11,9 +11,16 @@ import android.view.ViewGroup;
 
 import com.yline.base.BaseFragment;
 import com.yline.file.R;
+import com.yline.file.common.IntentUtils;
+import com.yline.file.module.file.db.FileDbManager;
+import com.yline.utils.LogUtil;
 import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;
 import com.yline.view.recycler.holder.Callback;
 import com.yline.view.recycler.holder.RecyclerViewHolder;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 分类
@@ -48,22 +55,38 @@ public class ClassifyFragment extends BaseFragment {
     }
 
     private void initViewClick() {
-        mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<String>() {
+        mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<ClassifyModel>() {
             @Override
-            public void onItemClick(RecyclerViewHolder viewHolder, String s, int position) {
+            public void onItemClick(RecyclerViewHolder viewHolder, ClassifyModel itemModel, int position) {
                 // TOAST
             }
         });
     }
 
     private void initData() {
-        // 放入数据
+        List<ClassifyModel> dataList = new ArrayList<>();
+        long startTime = System.currentTimeMillis();
+        long oldStartTime = startTime;
+
+        for (IntentUtils.FileType fileType : IntentUtils.FileType.values()) {
+            startTime = System.currentTimeMillis();
+            addItem(fileType, startTime, dataList);
+        }
+
+        mRecyclerAdapter.setDataList(dataList, true);
+        LogUtil.v("diffOldTime = " + (System.currentTimeMillis() - oldStartTime));
     }
 
-    private class ClassifyRecyclerAdapter extends AbstractCommonRecyclerAdapter<String> {
-        private Callback.OnRecyclerItemClickListener<String> mOnItemClickListener;
+    private void addItem(IntentUtils.FileType fileType, long startTime, List<ClassifyModel> dataList) {
+        long count = FileDbManager.count(fileType);
+        LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
+        dataList.add(new ClassifyModel(fileType.getStr(), count));
+    }
 
-        private void setOnItemClickListener(Callback.OnRecyclerItemClickListener<String> listener) {
+    private class ClassifyRecyclerAdapter extends AbstractCommonRecyclerAdapter<ClassifyModel> {
+        private Callback.OnRecyclerItemClickListener<ClassifyModel> mOnItemClickListener;
+
+        private void setOnItemClickListener(Callback.OnRecyclerItemClickListener<ClassifyModel> listener) {
             this.mOnItemClickListener = listener;
         }
 
@@ -74,9 +97,9 @@ public class ClassifyFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
-            final String itemModel = getItem(position);
+            final ClassifyModel itemModel = getItem(position);
 
-            holder.setText(android.R.id.text1, getItem(position));
+            holder.setText(android.R.id.text1, itemModel.getName() + "\n" + itemModel.getSize() + "项");
 
             holder.getItemView().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -86,6 +109,24 @@ public class ClassifyFragment extends BaseFragment {
                     }
                 }
             });
+        }
+    }
+
+    private static class ClassifyModel implements Serializable {
+        private String name;
+        private long size;
+
+        public ClassifyModel(String name, long size) {
+            this.name = name;
+            this.size = size;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public long getSize() {
+            return size;
         }
     }
 }

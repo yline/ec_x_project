@@ -121,31 +121,31 @@ public class IntentUtils {
      * 文件类型
      */
     public enum FileType {
-        UNKNOW(0),
-        AUDIO(1, "%.m4a", "%.mp3", "%.mpga", "%.ogg", "%.rmvb", "%.wav", "%.wma", "%.wmv"), // 音频
-        VIDEO(2, "%.3gp", "%.avi", "%.mov", "%.mp4", "%.mpeg", "%.mpg", "%.mpg4"), // 视频
-        IMAGE(3, "%.jpg", "%.gif", "%.png", "%.jpeg", "%.bmp", "%.webp"), // 图片
-        APK(4, "%.apk"), // App安装包
-        PPT(5, "%.ppt", "%.pps"), // PPT
-        EXCEL(6, "%.xls", "%.xlsx", "%.xlt"), // excel
-        WORD(7, "%.doc", "%.docx"), // word
-        PDF(8, "%.pdf"), // PDF
-        TEXT(9, "%.c", "%.conf", "%.cpp", "%.h", "%.java", "%.log", "%.prop", "%.rc", "%.sh", "%.txt", "%.xml"), // txt
-        HTML(10, "%.htm", "%.html"), // html
+        AUDIO(1, "音频"), // 音频
+        VIDEO(2, "视频"), // 视频
+        IMAGE(3, "图片"), // 图片
+        APK(4, "安装包"), // App安装包
+        PPT(5, "PPT"), // PPT
+        EXCEL(6, "Excel"), // excel
+        WORD(7, "Word"), // word
+        PDF(8, "PDF"), // PDF
+        TEXT(9, "文本"), // txt
+        HTML(10, "Html"), // html
+        UNKNOW(0, "其它")
         ;
 
         private int mFid;
-        private String[] mDbStr;
+        private String mStr;
 
         /**
          * 文件类型
          *
          * @param fid   编号
-         * @param dbStr 用于数据过滤的后缀条件
+         * @param dbStr 名称
          */
-        FileType(int fid, String... dbStr) {
+        FileType(int fid, String dbStr) {
             this.mFid = fid;
-            this.mDbStr = null == dbStr ? new String[]{} : dbStr;
+            this.mStr = dbStr;
         }
 
         public int getFid() {
@@ -153,8 +153,8 @@ public class IntentUtils {
         }
 
         @NonNull
-        public String[] getDbStr() {
-            return mDbStr;
+        public String getStr() {
+            return mStr;
         }
     }
 
