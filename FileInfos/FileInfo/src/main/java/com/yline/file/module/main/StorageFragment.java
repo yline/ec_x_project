@@ -29,7 +29,7 @@ import java.util.List;
  * @version 1.0.0
  */
 public class StorageFragment extends BaseFragment {
-    private MainRecyclerAdapter mRecyclerAdapter;
+    private StorageRecyclerAdapter mRecyclerAdapter;
 
     @Nullable
     @Override
@@ -48,16 +48,16 @@ public class StorageFragment extends BaseFragment {
     private void initView(View view) {
         RecyclerView recyclerView = view.findViewById(R.id.storage_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerAdapter = new MainRecyclerAdapter();
+        mRecyclerAdapter = new StorageRecyclerAdapter();
         recyclerView.setAdapter(mRecyclerAdapter);
 
         initViewClick();
     }
 
     private void initViewClick() {
-        mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<MainModel>() {
+        mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<StorageModel>() {
             @Override
-            public void onItemClick(RecyclerViewHolder viewHolder, MainModel itemModel, int position) {
+            public void onItemClick(RecyclerViewHolder viewHolder, StorageModel itemModel, int position) {
                 LogUtil.v("selected path = " + itemModel);
                 FileInfoActivity.launcher(getContext(), itemModel.getTopPath());
             }
@@ -65,16 +65,16 @@ public class StorageFragment extends BaseFragment {
     }
 
     private void initData() {
-        List<MainModel> pathList = new ArrayList<>();
-        pathList.add(new MainModel("内部存储", FileUtil.getPathTop()));
+        List<StorageModel> pathList = new ArrayList<>();
+        pathList.add(new StorageModel("内部存储", FileUtil.getPathTop()));
 
         mRecyclerAdapter.setDataList(pathList, true);
     }
 
-    private class MainRecyclerAdapter extends AbstractCommonRecyclerAdapter<MainModel> {
-        private Callback.OnRecyclerItemClickListener<MainModel> mOnItemClickListener;
+    private class StorageRecyclerAdapter extends AbstractCommonRecyclerAdapter<StorageModel> {
+        private Callback.OnRecyclerItemClickListener<StorageModel> mOnItemClickListener;
 
-        private void setOnItemClickListener(Callback.OnRecyclerItemClickListener<MainModel> listener) {
+        private void setOnItemClickListener(Callback.OnRecyclerItemClickListener<StorageModel> listener) {
             this.mOnItemClickListener = listener;
         }
 
@@ -85,7 +85,7 @@ public class StorageFragment extends BaseFragment {
 
         @Override
         public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
-            final MainModel itemModel = getItem(position);
+            final StorageModel itemModel = getItem(position);
 
             holder.setText(R.id.item_main_name, itemModel.getTitle());
             holder.setText(R.id.item_main_info, getDescString(itemModel.getTopPath()));
@@ -109,11 +109,11 @@ public class StorageFragment extends BaseFragment {
         }
     }
 
-    private static class MainModel implements Serializable {
+    private static class StorageModel implements Serializable {
         private String title;
         private String topPath;
 
-        public MainModel(String title, String topPath) {
+        public StorageModel(String title, String topPath) {
             this.title = title;
             this.topPath = topPath;
         }
