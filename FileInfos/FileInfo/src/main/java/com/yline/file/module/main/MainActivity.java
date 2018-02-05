@@ -4,23 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 
 import com.yline.base.BaseAppCompatActivity;
+import com.yline.base.BaseFragment;
 import com.yline.file.IApplication;
 import com.yline.file.R;
-import com.yline.file.module.file.FileInfoActivity;
 import com.yline.file.module.file.helper.FileInfoLoadService;
-import com.yline.utils.FileSizeUtil;
-import com.yline.utils.FileUtil;
-import com.yline.utils.LogUtil;
-import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;
-import com.yline.view.recycler.holder.Callback;
-import com.yline.view.recycler.holder.RecyclerViewHolder;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,41 +35,43 @@ public class MainActivity extends BaseAppCompatActivity {
         }
     }
 
-    private MainRecyclerAdapter mRecyclerAdapter;
+    private StorageFragment mStorageFragment;
+    private ClassifyFragment mClassifyFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initView();
-        initData();
-    }
+        final List<BaseFragment> fragmentList = new ArrayList<>();
+        final List<String> titleList = new ArrayList<>();
 
-    private void initView() {
-        RecyclerView recyclerView = findViewById(R.id.main_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerAdapter = new MainRecyclerAdapter();
-        recyclerView.setAdapter(mRecyclerAdapter);
+        fragmentList.add(new ClassifyFragment());
+        titleList.add("分类");
 
-        initViewClick();
-    }
+        fragmentList.add(new StorageFragment());
+        titleList.add("手机");
 
-    private void initViewClick() {
-        mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<MainModel>() {
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.main_tab);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.main_view_pager);
+
+        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
-            public void onItemClick(RecyclerViewHolder viewHolder, MainModel itemModel, int position) {
-                LogUtil.v("selected path = " + itemModel);
-                FileInfoActivity.launcher(MainActivity.this, itemModel.getTopPath());
+            public Fragment getItem(int position) {
+                return fragmentList.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return fragmentList.size();
+            }
+
+            @Override
+            public CharSequence getPageTitle(int position) {
+                return titleList.get(position);
             }
         });
-    }
-
-    private void initData() {
-        List<MainModel> pathList = new ArrayList<>();
-        pathList.add(new MainModel("内部存储", FileUtil.getPathTop()));
-
-        mRecyclerAdapter.setDataList(pathList, true);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
@@ -83,69 +79,5 @@ public class MainActivity extends BaseAppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         FileInfoLoadService.launcher(IApplication.getApplication(), false);
-    }
-
-    private class MainRecyclerAdapter extends AbstractCommonRecyclerAdapter<MainModel> {
-        private Callback.OnRecyclerItemClickListener<MainModel> mOnItemClickListener;
-
-        private void setOnItemClickListener(Callback.OnRecyclerItemClickListener<MainModel> listener) {
-            this.mOnItemClickListener = listener;
-        }
-
-        @Override
-        public int getItemRes() {
-            return R.layout.item_main;
-        }
-
-        @Override
-        public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
-            final MainModel itemModel = getItem(position);
-
-            holder.setText(R.id.item_main_name, itemModel.getTitle());
-            holder.setText(R.id.item_main_info, getDescString(itemModel.getTopPath()));
-
-            holder.getItemView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (null != mOnItemClickListener) {
-                        int holderPosition = holder.getAdapterPosition();
-                        mOnItemClickListener.onItemClick(holder, itemModel, holderPosition);
-                    }
-                }
-            });
-        }
-
-        private String getDescString(String topPath) {
-            long totalSize = FileSizeUtil.getFileBlockSize(topPath);
-            long retainSize = FileSizeUtil.getFileAvailableSize(topPath);
-
-            return String.format("总共：%s 可用：%s", FileSizeUtil.formatFileAutoSize(totalSize), FileSizeUtil.formatFileAutoSize(retainSize));
-        }
-    }
-
-    private static class MainModel implements Serializable {
-        private String title;
-        private String topPath;
-
-        public MainModel(String title, String topPath) {
-            this.title = title;
-            this.topPath = topPath;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
-
-        public String getTopPath() {
-            return topPath;
-        }
-
-        public void setTopPath(String topPath) {
-            this.topPath = topPath;
-        }
     }
 }
