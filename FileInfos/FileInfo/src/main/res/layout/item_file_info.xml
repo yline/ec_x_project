@@ -10,10 +10,10 @@
 
     <ImageView
         android:id="@+id/item_file_info_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_centerVertical="true"
-        android:scaleType="center" />
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/item_file_info_name"

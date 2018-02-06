@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.yline.base.BaseAppCompatActivity;
-import com.yline.file.IApplication;
 import com.yline.file.R;
 import com.yline.file.common.IntentUtils;
 import com.yline.file.common.LoadingView;
@@ -21,7 +20,6 @@ import com.yline.file.module.file.helper.FileInfoDbLoader;
 import com.yline.file.module.file.helper.FileInfoLoadReceiver;
 import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.utils.FileSizeUtil;
-import com.yline.utils.LogUtil;
 import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;
 import com.yline.view.recycler.holder.Callback;
 import com.yline.view.recycler.holder.RecyclerViewHolder;
@@ -84,15 +82,7 @@ public class FileInfoActivity extends BaseAppCompatActivity {
                     String newTopPath = fileModel.getAbsolutePath();
                     refreshRecycler(newTopPath);
                 } else {
-                    Intent intent = IntentUtils.getIntentAll(fileModel.getAbsolutePath());
-                    if (null != intent) {
-                        if (null != intent.resolveActivity(getPackageManager())) {
-                            startActivity(intent);
-                        } else {
-                            LogUtil.v("file: " + fileModel.getAbsolutePath() + ", cannot resolve");
-                            IApplication.toast("文件无法打开");
-                        }
-                    }
+                    IntentUtils.openFileAll(FileInfoActivity.this, fileModel);
                 }
             }
         });

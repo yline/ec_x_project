@@ -3,14 +3,19 @@ package com.yline.file.module.file.db;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.support.annotation.NonNull;
 
 import com.yline.file.common.IntentUtils;
+import com.yline.file.module.file.model.FileInfoModel;
+import com.yline.sqlite.SQLiteIOUtils;
 import com.yline.sqlite.common.AbstractSafelyDao;
 import com.yline.sqlite.common.Column;
 import com.yline.utils.LogUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -96,12 +101,11 @@ public class FileDbModelDao extends AbstractSafelyDao<String, FileDbModel> {
      * @return select * from MsgTable where Age=? and (Name like ?  or Name like ?)
      */
     public long countFileType(IntentUtils.FileType fileType) {
-        long count = 0;
         String sql = String.format(Locale.CHINA, "select * from %s where %s=?", TABLE_NAME, Table.FileType.getColumnName());
         String[] fileTypeArray = new String[]{String.valueOf(fileType.getFid())};
         LogUtil.v("countFileType sql = " + sql + ", array = " + Arrays.toString(fileTypeArray));
 
-        count = rawQuery(sql, fileTypeArray, new OnCursorCallback<Long>() {
+        return rawQuery(sql, fileTypeArray, new OnCursorCallback<Long>() {
             @Override
             public Long onRawQuery(Cursor cursor) {
                 if (null != cursor) {
@@ -110,7 +114,33 @@ public class FileDbModelDao extends AbstractSafelyDao<String, FileDbModel> {
                 return 0L;
             }
         });
-        return count;
+    }
+
+    @NonNull
+    public List<FileInfoModel> loadFileType(IntentUtils.FileType fileType) {
+        String sql = String.format(Locale.CHINA, "select * from %s where %s=?", TABLE_NAME, Table.FileType.getColumnName());
+        String[] fileTypeArray = new String[]{String.valueOf(fileType.getFid())};
+        LogUtil.v("loadFileType sql = " + sql + ", array = " + Arrays.toString(fileTypeArray));
+
+        return rawQuery(sql, fileTypeArray, new OnCursorCallback<List<FileInfoModel>>() {
+
+            @Override
+            public List<FileInfoModel> onRawQuery(Cursor cursor) {
+                List<FileInfoModel> fileInfoList = new ArrayList<>();
+                if (null != cursor) {
+                    while (cursor.moveToNext()) {
+                        FileDbModel fileDbModel = readModel(cursor);
+                        if (null != fileDbModel && null != fileDbModel.getData()) {
+                            Object obj = SQLiteIOUtils.byte2Object(fileDbModel.getData());
+                            if (null != obj && obj instanceof FileInfoModel) {
+                                fileInfoList.add((FileInfoModel) obj);
+                            }
+                        }
+                    }
+                }
+                return fileInfoList;
+            }
+        });
     }
 
     @Override

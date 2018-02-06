@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/item_recycler_bg"
+    android:paddingBottom="6dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="6dp">
+
+    <ImageView
+        android:id="@+id/item_file_type_iv"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/file_info_file" />
+
+    <TextView
+        android:id="@+id/item_file_type_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:text="13.00GB"
+        android:textSize="13dp" />
+
+    <TextView
+        android:id="@+id/item_file_type_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@id/item_file_type_size"
+        android:layout_toRightOf="@id/item_file_type_iv"
+        android:text="文件名"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/item_file_type_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/item_file_type_name"
+        android:layout_below="@id/item_file_type_name"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="4dp"
+        android:layout_toLeftOf="@id/item_file_type_size"
+        android:text="路径"
+        android:textSize="13dp" />
+</RelativeLayout>

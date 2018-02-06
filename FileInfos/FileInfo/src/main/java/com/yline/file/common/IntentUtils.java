@@ -1,9 +1,14 @@
 package com.yline.file.common;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import com.yline.file.IApplication;
+import com.yline.file.module.file.model.FileInfoModel;
+import com.yline.utils.LogUtil;
 
 import java.io.File;
 import java.io.Serializable;
@@ -87,6 +92,18 @@ public class IntentUtils {
         return (path.endsWith(".htm") || path.endsWith(".html"));
     }
 
+    public static void openFileAll(Context context, FileInfoModel fileModel) {
+        Intent intent = IntentUtils.getIntentAll(fileModel.getAbsolutePath());
+        if (null != intent) {
+            if (null != intent.resolveActivity(context.getPackageManager())) {
+                context.startActivity(intent);
+            } else {
+                LogUtil.v("file: " + fileModel.getAbsolutePath() + ", cannot resolve");
+                IApplication.toast("文件无法打开");
+            }
+        }
+    }
+
     /**
      * 打开某一个文件
      */
@@ -115,6 +132,7 @@ public class IntentUtils {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(android.content.Intent.ACTION_VIEW);
         intent.setDataAndType(uri, mimeType);
+
         return intent;
     }
 
@@ -122,20 +140,21 @@ public class IntentUtils {
      * 文件类型
      */
     public enum FileType implements Serializable {
-        AUDIO(1, "音频"), // 音频
-        VIDEO(2, "视频"), // 视频
-        IMAGE(3, "图片"), // 图片
-        APK(4, "安装包"), // App安装包
-        PPT(5, "PPT"), // PPT
-        EXCEL(6, "Excel"), // excel
-        WORD(7, "Word"), // word
-        PDF(8, "PDF"), // PDF
-        TEXT(9, "文本"), // txt
-        HTML(10, "Html"), // html
+        VIDEO(2, "视频", "%.3gp", "%.avi", "%.mov", "%.mp4", "%.mpeg", "%.mpg", "%.mpg4"), // 视频
+        AUDIO(1, "音频", "%.m4a", "%.mp3", "%.mpga", "%.ogg", "%.rmvb", "%.wav", "%.wma", "%.wmv"), // 音频
+        IMAGE(3, "图片", "%.jpg", "%.gif", "%.png", "%.jpeg", "%.bmp", "%.webp"), // 图片
+        APK(4, "安装包", "%.apk"), // App安装包
+        WORD(7, "Word", "%.doc", "%.docx"), // word
+        EXCEL(6, "Excel", "%.xls", "%.xlsx", "%.xlt"), // excel
+        PPT(5, "PPT", "%.ppt", "%.pps"), // PPT
+        PDF(8, "PDF", "%.pdf"), // PDF
+        TEXT(9, "文本", "%.c", "%.conf", "%.cpp", "%.h", "%.java", "%.log", "%.prop", "%.c", "%.c", "%.c"), // txt
+        HTML(10, "Html", "%.c", "%.conf"), // html
         UNKNOW(0, "其它");
 
-        private int mFid;
-        private String mStr;
+        private int mFid; // 编号
+        private String mStr; // 名称
+        private String[] mDbSelection; // 数据库查询条件
 
         /**
          * 文件类型
@@ -143,9 +162,10 @@ public class IntentUtils {
          * @param fid   编号
          * @param dbStr 名称
          */
-        FileType(int fid, String dbStr) {
+        FileType(int fid, String dbStr, String... selection) {
             this.mFid = fid;
             this.mStr = dbStr;
+            this.mDbSelection = (null == selection ? new String[]{} : selection);
         }
 
         public int getFid() {
@@ -155,6 +175,11 @@ public class IntentUtils {
         @NonNull
         public String getStr() {
             return mStr;
+        }
+
+        @NonNull
+        public String[] getDbSelection() {
+            return mDbSelection;
         }
     }
 
