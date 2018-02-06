@@ -70,7 +70,7 @@ public class ClassifyFragment extends BaseFragment {
         refreshFileType();
     }
 
-    public void refreshFileType(){
+    public void refreshFileType() {
         List<ClassifyModel> dataList = new ArrayList<>();
         attachFileType(dataList);
         mRecyclerAdapter.setDataList(dataList, true);
