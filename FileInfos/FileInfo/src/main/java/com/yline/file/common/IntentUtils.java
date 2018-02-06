@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * 1）跳转，系统，app
@@ -120,7 +121,7 @@ public class IntentUtils {
     /**
      * 文件类型
      */
-    public enum FileType {
+    public enum FileType implements Serializable {
         AUDIO(1, "音频"), // 音频
         VIDEO(2, "视频"), // 视频
         IMAGE(3, "图片"), // 图片
@@ -131,8 +132,7 @@ public class IntentUtils {
         PDF(8, "PDF"), // PDF
         TEXT(9, "文本"), // txt
         HTML(10, "Html"), // html
-        UNKNOW(0, "其它")
-        ;
+        UNKNOW(0, "其它");
 
         private int mFid;
         private String mStr;

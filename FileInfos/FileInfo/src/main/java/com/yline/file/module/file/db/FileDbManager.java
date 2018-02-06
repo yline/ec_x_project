@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.yline.file.common.IntentUtils;
-import com.yline.file.module.file.model.FileModel;
+import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.sqlite.SQLiteIOUtils;
 import com.yline.sqlite.SqliteManager;
 import com.yline.sqlite.common.AbstractSafelyDao;
@@ -57,37 +57,37 @@ public class FileDbManager {
     }
 
     public static long loadFileModelForSize(String path) {
-        FileModel fileModel = loadFileModel(path);
+        FileInfoModel fileModel = loadFileModel(path);
         if (null != fileModel) {
             return fileModel.getFileSize();
         }
         return FileSizeUtil.getErrorSize();
     }
 
-    public static FileModel loadFileModel(String path) {
+    public static FileInfoModel loadFileModel(String path) {
         FileDbModelDao dbModelDao = (FileDbModelDao) DaoManager.getInstance().getDaoSession().getModelDao(FileDbModelDao.TABLE_NAME);
         if (null != dbModelDao) {
             FileDbModel dbModel = dbModelDao.load(path);
             if (null != dbModel) {
                 Object object = SQLiteIOUtils.byte2Object(dbModel.getData());
-                if (object instanceof FileModel) {
-                    return (FileModel) object;
+                if (object instanceof FileInfoModel) {
+                    return (FileInfoModel) object;
                 }
             }
         }
         return null;
     }
 
-    public static void insertOrReplace(FileModel fileModel) {
+    public static void insertOrReplace(FileInfoModel fileModel) {
         FileDbModelDao dbModelDao = (FileDbModelDao) DaoManager.getInstance().getDaoSession().getModelDao(FileDbModelDao.TABLE_NAME);
         if (null != dbModelDao) {
             dbModelDao.insertOrReplace(new FileDbModel(fileModel.getAbsolutePath(), fileModel.getFileType(), fileModel.isDirectory(), SQLiteIOUtils.object2Byte(fileModel)));
         }
     }
 
-    public static void insertOrReplaceInTx(List<FileModel> list) {
+    public static void insertOrReplaceInTx(List<FileInfoModel> list) {
         List<FileDbModel> fileDbModelList = new ArrayList<>();
-        for (FileModel fileModel : list) {
+        for (FileInfoModel fileModel : list) {
             byte[] value = SQLiteIOUtils.object2Byte(fileModel);
             fileDbModelList.add(new FileDbModel(fileModel.getAbsolutePath(), fileModel.getFileType(), fileModel.isDirectory(), value));
         }

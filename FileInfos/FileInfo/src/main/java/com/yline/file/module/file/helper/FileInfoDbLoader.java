@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.yline.file.common.IntentUtils;
 import com.yline.file.module.file.db.FileDbManager;
-import com.yline.file.module.file.model.FileModel;
+import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.log.LogFileUtil;
 import com.yline.utils.FileSizeUtil;
 import com.yline.utils.FileUtil;
@@ -24,10 +24,10 @@ import java.util.List;
  * @author yline 2017/1/28 --> 11:47
  * @version 1.0.0
  */
-public class FileDbLoader extends AsyncTask<String, Void, List<FileModel>> {
+public class FileInfoDbLoader extends AsyncTask<String, Void, List<FileInfoModel>> {
     public static void getFileList(String path, OnLoadListener listener) {
         LogFileUtil.v("path = " + path);
-        FileDbLoader dbLoader = new FileDbLoader();
+        FileInfoDbLoader dbLoader = new FileInfoDbLoader();
         dbLoader.setLoadListener(listener);
         dbLoader.execute(path);
     }
@@ -40,11 +40,11 @@ public class FileDbLoader extends AsyncTask<String, Void, List<FileModel>> {
     }
 
     @Override
-    protected List<FileModel> doInBackground(String... params) {
+    protected List<FileInfoModel> doInBackground(String... params) {
         String path = params[0];
         LogFileUtil.v(path);
 
-        List<FileModel> resultList = new ArrayList<>();
+        List<FileInfoModel> resultList = new ArrayList<>();
         if (!TextUtils.isEmpty(path)) {
             final File pathDir = new File(path);
             final File[] dirs = pathDir.listFiles(FileUtil.getsDirFilter());
@@ -52,10 +52,10 @@ public class FileDbLoader extends AsyncTask<String, Void, List<FileModel>> {
                 Arrays.sort(dirs, FileUtil.getsComparator());
 
                 for (File dirFile : dirs) {
-                    FileModel model = FileDbManager.loadFileModel(dirFile.getAbsolutePath() + File.separator);
+                    FileInfoModel model = FileDbManager.loadFileModel(dirFile.getAbsolutePath() + File.separator);
                     // 更新数据
                     if (null == model) {
-                        model = new FileModel(dirFile.getName(), dirFile.getAbsolutePath(),
+                        model = new FileInfoModel(dirFile.getName(), dirFile.getAbsolutePath(),
                                 dirFile.listFiles(FileUtil.getsDirFilter()).length,
                                 dirFile.listFiles(FileUtil.getsFileFilter()).length, FileSizeUtil.getErrorSize());
                     }
@@ -68,10 +68,10 @@ public class FileDbLoader extends AsyncTask<String, Void, List<FileModel>> {
                 Arrays.sort(files, FileUtil.getsComparator());
 
                 for (File file : files) {
-                    FileModel model = FileDbManager.loadFileModel(file.getAbsolutePath());
+                    FileInfoModel model = FileDbManager.loadFileModel(file.getAbsolutePath());
                     // 更新数据
                     if (null == model) {
-                        model = new FileModel(file.getName(), file.getAbsolutePath(), FileSizeUtil.getFileOrDirAutoSize(file), IntentUtils.FileType.UNKNOW.getFid());
+                        model = new FileInfoModel(file.getName(), file.getAbsolutePath(), FileSizeUtil.getFileOrDirAutoSize(file), IntentUtils.FileType.UNKNOW.getFid());
                         FileDbManager.insertOrReplace(model);
                     }
                     resultList.add(model);
@@ -83,7 +83,7 @@ public class FileDbLoader extends AsyncTask<String, Void, List<FileModel>> {
     }
 
     @Override
-    protected void onPostExecute(List<FileModel> been) {
+    protected void onPostExecute(List<FileInfoModel> been) {
         super.onPostExecute(been);
 
         if (null != loadListener) {
@@ -96,6 +96,6 @@ public class FileDbLoader extends AsyncTask<String, Void, List<FileModel>> {
     }
 
     public interface OnLoadListener {
-        void onLoadFinish(@NonNull List<FileModel> fileBeanList);
+        void onLoadFinish(@NonNull List<FileInfoModel> fileBeanList);
     }
 }

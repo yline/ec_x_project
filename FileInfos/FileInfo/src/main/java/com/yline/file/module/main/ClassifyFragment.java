@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.yline.base.BaseFragment;
 import com.yline.file.R;
 import com.yline.file.common.IntentUtils;
+import com.yline.file.module.file.FileTypeActivity;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.utils.LogUtil;
 import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;
@@ -33,8 +34,8 @@ public class ClassifyFragment extends BaseFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return LayoutInflater.from(getContext()).inflate(R.layout.fragment_classify, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_classify, container, false);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class ClassifyFragment extends BaseFragment {
         mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<ClassifyModel>() {
             @Override
             public void onItemClick(RecyclerViewHolder viewHolder, ClassifyModel itemModel, int position) {
-                // TOAST
+                FileTypeActivity.launcher(getContext());
             }
         });
     }
@@ -80,7 +81,7 @@ public class ClassifyFragment extends BaseFragment {
     private void addItem(IntentUtils.FileType fileType, long startTime, List<ClassifyModel> dataList) {
         long count = FileDbManager.count(fileType);
         LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
-        dataList.add(new ClassifyModel(fileType.getStr(), count));
+        dataList.add(new ClassifyModel(fileType, count));
     }
 
     private class ClassifyRecyclerAdapter extends AbstractCommonRecyclerAdapter<ClassifyModel> {
@@ -92,14 +93,15 @@ public class ClassifyFragment extends BaseFragment {
 
         @Override
         public int getItemRes() {
-            return android.R.layout.simple_list_item_1;
+            return R.layout.item_main_classify;
         }
 
         @Override
         public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
             final ClassifyModel itemModel = getItem(position);
 
-            holder.setText(android.R.id.text1, itemModel.getName() + "\n" + itemModel.getSize() + "项");
+            holder.setText(R.id.item_main_classify_name, itemModel.getFileType().getStr());
+            holder.setText(R.id.item_main_classify_count, itemModel.getSize() + "项");
 
             holder.getItemView().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -113,16 +115,16 @@ public class ClassifyFragment extends BaseFragment {
     }
 
     private static class ClassifyModel implements Serializable {
-        private String name;
+        private IntentUtils.FileType fileType;
         private long size;
 
-        public ClassifyModel(String name, long size) {
-            this.name = name;
+        public ClassifyModel(IntentUtils.FileType type, long size) {
+            this.fileType = type;
             this.size = size;
         }
 
-        public String getName() {
-            return name;
+        public IntentUtils.FileType getFileType() {
+            return fileType;
         }
 
         public long getSize() {

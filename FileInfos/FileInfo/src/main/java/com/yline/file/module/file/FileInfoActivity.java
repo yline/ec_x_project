@@ -17,9 +17,9 @@ import com.yline.file.R;
 import com.yline.file.common.IntentUtils;
 import com.yline.file.common.LoadingView;
 import com.yline.file.module.file.db.FileDbManager;
-import com.yline.file.module.file.helper.FileDbLoader;
+import com.yline.file.module.file.helper.FileInfoDbLoader;
 import com.yline.file.module.file.helper.FileInfoLoadReceiver;
-import com.yline.file.module.file.model.FileModel;
+import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.utils.FileSizeUtil;
 import com.yline.utils.LogUtil;
 import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;
@@ -32,7 +32,7 @@ import java.util.Locale;
 import java.util.Stack;
 
 /**
- * 文件信息，展示
+ * 手机，文件信息，展示
  *
  * @author yline 2018/1/29 -- 20:41
  * @version 1.0.0
@@ -77,9 +77,9 @@ public class FileInfoActivity extends BaseAppCompatActivity {
         mFileInfoAdapter = new FileInfoAdapter();
         recyclerView.setAdapter(mFileInfoAdapter);
 
-        mFileInfoAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<FileModel>() {
+        mFileInfoAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<FileInfoModel>() {
             @Override
-            public void onItemClick(RecyclerViewHolder viewHolder, FileModel fileModel, int position) {
+            public void onItemClick(RecyclerViewHolder viewHolder, FileInfoModel fileModel, int position) {
                 if (fileModel.isDirectory()) {
                     String newTopPath = fileModel.getAbsolutePath();
                     refreshRecycler(newTopPath);
@@ -131,9 +131,9 @@ public class FileInfoActivity extends BaseAppCompatActivity {
 
         mLoadingView.loading();
         mTvPath.setText((path + File.separator));
-        FileDbLoader.getFileList(path, new FileDbLoader.OnLoadListener() {
+        FileInfoDbLoader.getFileList(path, new FileInfoDbLoader.OnLoadListener() {
             @Override
-            public void onLoadFinish(@NonNull List<FileModel> fileBeanList) {
+            public void onLoadFinish(@NonNull List<FileInfoModel> fileBeanList) {
                 if (!isFinishing()) {
                     if (fileBeanList.isEmpty()) {
                         mLoadingView.loadEmpty();
@@ -168,13 +168,13 @@ public class FileInfoActivity extends BaseAppCompatActivity {
         super.onDestroy();
     }
 
-    private class FileInfoAdapter extends AbstractCommonRecyclerAdapter<FileModel> {
+    private class FileInfoAdapter extends AbstractCommonRecyclerAdapter<FileInfoModel> {
         private final static int ICON_FOLDER = R.drawable.file_info_dir;
         private final static int ICON_FILE = R.drawable.file_info_file;
 
-        private Callback.OnRecyclerItemClickListener<FileModel> mItemClickListener;
+        private Callback.OnRecyclerItemClickListener<FileInfoModel> mItemClickListener;
 
-        private void setOnItemClickListener(Callback.OnRecyclerItemClickListener<FileModel> listener) {
+        private void setOnItemClickListener(Callback.OnRecyclerItemClickListener<FileInfoModel> listener) {
             this.mItemClickListener = listener;
         }
 
@@ -185,7 +185,7 @@ public class FileInfoActivity extends BaseAppCompatActivity {
 
         @Override
         public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
-            final FileModel fileBean = getItem(position);
+            final FileInfoModel fileBean = getItem(position);
 
             int imageId = fileBean.isDirectory() ? ICON_FOLDER : ICON_FILE;
             holder.setImageResource(R.id.item_file_info_iv, imageId);

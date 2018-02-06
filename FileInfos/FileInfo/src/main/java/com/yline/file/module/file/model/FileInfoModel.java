@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author yline 2018/1/29 -- 17:02
  * @version 1.0.0
  */
-public class FileModel implements Serializable {
+public class FileInfoModel implements Serializable {
     /**
      * 如果是文件，结尾不带 '/'
      * 如果是文件夹，结尾带 '/'
@@ -32,7 +32,7 @@ public class FileModel implements Serializable {
      * @param fileAbsolutePath 文件绝对路径
      * @param fileSize         文件大小
      */
-    public FileModel(String fileName, String fileAbsolutePath, long fileSize, int fileType) {
+    public FileInfoModel(String fileName, String fileAbsolutePath, long fileSize, int fileType) {
         this.isDirectory = false;
         this.fileName = fileName;
         this.absolutePath = fileAbsolutePath;
@@ -51,7 +51,7 @@ public class FileModel implements Serializable {
      * @param fileCount        文件夹,子目录的文件个数
      * @param dirSize          该文件夹大小
      */
-    public FileModel(String fileName, String fileAbsolutePath, int dirCount, int fileCount, long dirSize) {
+    public FileInfoModel(String fileName, String fileAbsolutePath, int dirCount, int fileCount, long dirSize) {
         this.isDirectory = true;
         this.fileName = fileName;
         this.absolutePath = fileAbsolutePath;

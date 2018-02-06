@@ -80,7 +80,7 @@ public class StorageFragment extends BaseFragment {
 
         @Override
         public int getItemRes() {
-            return R.layout.item_main;
+            return R.layout.item_main_storage;
         }
 
         @Override

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -11,7 +12,7 @@ import com.yline.file.IApplication;
 import com.yline.file.common.IntentUtils;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.common.SpManager;
-import com.yline.file.module.file.model.FileModel;
+import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.log.LogFileUtil;
 import com.yline.utils.FileSizeUtil;
 import com.yline.utils.FileUtil;
@@ -43,7 +44,7 @@ public class FileInfoLoadService extends IntentService {
         }
     }
 
-    private List<FileModel> mFileModelList;
+    private List<FileInfoModel> mFileModelList;
 
     public FileInfoLoadService() {
         super("FileInfoLoadService");
@@ -136,14 +137,24 @@ public class FileInfoLoadService extends IntentService {
 
                     totalSize += tempSize;
                     absolutePath = childFile.getAbsolutePath();
-                    mFileModelList.add(new FileModel(childFile.getName(), absolutePath, tempSize, IntentUtils.getFileType(absolutePath).getFid()));
+                    mFileModelList.add(new FileInfoModel(childFile.getName(), absolutePath, tempSize, IntentUtils.getFileType(absolutePath).getFid()));
                 }
             }
 
-            mFileModelList.add(new FileModel(topFile.getName(), topFile.getAbsolutePath(),
-                    topFile.listFiles(FileUtil.getsDirFilter()).length, topFile.listFiles(FileUtil.getsFileFilter()).length, totalSize));
+            mFileModelList.add(new FileInfoModel(topFile.getName(), topFile.getAbsolutePath(),
+                    getChildDirCount(topFile), getChildFileCount(topFile), totalSize));
             return totalSize;
         }
         return FileSizeUtil.getErrorSize();
+    }
+
+    private int getChildDirCount(@NonNull File topFile) {
+        File[] fileArray = topFile.listFiles(FileUtil.getsDirFilter());
+        return (null == fileArray ? 0 : fileArray.length);
+    }
+
+    private int getChildFileCount(@NonNull File topFile) {
+        File[] fileArray = topFile.listFiles(FileUtil.getsFileFilter());
+        return (null == fileArray ? 0 : fileArray.length);
     }
 }
