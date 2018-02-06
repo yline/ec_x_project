@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.yline.base.BaseAppCompatActivity;
 import com.yline.file.R;
+import com.yline.file.common.FileType;
 import com.yline.file.common.IntentUtils;
 import com.yline.file.common.LoadingView;
 import com.yline.file.module.file.db.FileDbManager;
@@ -34,7 +35,7 @@ import java.util.List;
 public class FileTypeActivity extends BaseAppCompatActivity {
     private static final String KEY_FILE_TYPE = "Launcher_FileType";
 
-    public static void launcher(Context context, @NonNull IntentUtils.FileType fileType) {
+    public static void launcher(Context context, @NonNull FileType fileType) {
         if (null != context) {
             Intent intent = new Intent(context, FileTypeActivity.class);
             intent.putExtra(KEY_FILE_TYPE, fileType);
@@ -49,7 +50,7 @@ public class FileTypeActivity extends BaseAppCompatActivity {
     private LoadingView mLoadingView;
     private TextView mTvTitle, mTvTotalSize;
 
-    private IntentUtils.FileType mFileType;
+    private FileType mFileType;
     private long mInitDataStartTime;
 
     @Override
@@ -58,7 +59,7 @@ public class FileTypeActivity extends BaseAppCompatActivity {
         setContentView(R.layout.activity_file_type);
 
         if (null != getIntent()) {
-            mFileType = (IntentUtils.FileType) getIntent().getSerializableExtra(KEY_FILE_TYPE);
+            mFileType = (FileType) getIntent().getSerializableExtra(KEY_FILE_TYPE);
         }
 
         initView();

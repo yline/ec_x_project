@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.yline.base.BaseFragment;
 import com.yline.file.R;
-import com.yline.file.common.IntentUtils;
+import com.yline.file.common.FileType;
 import com.yline.file.module.file.FileTypeActivity;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.utils.LogUtil;
@@ -59,7 +59,7 @@ public class ClassifyFragment extends BaseFragment {
         mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<ClassifyModel>() {
             @Override
             public void onItemClick(RecyclerViewHolder viewHolder, ClassifyModel itemModel, int position) {
-                if (itemModel.getFileType() != IntentUtils.FileType.UNKNOW) {
+                if (itemModel.getFileType() != FileType.UNKNOW) {
                     FileTypeActivity.launcher(getContext(), itemModel.getFileType());
                 }
             }
@@ -68,78 +68,22 @@ public class ClassifyFragment extends BaseFragment {
 
     private void initData() {
         List<ClassifyModel> dataList = new ArrayList<>();
-        long startTime = System.currentTimeMillis();
         attachFileType(dataList);
-        LogUtil.v("diffOldTime = " + (System.currentTimeMillis() - startTime));
-
         mRecyclerAdapter.setDataList(dataList, true);
     }
 
     private void attachFileType(List<ClassifyModel> dataList) {
         long startTime = System.currentTimeMillis();
-        IntentUtils.FileType fileType = IntentUtils.FileType.VIDEO;
+        for (FileType fileType : FileType.values()) {
+            attachItem(fileType, dataList);
+        }
+        LogUtil.v("attachFileType diffTime = " + (System.currentTimeMillis() - startTime));
+    }
+
+    private void attachItem(FileType fileType, List<ClassifyModel> dataList) {
+        long startTime = System.currentTimeMillis();
         long count = FileDbManager.count(fileType);
-        dataList.add(new ClassifyModel(fileType, count, R.drawable.icon_type_video));
-        LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
-
-        startTime = System.currentTimeMillis();
-        fileType = IntentUtils.FileType.AUDIO;
-        count = FileDbManager.count(fileType);
-        dataList.add(new ClassifyModel(fileType, count, R.drawable.icon_type_audio));
-        LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
-
-        startTime = System.currentTimeMillis();
-        fileType = IntentUtils.FileType.IMAGE;
-        count = FileDbManager.count(fileType);
-        dataList.add(new ClassifyModel(fileType, count, R.drawable.icon_type_image));
-        LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
-
-        startTime = System.currentTimeMillis();
-        fileType = IntentUtils.FileType.APK;
-        count = FileDbManager.count(fileType);
-        dataList.add(new ClassifyModel(fileType, count, R.drawable.icon_type_app));
-        LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
-
-        startTime = System.currentTimeMillis();
-        fileType = IntentUtils.FileType.WORD;
-        count = FileDbManager.count(fileType);
-        dataList.add(new ClassifyModel(fileType, count, R.drawable.icon_type_word));
-        LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
-
-        startTime = System.currentTimeMillis();
-        fileType = IntentUtils.FileType.EXCEL;
-        count = FileDbManager.count(fileType);
-        dataList.add(new ClassifyModel(fileType, count, R.drawable.icon_type_excel));
-        LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
-
-        startTime = System.currentTimeMillis();
-        fileType = IntentUtils.FileType.PPT;
-        count = FileDbManager.count(fileType);
-        dataList.add(new ClassifyModel(fileType, count, R.drawable.icon_type_ppt));
-        LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
-
-        startTime = System.currentTimeMillis();
-        fileType = IntentUtils.FileType.PDF;
-        count = FileDbManager.count(fileType);
-        dataList.add(new ClassifyModel(fileType, count, R.drawable.icon_type_pdf));
-        LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
-
-        startTime = System.currentTimeMillis();
-        fileType = IntentUtils.FileType.TEXT;
-        count = FileDbManager.count(fileType);
-        dataList.add(new ClassifyModel(fileType, count, R.drawable.icon_type_txt));
-        LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
-
-        startTime = System.currentTimeMillis();
-        fileType = IntentUtils.FileType.HTML;
-        count = FileDbManager.count(fileType);
-        dataList.add(new ClassifyModel(fileType, count, R.drawable.icon_type_html));
-        LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
-
-        startTime = System.currentTimeMillis();
-        fileType = IntentUtils.FileType.UNKNOW;
-        count = FileDbManager.count(fileType);
-        dataList.add(new ClassifyModel(fileType, count, R.drawable.icon_type_other));
+        dataList.add(new ClassifyModel(fileType, count));
         LogUtil.v(fileType.getStr() + " count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
     }
 
@@ -159,7 +103,7 @@ public class ClassifyFragment extends BaseFragment {
         public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
             final ClassifyModel itemModel = getItem(position);
 
-            holder.setImageResource(R.id.item_main_classify_icon, itemModel.getResId());
+            holder.setImageResource(R.id.item_main_classify_icon, itemModel.getFileType().getResId());
             holder.setText(R.id.item_main_classify_name, itemModel.getFileType().getStr());
             holder.setText(R.id.item_main_classify_count, itemModel.getCount() + "项");
 
@@ -175,26 +119,20 @@ public class ClassifyFragment extends BaseFragment {
     }
 
     private static class ClassifyModel implements Serializable {
-        private IntentUtils.FileType fileType;
+        private FileType fileType;
         private long count;
-        private int resId;
 
-        public ClassifyModel(IntentUtils.FileType type, long count, int resId) {
+        public ClassifyModel(FileType type, long count) {
             this.fileType = type;
             this.count = count;
-            this.resId = resId;
         }
 
-        public IntentUtils.FileType getFileType() {
+        public FileType getFileType() {
             return fileType;
         }
 
         public long getCount() {
             return count;
-        }
-
-        public int getResId() {
-            return resId;
         }
     }
 }

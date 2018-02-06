@@ -1,6 +1,6 @@
 package com.yline.file.module.file.model;
 
-import com.yline.file.common.IntentUtils;
+import com.yline.file.common.FileType;
 
 import java.io.Serializable;
 
@@ -58,7 +58,7 @@ public class FileInfoModel implements Serializable {
         this.childDirCount = dirCount;
         this.childFileCount = fileCount;
         this.fileSize = dirSize;
-        this.fileType = IntentUtils.FileType.UNKNOW.getFid();
+        this.fileType = FileType.UNKNOW.getFid();
     }
 
     public boolean isDirectory() {

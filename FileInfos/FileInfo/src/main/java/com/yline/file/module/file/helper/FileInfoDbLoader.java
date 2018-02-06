@@ -4,7 +4,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.yline.file.common.IntentUtils;
+import com.yline.file.common.FileType;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.log.LogFileUtil;
@@ -71,7 +71,7 @@ public class FileInfoDbLoader extends AsyncTask<String, Void, List<FileInfoModel
                     FileInfoModel model = FileDbManager.loadFileModel(file.getAbsolutePath());
                     // 更新数据
                     if (null == model) {
-                        model = new FileInfoModel(file.getName(), file.getAbsolutePath(), FileSizeUtil.getFileOrDirAutoSize(file), IntentUtils.FileType.UNKNOW.getFid());
+                        model = new FileInfoModel(file.getName(), file.getAbsolutePath(), FileSizeUtil.getFileOrDirAutoSize(file), FileType.UNKNOW.getFid());
                         FileDbManager.insertOrReplace(model);
                     }
                     resultList.add(model);

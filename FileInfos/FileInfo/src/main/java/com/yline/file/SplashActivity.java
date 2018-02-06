@@ -3,7 +3,7 @@ package com.yline.file;
 import android.os.Bundle;
 import android.view.View;
 
-import com.yline.file.common.IntentUtils;
+import com.yline.file.common.FileType;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.helper.FileInfoLoadService;
 import com.yline.file.module.main.MainActivity;
@@ -38,43 +38,43 @@ public class SplashActivity extends BaseTestActivity {
                 long startTime = System.currentTimeMillis();
                 long oldStartTime = startTime;
 
-                long count = FileDbManager.count(IntentUtils.FileType.AUDIO);
+                long count = FileDbManager.count(FileType.AUDIO);
                 LogUtil.v("AUDIO count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
                 startTime = System.currentTimeMillis();
 
-                count = FileDbManager.count(IntentUtils.FileType.VIDEO);
+                count = FileDbManager.count(FileType.VIDEO);
                 LogUtil.v("VIDEO count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
                 startTime = System.currentTimeMillis();
 
-                count = FileDbManager.count(IntentUtils.FileType.IMAGE);
+                count = FileDbManager.count(FileType.IMAGE);
                 LogUtil.v("IMAGE count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
                 startTime = System.currentTimeMillis();
 
-                count = FileDbManager.count(IntentUtils.FileType.APK);
+                count = FileDbManager.count(FileType.APK);
                 LogUtil.v("APK count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
                 startTime = System.currentTimeMillis();
 
-                count = FileDbManager.count(IntentUtils.FileType.EXCEL);
+                count = FileDbManager.count(FileType.EXCEL);
                 LogUtil.v("EXCEL count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
                 startTime = System.currentTimeMillis();
 
-                count = FileDbManager.count(IntentUtils.FileType.WORD);
+                count = FileDbManager.count(FileType.WORD);
                 LogUtil.v("WORD count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
                 startTime = System.currentTimeMillis();
 
-                count = FileDbManager.count(IntentUtils.FileType.PDF);
+                count = FileDbManager.count(FileType.PDF);
                 LogUtil.v("PDF count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
                 startTime = System.currentTimeMillis();
 
-                count = FileDbManager.count(IntentUtils.FileType.TEXT);
+                count = FileDbManager.count(FileType.TEXT);
                 LogUtil.v("TEXT count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
                 startTime = System.currentTimeMillis();
 
-                count = FileDbManager.count(IntentUtils.FileType.HTML);
+                count = FileDbManager.count(FileType.HTML);
                 LogUtil.v("HTML count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
                 startTime = System.currentTimeMillis();
 
-                count = FileDbManager.count(IntentUtils.FileType.PPT);
+                count = FileDbManager.count(FileType.PPT);
                 LogUtil.v("PPT count = " + count + ", diffTime = " + (System.currentTimeMillis() - startTime));
                 LogUtil.v("PPT count = " + count + ", diffOldTime = " + (System.currentTimeMillis() - oldStartTime));
             }

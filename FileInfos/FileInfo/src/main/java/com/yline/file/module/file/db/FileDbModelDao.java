@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.support.annotation.NonNull;
 
-import com.yline.file.common.IntentUtils;
+import com.yline.file.common.FileType;
 import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.sqlite.SQLiteIOUtils;
 import com.yline.sqlite.common.AbstractSafelyDao;
@@ -70,7 +70,7 @@ public class FileDbModelDao extends AbstractSafelyDao<String, FileDbModel> {
     @Override
     protected FileDbModel readModel(Cursor cursor) {
         String absolutePath = cursor.isNull(Table.AbsolutePath.getOrdinal()) ? null : cursor.getString(Table.AbsolutePath.getOrdinal());
-        int fileType = cursor.isNull(Table.FileType.getOrdinal()) ? IntentUtils.FileType.UNKNOW.getFid() : cursor.getInt(Table.FileType.getOrdinal());
+        int fileType = cursor.isNull(Table.FileType.getOrdinal()) ? FileType.UNKNOW.getFid() : cursor.getInt(Table.FileType.getOrdinal());
         long isDir = cursor.isNull(Table.IsDir.getOrdinal()) ? FALSE : cursor.getLong(Table.IsDir.getOrdinal());
         byte[] data = cursor.isNull(Table.Data.getOrdinal()) ? null : cursor.getBlob(Table.Data.getOrdinal());
         return new FileDbModel(absolutePath, fileType, (isDir == TRUE), data);
@@ -100,7 +100,7 @@ public class FileDbModelDao extends AbstractSafelyDao<String, FileDbModel> {
      *
      * @return select * from MsgTable where Age=? and (Name like ?  or Name like ?)
      */
-    public long countFileType(IntentUtils.FileType fileType) {
+    public long countFileType(FileType fileType) {
         String sql = String.format(Locale.CHINA, "select * from %s where %s=?", TABLE_NAME, Table.FileType.getColumnName());
         String[] fileTypeArray = new String[]{String.valueOf(fileType.getFid())};
         LogUtil.v("countFileType sql = " + sql + ", array = " + Arrays.toString(fileTypeArray));
@@ -117,7 +117,7 @@ public class FileDbModelDao extends AbstractSafelyDao<String, FileDbModel> {
     }
 
     @NonNull
-    public List<FileInfoModel> loadFileType(IntentUtils.FileType fileType) {
+    public List<FileInfoModel> loadFileType(FileType fileType) {
         String sql = String.format(Locale.CHINA, "select * from %s where %s=?", TABLE_NAME, Table.FileType.getColumnName());
         String[] fileTypeArray = new String[]{String.valueOf(fileType.getFid())};
         LogUtil.v("loadFileType sql = " + sql + ", array = " + Arrays.toString(fileTypeArray));

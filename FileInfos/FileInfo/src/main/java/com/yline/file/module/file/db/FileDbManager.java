@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.yline.file.IApplication;
-import com.yline.file.common.IntentUtils;
+import com.yline.file.common.FileType;
 import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.sqlite.SQLiteIOUtils;
 import com.yline.sqlite.SqliteManager;
@@ -43,7 +43,7 @@ public class FileDbManager {
         });
     }
 
-    public static long count(IntentUtils.FileType fileType) {
+    public static long count(FileType fileType) {
         FileDbModelDao dbModelDao = (FileDbModelDao) DaoManager.getInstance().getDaoSession().getModelDao(FileDbModelDao.TABLE_NAME);
         if (null != dbModelDao) {
             return dbModelDao.countFileType(fileType);
@@ -80,7 +80,7 @@ public class FileDbManager {
         return null;
     }
 
-    public static void loadAllAsync(final IntentUtils.FileType fileType, final AsyncHelper.OnResultListener<List<FileInfoModel>> resultListener) {
+    public static void loadAllAsync(final FileType fileType, final AsyncHelper.OnResultListener<List<FileInfoModel>> resultListener) {
         DaoManager.getInstance().getExecutorService().execute(new Runnable() {
             @Override
             public void run() {

@@ -11,7 +11,6 @@ import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.utils.LogUtil;
 
 import java.io.File;
-import java.io.Serializable;
 
 /**
  * 1）跳转，系统，app
@@ -134,53 +133,6 @@ public class IntentUtils {
         intent.setDataAndType(uri, mimeType);
 
         return intent;
-    }
-
-    /**
-     * 文件类型
-     */
-    public enum FileType implements Serializable {
-        VIDEO(2, "视频", "%.3gp", "%.avi", "%.mov", "%.mp4", "%.mpeg", "%.mpg", "%.mpg4"), // 视频
-        AUDIO(1, "音频", "%.m4a", "%.mp3", "%.mpga", "%.ogg", "%.rmvb", "%.wav", "%.wma", "%.wmv"), // 音频
-        IMAGE(3, "图片", "%.jpg", "%.gif", "%.png", "%.jpeg", "%.bmp", "%.webp"), // 图片
-        APK(4, "安装包", "%.apk"), // App安装包
-        WORD(7, "Word", "%.doc", "%.docx"), // word
-        EXCEL(6, "Excel", "%.xls", "%.xlsx", "%.xlt"), // excel
-        PPT(5, "PPT", "%.ppt", "%.pps"), // PPT
-        PDF(8, "PDF", "%.pdf"), // PDF
-        TEXT(9, "文本", "%.c", "%.conf", "%.cpp", "%.h", "%.java", "%.log", "%.prop", "%.c", "%.c", "%.c"), // txt
-        HTML(10, "Html", "%.c", "%.conf"), // html
-        UNKNOW(0, "其它");
-
-        private int mFid; // 编号
-        private String mStr; // 名称
-        private String[] mDbSelection; // 数据库查询条件
-
-        /**
-         * 文件类型
-         *
-         * @param fid   编号
-         * @param dbStr 名称
-         */
-        FileType(int fid, String dbStr, String... selection) {
-            this.mFid = fid;
-            this.mStr = dbStr;
-            this.mDbSelection = (null == selection ? new String[]{} : selection);
-        }
-
-        public int getFid() {
-            return mFid;
-        }
-
-        @NonNull
-        public String getStr() {
-            return mStr;
-        }
-
-        @NonNull
-        public String[] getDbSelection() {
-            return mDbSelection;
-        }
     }
 
     // 建立一个MIME类型与文件后缀名的匹配表
