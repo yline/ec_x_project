@@ -13,6 +13,7 @@ import com.yline.base.BaseAppCompatActivity;
 import com.yline.base.BaseFragment;
 import com.yline.file.IApplication;
 import com.yline.file.R;
+import com.yline.file.module.file.helper.FileInfoLoadReceiver;
 import com.yline.file.module.file.helper.FileInfoLoadService;
 
 import java.util.ArrayList;
@@ -35,25 +36,33 @@ public class MainActivity extends BaseAppCompatActivity {
         }
     }
 
-    private StorageFragment mStorageFragment;
+    private FileInfoLoadReceiver mLoadReceiver;
     private ClassifyFragment mClassifyFragment;
+    private StorageFragment mStorageFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initView();
+        initData();
+    }
+
+    private void initView() {
         final List<BaseFragment> fragmentList = new ArrayList<>();
         final List<String> titleList = new ArrayList<>();
 
-        fragmentList.add(new ClassifyFragment());
+        mClassifyFragment = new ClassifyFragment();
+        fragmentList.add(mClassifyFragment);
         titleList.add("分类");
 
-        fragmentList.add(new StorageFragment());
+        mStorageFragment = new StorageFragment();
+        fragmentList.add(mStorageFragment);
         titleList.add("手机");
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.main_tab);
-        ViewPager viewPager = (ViewPager) findViewById(R.id.main_view_pager);
+        TabLayout tabLayout = findViewById(R.id.main_tab);
+        ViewPager viewPager = findViewById(R.id.main_view_pager);
 
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -74,10 +83,29 @@ public class MainActivity extends BaseAppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
     }
 
+    private void initData() {
+        mLoadReceiver = new FileInfoLoadReceiver();
+        FileInfoLoadReceiver.registerReceiver(mLoadReceiver);
+        mLoadReceiver.setOnFileInfoReceiverListener(new FileInfoLoadReceiver.OnFileInfoReceiverListener() {
+            @Override
+            public void onFileInfoReceiver() {
+                if (null != mClassifyFragment) {
+                    mClassifyFragment.refreshFileType();
+                }
+            }
+        });
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         FileInfoLoadService.launcher(IApplication.getApplication(), false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        FileInfoLoadReceiver.unRegisterReceiver(mLoadReceiver);
+        super.onDestroy();
     }
 }
