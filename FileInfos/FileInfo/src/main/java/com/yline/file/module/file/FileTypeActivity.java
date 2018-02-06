@@ -69,7 +69,7 @@ public class FileTypeActivity extends BaseAppCompatActivity {
     private void initView() {
         mLoadingView = findViewById(R.id.file_type_loading);
         mTvTitle = findViewById(R.id.file_type_title);
-        mTvTotalSize = findViewById(R.id.item_file_type_size);
+        mTvTotalSize = findViewById(R.id.file_type_title_size);
 
         RecyclerView recyclerView = findViewById(R.id.file_type_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -93,6 +93,9 @@ public class FileTypeActivity extends BaseAppCompatActivity {
         if (null == mFileType) {
             mLoadingView.loadEmpty("文件类型出错"); // 基本不会进入该条件
         } else {
+            mTvTitle.setText(mFileType.getStr());
+            mTvTotalSize.setText("");
+
             mInitDataStartTime = System.currentTimeMillis();
             FileDbManager.loadAllAsync(mFileType, new AsyncHelper.OnResultListener<List<FileInfoModel>>() {
                 @Override
@@ -101,6 +104,7 @@ public class FileTypeActivity extends BaseAppCompatActivity {
                     if (null != fileInfoModelList && !fileInfoModelList.isEmpty()) {
                         mLoadingView.loadSuccess();
                         // 更新数据
+                        mTvTotalSize.setText(("空间：" + calculateFileSize(fileInfoModelList)));
                         mRecyclerAdapter.setDataList(fileInfoModelList, true);
                     } else {
                         mLoadingView.loadEmpty("文件夹为空");
@@ -109,6 +113,14 @@ public class FileTypeActivity extends BaseAppCompatActivity {
             });
             LogUtil.v("main, diffTime = " + (System.currentTimeMillis() - mInitDataStartTime));
         }
+    }
+
+    private String calculateFileSize(@NonNull List<FileInfoModel> fileInfoModelList) {
+        long totalSize = 0;
+        for (FileInfoModel fileInfoModel : fileInfoModelList) {
+            totalSize += fileInfoModel.getFileSize();
+        }
+        return FileSizeUtil.formatFileAutoSize(totalSize);
     }
 
     private class FileTypeRecyclerAdapter extends AbstractCommonRecyclerAdapter<FileInfoModel> {
