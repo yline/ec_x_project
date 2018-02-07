@@ -1,11 +1,16 @@
 package com.yline.file.module.file.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.RelativeLayout;
 
 import com.yline.file.R;
@@ -24,6 +29,7 @@ import java.util.List;
 public class UpperItemMenuView extends RelativeLayout {
     private OnUpperItemMenuListener mOnMenuListener;
     private UpperMenuRecyclerAdapter mMenuRecyclerAdapter;
+    private RecyclerView mRecyclerView;
 
     public UpperItemMenuView(Context context) {
         super(context);
@@ -43,10 +49,19 @@ public class UpperItemMenuView extends RelativeLayout {
     private void initView() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_upper_item_menu, this, true);
 
-        RecyclerView recyclerView = findViewById(R.id.view_upper_item_menu_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRecyclerView = findViewById(R.id.view_upper_item_menu_recycler);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mMenuRecyclerAdapter = new UpperMenuRecyclerAdapter();
-        recyclerView.setAdapter(mMenuRecyclerAdapter);
+        mRecyclerView.setAdapter(mMenuRecyclerAdapter);
+
+        mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (mRecyclerView.getHeight() != 0) {
+                    translateInner(mRecyclerView);
+                }
+            }
+        });
 
         View headerView = LayoutInflater.from(getContext()).inflate(R.layout.view_upper_item_menu_header, null);
         mMenuRecyclerAdapter.addHeadView(headerView);
@@ -77,6 +92,36 @@ public class UpperItemMenuView extends RelativeLayout {
                 }
             }
         });
+    }
+
+    private void translateInner(View view) {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", -view.getHeight(), 0);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.setDuration(500);
+        animator.start();
+    }
+
+    public void translateOuter(final OnAnimatorFinishCallback finishListener) {
+        if (null != mRecyclerView) {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(mRecyclerView, "translationY", 0, -mRecyclerView.getHeight());
+            animator.setInterpolator(new DecelerateInterpolator());
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+
+                    if (null != finishListener) {
+                        finishListener.onFinish(true);
+                    }
+                }
+            });
+            animator.setDuration(300);
+            animator.start();
+        } else {
+            if (null != finishListener) {
+                finishListener.onFinish(false);
+            }
+        }
     }
 
     public void setData(List<String> selectionList) {
@@ -135,5 +180,14 @@ public class UpperItemMenuView extends RelativeLayout {
          * @param position 点击的位置
          */
         void onUpperItemClick(String content, int position);
+    }
+
+    public interface OnAnimatorFinishCallback {
+        /**
+         * 动画结束
+         *
+         * @param isAnimator 是否执行过动画
+         */
+        void onFinish(boolean isAnimator);
     }
 }

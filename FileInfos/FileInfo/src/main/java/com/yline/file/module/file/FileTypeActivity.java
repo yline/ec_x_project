@@ -94,12 +94,12 @@ public class FileTypeActivity extends BaseAppCompatActivity {
         mUpperMenuView.setOnUpperItemMenuListener(new UpperItemMenuView.OnUpperItemMenuListener() {
             @Override
             public void onUpperMaskClick() {
-                mUpperMenuView.setVisibility(View.GONE);
+                closeUpperMenu();
             }
 
             @Override
             public void onUpperCloseClick() {
-                mUpperMenuView.setVisibility(View.GONE);
+                closeUpperMenu();
             }
 
             @Override
@@ -143,6 +143,15 @@ public class FileTypeActivity extends BaseAppCompatActivity {
             });
             LogUtil.v("main, diffTime = " + (System.currentTimeMillis() - mInitDataStartTime));
         }
+    }
+
+    private void closeUpperMenu() {
+        mUpperMenuView.translateOuter(new UpperItemMenuView.OnAnimatorFinishCallback() {
+            @Override
+            public void onFinish(boolean isAnimator) {
+                mUpperMenuView.setVisibility(View.GONE);
+            }
+        });
     }
 
     private String calculateFileSize(@NonNull List<FileInfoModel> fileInfoModelList) {
