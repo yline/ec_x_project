@@ -139,6 +139,10 @@ public class FileTypeActivity extends BaseAppCompatActivity {
         public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
             final FileInfoModel itemModel = getItem(position);
 
+            // 文件图片
+            int fileType = itemModel.getFileType();
+            holder.setImageResource(R.id.item_file_type_iv, IntentUtils.getFileType(fileType).getResId());
+
             // 文件名
             String fileName = itemModel.getFileName();
             holder.setText(R.id.item_file_type_name, fileName);

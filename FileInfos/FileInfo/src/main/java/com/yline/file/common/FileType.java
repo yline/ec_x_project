@@ -23,7 +23,7 @@ public enum FileType implements Serializable {
     PDF(80, "PDF", R.drawable.icon_type_pdf, "%.pdf"), // PDF
     TEXT(90, "文本", R.drawable.icon_type_txt, "%.c", "%.conf", "%.cpp", "%.h", "%.java", "%.log", "%.prop", "%.c", "%.c", "%.c"), // txt
     HTML(100, "Html", R.drawable.icon_type_html, "%.c", "%.conf"), // html
-    UNKNOW(0, "其它", R.drawable.icon_type_other);
+    UNKNOW(0, "其它", R.drawable.file_info_file);
 
     private int mFid; // 编号
     private String mStr; // 名称

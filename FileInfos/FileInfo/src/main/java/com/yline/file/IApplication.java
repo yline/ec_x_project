@@ -19,8 +19,8 @@ public class IApplication extends BaseApplication {
         super.onCreate();
 
         // 初始化 Bugly
-        BuglyConfig.initConfig(this);
         BuglyConfig.setIsDevelopmentDevice(true);
+        BuglyConfig.initConfig(this);
 
         // 初始化数据库
         FileDbManager.init(this);

@@ -160,7 +160,6 @@ public class FileInfoActivity extends BaseAppCompatActivity {
 
     private class FileInfoAdapter extends AbstractCommonRecyclerAdapter<FileInfoModel> {
         private final static int ICON_FOLDER = R.drawable.file_info_dir;
-        private final static int ICON_FILE = R.drawable.file_info_file;
 
         private Callback.OnRecyclerItemClickListener<FileInfoModel> mItemClickListener;
 
@@ -177,7 +176,8 @@ public class FileInfoActivity extends BaseAppCompatActivity {
         public void onBindViewHolder(final RecyclerViewHolder holder, final int position) {
             final FileInfoModel fileBean = getItem(position);
 
-            int imageId = fileBean.isDirectory() ? ICON_FOLDER : ICON_FILE;
+            int fileType = fileBean.getFileType();
+            int imageId = fileBean.isDirectory() ? ICON_FOLDER : IntentUtils.getFileType(fileType).getResId();
             holder.setImageResource(R.id.item_file_info_iv, imageId);
 
             holder.setText(R.id.item_file_info_name, fileBean.getFileName());
@@ -189,7 +189,7 @@ public class FileInfoActivity extends BaseAppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (null != mItemClickListener) {
-                        mItemClickListener.onItemClick(holder, fileBean, position);
+                        mItemClickListener.onItemClick(holder, fileBean, holder.getAdapterPosition());
                     }
                 }
             });

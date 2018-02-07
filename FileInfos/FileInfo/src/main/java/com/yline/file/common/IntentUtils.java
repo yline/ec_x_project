@@ -20,6 +20,15 @@ import java.io.File;
  * @version 1.0.0
  */
 public class IntentUtils {
+    public static FileType getFileType(int typeValue) {
+        for (FileType fileType : FileType.values()) {
+            if (fileType.getFid() == typeValue) {
+                return fileType;
+            }
+        }
+        return FileType.UNKNOW;
+    }
+
     public static FileType getFileType(String path) {
         if (TextUtils.isEmpty(path)) {
             return FileType.UNKNOW;
