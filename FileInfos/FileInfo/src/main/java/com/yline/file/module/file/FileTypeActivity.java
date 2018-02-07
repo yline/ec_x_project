@@ -17,7 +17,9 @@ import com.yline.file.common.IntentUtils;
 import com.yline.file.common.LoadingView;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.model.FileInfoModel;
+import com.yline.file.module.file.view.UpperItemMenuView;
 import com.yline.sqlite.async.AsyncHelper;
+import com.yline.test.StrConstant;
 import com.yline.utils.FileSizeUtil;
 import com.yline.utils.LogUtil;
 import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;
@@ -49,6 +51,7 @@ public class FileTypeActivity extends BaseAppCompatActivity {
     private FileTypeRecyclerAdapter mRecyclerAdapter;
     private LoadingView mLoadingView;
     private TextView mTvTitle, mTvTotalSize;
+    private UpperItemMenuView mUpperMenuView;
 
     private FileType mFileType;
     private long mInitDataStartTime;
@@ -70,6 +73,7 @@ public class FileTypeActivity extends BaseAppCompatActivity {
         mLoadingView = findViewById(R.id.file_type_loading);
         mTvTitle = findViewById(R.id.file_type_title);
         mTvTotalSize = findViewById(R.id.file_type_title_size);
+        mUpperMenuView = findViewById(R.id.file_type_upper_item_menu);
 
         RecyclerView recyclerView = findViewById(R.id.file_type_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -80,6 +84,30 @@ public class FileTypeActivity extends BaseAppCompatActivity {
     }
 
     private void initViewClick() {
+        findViewById(R.id.file_type_title_more).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mUpperMenuView.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mUpperMenuView.setOnUpperItemMenuListener(new UpperItemMenuView.OnUpperItemMenuListener() {
+            @Override
+            public void onUpperMaskClick() {
+                mUpperMenuView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onUpperCloseClick() {
+                mUpperMenuView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onUpperItemClick(String content, int position) {
+                // TODO
+            }
+        });
+
         mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<FileInfoModel>() {
             @Override
             public void onItemClick(RecyclerViewHolder viewHolder, FileInfoModel fileModel, int position) {
@@ -89,6 +117,8 @@ public class FileTypeActivity extends BaseAppCompatActivity {
     }
 
     private void initData() {
+        mUpperMenuView.setData(StrConstant.getListRandom(4));
+
         mLoadingView.loading();
         if (null == mFileType) {
             mLoadingView.loadEmpty("文件类型出错"); // 基本不会进入该条件
