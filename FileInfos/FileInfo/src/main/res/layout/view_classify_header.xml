@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    android:minHeight="@dimen/classify_title_height">
+
+    <ImageView
+        android:id="@+id/view_classify_header_back"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:layout_centerVertical="true"
+        android:padding="10dp"
+        android:src="@drawable/title_back_white" />
+
+    <TextView
+        android:id="@+id/view_classify_header_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/view_classify_header_back"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
+        android:text="视频"
+        android:textColor="@android:color/white"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/view_classify_header_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/view_classify_header_title"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/view_classify_header_title"
+        android:text="loading"
+        android:textColor="@android:color/white"
+        android:textSize="11dp"
+        android:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/view_classify_header_more"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="8dp"
+        android:padding="6dp"
+        android:src="@drawable/title_more_big_white"
+        android:visibility="visible" />
+</RelativeLayout>
