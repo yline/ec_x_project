@@ -17,6 +17,7 @@ import com.yline.file.common.LoadingView;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.file.module.fileclassify.adapter.FileTypeRecyclerAdapter;
+import com.yline.file.module.fileclassify.manager.ClassifyManager;
 import com.yline.file.module.fileclassify.view.ClassifyHeaderView;
 import com.yline.file.module.fileclassify.view.UpperItemMenuView;
 import com.yline.sqlite.async.AsyncHelper;
@@ -137,6 +138,15 @@ public class FileClassifyActivity extends BaseAppCompatActivity {
                         mLoadingView.loadSuccess();
                         // 更新数据
                         mHeaderView.setTitle(mFileType.getStr(), calculateFileSize(fileInfoModelList));
+                        if (mFileType == FileType.VIDEO) {
+                            long startTime = System.currentTimeMillis();
+                            for (FileInfoModel fileInfoModel : fileInfoModelList) {
+                                ClassifyManager.createVideoMicro(fileInfoModel.getAbsolutePath());
+                                ClassifyManager.getVideoDuration(fileInfoModel.getAbsolutePath());
+                            }
+                            LogUtil.v("total diffTime = " + (System.currentTimeMillis() - startTime));
+                        }
+
                         mRecyclerAdapter.setDataList(fileInfoModelList, true);
                     } else {
                         mLoadingView.loadEmpty("文件夹为空");

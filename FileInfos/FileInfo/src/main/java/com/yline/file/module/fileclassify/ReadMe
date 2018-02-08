@@ -1,2 +1,3 @@
 adapter类型
 1，FileTypeRecyclerAdapter ： 图片 + 文字 + 大小，单列的样式
+2，VideoTypeRecyclerAdapter ： 图片 + 大小 + 时长 + 播放 + 名字，两列的样式

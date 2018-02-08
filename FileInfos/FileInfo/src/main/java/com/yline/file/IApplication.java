@@ -2,6 +2,7 @@ package com.yline.file;
 
 import com.yline.application.BaseApplication;
 import com.yline.file.common.BuglyConfig;
+import com.yline.file.fresco.common.FrescoConfig;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.helper.FileInfoLoadService;
 
@@ -13,14 +14,18 @@ import com.yline.file.module.file.helper.FileInfoLoadService;
  */
 public class IApplication extends BaseApplication {
     public static final String TAG = "FileInfos";
+    private static final boolean isDebug = true;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         // 初始化 Bugly
-        BuglyConfig.setIsDevelopmentDevice(true);
+        BuglyConfig.setIsDevelopmentDevice(isDebug);
         BuglyConfig.initConfig(this);
+
+        // 初始化 FrescoView
+        FrescoConfig.initConfig(this, isDebug);
 
         // 初始化数据库
         FileDbManager.init(this);
