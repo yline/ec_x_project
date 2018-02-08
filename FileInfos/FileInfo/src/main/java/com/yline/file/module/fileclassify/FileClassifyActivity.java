@@ -1,4 +1,4 @@
-package com.yline.file.module.file;
+package com.yline.file.module.fileclassify;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,13 +16,12 @@ import com.yline.file.common.IntentUtils;
 import com.yline.file.common.LoadingView;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.model.FileInfoModel;
-import com.yline.file.module.file.view.ClassifyHeaderView;
-import com.yline.file.module.file.view.UpperItemMenuView;
+import com.yline.file.module.fileclassify.adapter.FileTypeRecyclerAdapter;
+import com.yline.file.module.fileclassify.view.ClassifyHeaderView;
+import com.yline.file.module.fileclassify.view.UpperItemMenuView;
 import com.yline.sqlite.async.AsyncHelper;
 import com.yline.test.StrConstant;
-import com.yline.utils.FileSizeUtil;
 import com.yline.utils.LogUtil;
-import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;
 import com.yline.view.recycler.holder.Callback;
 import com.yline.view.recycler.holder.RecyclerViewHolder;
 
@@ -163,51 +162,5 @@ public class FileClassifyActivity extends BaseAppCompatActivity {
             totalSize += fileInfoModel.getFileSize();
         }
         return totalSize;
-    }
-
-    private class FileTypeRecyclerAdapter extends AbstractCommonRecyclerAdapter<FileInfoModel> {
-        private Callback.OnRecyclerItemClickListener<FileInfoModel> mOnItemClickListener;
-
-        private void setOnItemClickListener(Callback.OnRecyclerItemClickListener<FileInfoModel> listener) {
-            this.mOnItemClickListener = listener;
-        }
-
-        @Override
-        public int getItemRes() {
-            return R.layout.item_file_type;
-        }
-
-        @Override
-        public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
-            final FileInfoModel itemModel = getItem(position);
-
-            // 文件图片
-            int fileType = itemModel.getFileType();
-            holder.setImageResource(R.id.item_file_type_iv, IntentUtils.getFileType(fileType).getResId());
-
-            // 文件名
-            String fileName = itemModel.getFileName();
-            holder.setText(R.id.item_file_type_name, fileName);
-
-            // 文件路径
-            String path = itemModel.getAbsolutePath();
-            if (null != path && path.endsWith(fileName)) {
-                path = path.substring(0, path.length() - fileName.length());
-            }
-            holder.setText(R.id.item_file_type_info, path);
-
-            // 文件大小
-            holder.setText(R.id.item_file_type_size, FileSizeUtil.formatFileAutoSize(itemModel.getFileSize()));
-
-            // 点击事件
-            holder.getItemView().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (null != mOnItemClickListener) {
-                        mOnItemClickListener.onItemClick(holder, itemModel, holder.getAdapterPosition());
-                    }
-                }
-            });
-        }
     }
 }

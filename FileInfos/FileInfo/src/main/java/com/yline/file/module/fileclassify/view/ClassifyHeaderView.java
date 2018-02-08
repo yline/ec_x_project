@@ -1,4 +1,4 @@
-package com.yline.file.module.file.view;
+package com.yline.file.module.fileclassify.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

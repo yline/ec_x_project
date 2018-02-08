@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.yline.base.BaseFragment;
 import com.yline.file.R;
 import com.yline.file.common.FileType;
-import com.yline.file.module.file.FileClassifyActivity;
+import com.yline.file.module.fileclassify.FileClassifyActivity;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.utils.LogUtil;
 import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;

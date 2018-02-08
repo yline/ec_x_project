@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.yline.file.module.file.view.ClassifyHeaderView
+        <com.yline.file.module.fileclassify.view.ClassifyHeaderView
             android:id="@+id/file_classify_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -27,7 +27,7 @@
             android:visibility="gone" />
     </RelativeLayout>
 
-    <com.yline.file.module.file.view.UpperItemMenuView
+    <com.yline.file.module.fileclassify.view.UpperItemMenuView
         android:id="@+id/file_classify_upper_item_menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -1,4 +1,4 @@
-package com.yline.file.module.file.view;
+package com.yline.file.module.fileclassify.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
