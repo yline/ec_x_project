@@ -1,9 +1,10 @@
 package com.yline.file.module.file.helper;
 
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.yline.file.IApplication;
+import com.yline.file.common.FileThreadPool;
 import com.yline.file.common.FileType;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.model.FileInfoModel;
@@ -24,26 +25,27 @@ import java.util.List;
  * @author yline 2017/1/28 --> 11:47
  * @version 1.0.0
  */
-public class FileInfoDbLoader extends AsyncTask<String, Void, List<FileInfoModel>> {
-    public static void getFileList(String path, OnLoadListener listener) {
-        LogFileUtil.v("path = " + path);
-        FileInfoDbLoader dbLoader = new FileInfoDbLoader();
-        dbLoader.setLoadListener(listener);
-        dbLoader.execute(path);
+public class FileInfoDbLoader {
+    public static void getFileList(final String path, final OnLoadListener listener) {
+        FileThreadPool.fixedThreadExecutor(new Runnable() {
+            @Override
+            public void run() {
+                LogFileUtil.v("path = " + path);
+
+                final List<FileInfoModel> resultList = loadFileList(path);
+                IApplication.getHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (null != listener) {
+                            listener.onLoadFinish(resultList);
+                        }
+                    }
+                });
+            }
+        });
     }
 
-    private OnLoadListener loadListener;
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-    }
-
-    @Override
-    protected List<FileInfoModel> doInBackground(String... params) {
-        String path = params[0];
-        LogFileUtil.v(path);
-
+    private static List<FileInfoModel> loadFileList(String path) {
         List<FileInfoModel> resultList = new ArrayList<>();
         if (!TextUtils.isEmpty(path)) {
             final File pathDir = new File(path);
@@ -82,20 +84,12 @@ public class FileInfoDbLoader extends AsyncTask<String, Void, List<FileInfoModel
         return resultList;
     }
 
-    @Override
-    protected void onPostExecute(List<FileInfoModel> been) {
-        super.onPostExecute(been);
-
-        if (null != loadListener) {
-            loadListener.onLoadFinish(been);
-        }
-    }
-
-    public void setLoadListener(OnLoadListener loadListener) {
-        this.loadListener = loadListener;
-    }
-
     public interface OnLoadListener {
-        void onLoadFinish(@NonNull List<FileInfoModel> fileBeanList);
+        /**
+         * 加载结束
+         *
+         * @param fileModelList 数据结果
+         */
+        void onLoadFinish(@NonNull List<FileInfoModel> fileModelList);
     }
 }
