@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.yline.file.module.file.view.ClassifyHeaderView
+            android:id="@+id/file_classify_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/file_classify_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/file_classify_header"
+            android:scrollbars="vertical" />
+
+        <com.yline.file.common.LoadingView
+            android:id="@+id/file_classify_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/file_classify_header"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <com.yline.file.module.file.view.UpperItemMenuView
+        android:id="@+id/file_classify_upper_item_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+</FrameLayout>

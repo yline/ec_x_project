@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.yline.base.BaseFragment;
 import com.yline.file.R;
 import com.yline.file.common.FileType;
-import com.yline.file.module.file.FileTypeActivity;
+import com.yline.file.module.file.FileClassifyActivity;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.utils.LogUtil;
 import com.yline.view.recycler.adapter.AbstractCommonRecyclerAdapter;
@@ -59,8 +59,21 @@ public class ClassifyFragment extends BaseFragment {
         mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<ClassifyModel>() {
             @Override
             public void onItemClick(RecyclerViewHolder viewHolder, ClassifyModel itemModel, int position) {
-                if (itemModel.getFileType() != FileType.UNKNOW) {
-                    FileTypeActivity.launcher(getContext(), itemModel.getFileType());
+                switch (itemModel.getFileType()) {
+                    case VIDEO:
+                    case AUDIO:
+                    case IMAGE:
+                    case APK:
+                    case WORD:
+                    case EXCEL:
+                    case PPT:
+                    case PDF:
+                    case TEXT:
+                    case HTML:
+                        FileClassifyActivity.launcher(getContext(), itemModel.getFileType());
+                        break;
+                    case UNKNOW:
+                    default:
                 }
             }
         });

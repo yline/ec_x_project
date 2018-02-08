@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.TextView;
 
 import com.yline.base.BaseAppCompatActivity;
 import com.yline.file.R;
@@ -17,6 +16,7 @@ import com.yline.file.common.IntentUtils;
 import com.yline.file.common.LoadingView;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.model.FileInfoModel;
+import com.yline.file.module.file.view.ClassifyHeaderView;
 import com.yline.file.module.file.view.UpperItemMenuView;
 import com.yline.sqlite.async.AsyncHelper;
 import com.yline.test.StrConstant;
@@ -34,12 +34,12 @@ import java.util.List;
  * @author yline 2018/2/6 -- 10:01
  * @version 1.0.0
  */
-public class FileTypeActivity extends BaseAppCompatActivity {
+public class FileClassifyActivity extends BaseAppCompatActivity {
     private static final String KEY_FILE_TYPE = "Launcher_FileType";
 
     public static void launcher(Context context, @NonNull FileType fileType) {
         if (null != context) {
-            Intent intent = new Intent(context, FileTypeActivity.class);
+            Intent intent = new Intent(context, FileClassifyActivity.class);
             intent.putExtra(KEY_FILE_TYPE, fileType);
             if (!(context instanceof Activity)) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -50,8 +50,8 @@ public class FileTypeActivity extends BaseAppCompatActivity {
 
     private FileTypeRecyclerAdapter mRecyclerAdapter;
     private LoadingView mLoadingView;
-    private TextView mTvTitle, mTvTotalSize;
     private UpperItemMenuView mUpperMenuView;
+    private ClassifyHeaderView mHeaderView;
 
     private FileType mFileType;
     private long mInitDataStartTime;
@@ -59,7 +59,7 @@ public class FileTypeActivity extends BaseAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_file_type);
+        setContentView(R.layout.activity_file_classify);
 
         if (null != getIntent()) {
             mFileType = (FileType) getIntent().getSerializableExtra(KEY_FILE_TYPE);
@@ -70,12 +70,11 @@ public class FileTypeActivity extends BaseAppCompatActivity {
     }
 
     private void initView() {
-        mLoadingView = findViewById(R.id.file_type_loading);
-        mTvTitle = findViewById(R.id.file_type_title);
-        mTvTotalSize = findViewById(R.id.file_type_title_size);
-        mUpperMenuView = findViewById(R.id.file_type_upper_item_menu);
+        mLoadingView = findViewById(R.id.file_classify_loading);
+        mHeaderView = findViewById(R.id.file_classify_header);
+        mUpperMenuView = findViewById(R.id.file_classify_upper_item_menu);
 
-        RecyclerView recyclerView = findViewById(R.id.file_type_recycler);
+        RecyclerView recyclerView = findViewById(R.id.file_classify_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerAdapter = new FileTypeRecyclerAdapter();
         recyclerView.setAdapter(mRecyclerAdapter);
@@ -84,9 +83,14 @@ public class FileTypeActivity extends BaseAppCompatActivity {
     }
 
     private void initViewClick() {
-        findViewById(R.id.file_type_title_more).setOnClickListener(new View.OnClickListener() {
+        mHeaderView.setOnHeaderClickListener(new ClassifyHeaderView.OnHeaderClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onHeaderCloseClick() {
+                finish();
+            }
+
+            @Override
+            public void onHeaderMoreClick() {
                 mUpperMenuView.setVisibility(View.VISIBLE);
             }
         });
@@ -111,7 +115,7 @@ public class FileTypeActivity extends BaseAppCompatActivity {
         mRecyclerAdapter.setOnItemClickListener(new Callback.OnRecyclerItemClickListener<FileInfoModel>() {
             @Override
             public void onItemClick(RecyclerViewHolder viewHolder, FileInfoModel fileModel, int position) {
-                IntentUtils.openFileAll(FileTypeActivity.this, fileModel);
+                IntentUtils.openFileAll(FileClassifyActivity.this, fileModel);
             }
         });
     }
@@ -123,8 +127,7 @@ public class FileTypeActivity extends BaseAppCompatActivity {
         if (null == mFileType) {
             mLoadingView.loadEmpty("文件类型出错"); // 基本不会进入该条件
         } else {
-            mTvTitle.setText(mFileType.getStr());
-            mTvTotalSize.setText("");
+            mHeaderView.setTitle(mFileType.getStr(), -1);
 
             mInitDataStartTime = System.currentTimeMillis();
             FileDbManager.loadAllAsync(mFileType, new AsyncHelper.OnResultListener<List<FileInfoModel>>() {
@@ -134,7 +137,7 @@ public class FileTypeActivity extends BaseAppCompatActivity {
                     if (null != fileInfoModelList && !fileInfoModelList.isEmpty()) {
                         mLoadingView.loadSuccess();
                         // 更新数据
-                        mTvTotalSize.setText(("空间：" + calculateFileSize(fileInfoModelList)));
+                        mHeaderView.setTitle(mFileType.getStr(), calculateFileSize(fileInfoModelList));
                         mRecyclerAdapter.setDataList(fileInfoModelList, true);
                     } else {
                         mLoadingView.loadEmpty("文件夹为空");
@@ -154,12 +157,12 @@ public class FileTypeActivity extends BaseAppCompatActivity {
         });
     }
 
-    private String calculateFileSize(@NonNull List<FileInfoModel> fileInfoModelList) {
+    private long calculateFileSize(@NonNull List<FileInfoModel> fileInfoModelList) {
         long totalSize = 0;
         for (FileInfoModel fileInfoModel : fileInfoModelList) {
             totalSize += fileInfoModel.getFileSize();
         }
-        return FileSizeUtil.formatFileAutoSize(totalSize);
+        return totalSize;
     }
 
     private class FileTypeRecyclerAdapter extends AbstractCommonRecyclerAdapter<FileInfoModel> {

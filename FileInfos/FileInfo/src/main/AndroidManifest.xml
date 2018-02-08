@@ -29,11 +29,10 @@
         </activity>
         <activity android:name=".module.main.MainActivity" />
         <activity android:name=".module.file.FileInfoActivity" />
-        <activity android:name=".module.file.FileTypeActivity" />
+        <activity android:name=".module.file.FileClassifyActivity" />
 
         <service android:name=".module.file.helper.FileInfoLoadService" />
 
-        <activity android:name=".module.fileclassify.VideoTypeActivity"></activity>
     </application>
 
 </manifest>
