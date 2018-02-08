@@ -5,12 +5,11 @@ import android.net.Uri;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.util.UriUtil;
 import com.facebook.imagepipeline.listener.BaseRequestListener;
+import com.yline.file.common.FileThreadPool;
 import com.yline.file.fresco.common.FrescoCallback;
 import com.yline.file.fresco.common.FrescoUtil;
 import com.yline.file.fresco.view.FrescoView;
 import com.yline.file.fresco.view.FrescoViewSafelyHolder;
-
-import java.util.concurrent.Executors;
 
 /**
  * Fresco调用工具类；大部分常用的都放在这里了；
@@ -171,7 +170,7 @@ public class FrescoManager {
 
         safelyHolder.setImageUri(imageUri);
         safelyHolder.setOnSimpleFetchCallback(callback);
-        safelyHolder.setFetchExecutor(Executors.newSingleThreadExecutor());
+        safelyHolder.setFetchExecutor(FileThreadPool.getFixedThreadPool());
         safelyHolder.buildFetchDecodedImage();
     }
 

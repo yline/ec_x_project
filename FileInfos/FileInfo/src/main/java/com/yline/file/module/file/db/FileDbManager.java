@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.yline.file.IApplication;
+import com.yline.file.common.FileThreadPool;
 import com.yline.file.common.FileType;
 import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.sqlite.SQLiteIOUtils;
@@ -81,7 +82,7 @@ public class FileDbManager {
     }
 
     public static void loadAllAsync(final FileType fileType, final AsyncHelper.OnResultListener<List<FileInfoModel>> resultListener) {
-        DaoManager.getInstance().getExecutorService().execute(new Runnable() {
+        FileThreadPool.fixedThreadExecutor(new Runnable() {
             @Override
             public void run() {
                 final FileDbModelDao dbModelDao = (FileDbModelDao) DaoManager.getInstance().getDaoSession().getModelDao(FileDbModelDao.TABLE_NAME);
