@@ -20,6 +20,7 @@ import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.file.module.fileclassify.adapter.AbstractTypeRecyclerAdapter;
 import com.yline.file.module.fileclassify.adapter.AudioTypeRecyclerAdapter;
 import com.yline.file.module.fileclassify.adapter.FileTypeRecyclerAdapter;
+import com.yline.file.module.fileclassify.adapter.ImageTypeRecyclerAdapter;
 import com.yline.file.module.fileclassify.adapter.VideoTypeRecyclerAdapter;
 import com.yline.file.module.fileclassify.view.ClassifyHeaderView;
 import com.yline.file.module.fileclassify.view.UpperItemMenuView;
@@ -78,7 +79,7 @@ public class FileClassifyActivity extends BaseAppCompatActivity {
         mUpperMenuView = findViewById(R.id.file_classify_upper_item_menu);
 
         RecyclerView recyclerView = findViewById(R.id.file_classify_recycler);
-        if (null != mFileType){
+        if (null != mFileType) {
             switch (mFileType) {
                 case VIDEO:
                     recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -89,6 +90,9 @@ public class FileClassifyActivity extends BaseAppCompatActivity {
                     mRecyclerAdapter = new AudioTypeRecyclerAdapter();
                     break;
                 case IMAGE:
+                    recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+                    mRecyclerAdapter = new ImageTypeRecyclerAdapter();
+                    break;
                 case APK:
                 case WORD:
                 case EXCEL:
