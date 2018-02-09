@@ -1,12 +1,15 @@
 package com.yline.file.fresco.view;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ViewGroup;
 
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.yline.file.fresco.common.FrescoCallback;
+import com.yline.file.fresco.drawable.LoadingDrawable;
+import com.yline.file.fresco.drawable.LoadingRenderer;
 
 /**
  * 入口检查
@@ -50,5 +53,9 @@ public final class FrescoViewSafelyHolder extends FrescoViewHolder {
     public void setResizeOptions(int bitmapWidth, int bitmapHeight) {
         ResizeOptions resizeOptions = new ResizeOptions(bitmapWidth, bitmapHeight);
         super.setResizeOptions(resizeOptions);
+    }
+
+    public void setLoadingRender(@NonNull LoadingRenderer render) {
+        super.setLoadingDrawable(new LoadingDrawable(render));
     }
 }

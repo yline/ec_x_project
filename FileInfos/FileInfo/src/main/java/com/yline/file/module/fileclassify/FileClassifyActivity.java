@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -16,8 +17,9 @@ import com.yline.file.common.IntentUtils;
 import com.yline.file.common.LoadingView;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.model.FileInfoModel;
+import com.yline.file.module.fileclassify.adapter.AbstractTypeRecyclerAdapter;
 import com.yline.file.module.fileclassify.adapter.FileTypeRecyclerAdapter;
-import com.yline.file.module.fileclassify.manager.ClassifyManager;
+import com.yline.file.module.fileclassify.adapter.VideoTypeRecyclerAdapter;
 import com.yline.file.module.fileclassify.view.ClassifyHeaderView;
 import com.yline.file.module.fileclassify.view.UpperItemMenuView;
 import com.yline.sqlite.async.AsyncHelper;
@@ -48,7 +50,7 @@ public class FileClassifyActivity extends BaseAppCompatActivity {
         }
     }
 
-    private FileTypeRecyclerAdapter mRecyclerAdapter;
+    private AbstractTypeRecyclerAdapter mRecyclerAdapter;
     private LoadingView mLoadingView;
     private UpperItemMenuView mUpperMenuView;
     private ClassifyHeaderView mHeaderView;
@@ -75,8 +77,30 @@ public class FileClassifyActivity extends BaseAppCompatActivity {
         mUpperMenuView = findViewById(R.id.file_classify_upper_item_menu);
 
         RecyclerView recyclerView = findViewById(R.id.file_classify_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerAdapter = new FileTypeRecyclerAdapter();
+        if (null != mFileType){
+            switch (mFileType) {
+                case VIDEO:
+                    recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+                    mRecyclerAdapter = new VideoTypeRecyclerAdapter();
+                    break;
+                case AUDIO:
+                case IMAGE:
+                case APK:
+                case WORD:
+                case EXCEL:
+                case PPT:
+                case PDF:
+                case TEXT:
+                case HTML:
+                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                    mRecyclerAdapter = new FileTypeRecyclerAdapter();
+                    break;
+                case UNKNOW:
+                default:
+                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                    mRecyclerAdapter = new FileTypeRecyclerAdapter();
+            }
+        }
         recyclerView.setAdapter(mRecyclerAdapter);
 
         initViewClick();
@@ -138,15 +162,6 @@ public class FileClassifyActivity extends BaseAppCompatActivity {
                         mLoadingView.loadSuccess();
                         // 更新数据
                         mHeaderView.setTitle(mFileType.getStr(), calculateFileSize(fileInfoModelList));
-                        if (mFileType == FileType.VIDEO) {
-                            long startTime = System.currentTimeMillis();
-                            for (FileInfoModel fileInfoModel : fileInfoModelList) {
-                                ClassifyManager.createVideoMicro(fileInfoModel.getAbsolutePath());
-                                ClassifyManager.getVideoDuration(fileInfoModel.getAbsolutePath());
-                            }
-                            LogUtil.v("total diffTime = " + (System.currentTimeMillis() - startTime));
-                        }
-
                         mRecyclerAdapter.setDataList(fileInfoModelList, true);
                     } else {
                         mLoadingView.loadEmpty("文件夹为空");

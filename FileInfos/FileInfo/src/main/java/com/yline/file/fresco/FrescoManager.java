@@ -8,6 +8,7 @@ import com.facebook.imagepipeline.listener.BaseRequestListener;
 import com.yline.file.common.FileThreadPool;
 import com.yline.file.fresco.common.FrescoCallback;
 import com.yline.file.fresco.common.FrescoUtil;
+import com.yline.file.fresco.drawable.LoadingRenderer;
 import com.yline.file.fresco.view.FrescoView;
 import com.yline.file.fresco.view.FrescoViewSafelyHolder;
 
@@ -94,6 +95,14 @@ public class FrescoManager {
         safelyHolder.buildControllerUri();
     }
 
+    public static void setImageLocal(FrescoView frescoView, String path) {
+        FrescoViewSafelyHolder safelyHolder = new FrescoViewSafelyHolder(frescoView);
+
+        Uri imageUri = new Uri.Builder().scheme(UriUtil.LOCAL_FILE_SCHEME).path(path).build();
+        safelyHolder.setImageUri(imageUri);
+        safelyHolder.buildControllerUri();
+    }
+
     /**
      * 显示本地图片；文件夹下的；
      * 不需要file:///格式
@@ -127,6 +136,16 @@ public class FrescoManager {
         Uri imageUri = new Uri.Builder().scheme(UriUtil.LOCAL_FILE_SCHEME).path(path).build();
         safelyHolder.setImageUri(imageUri);
         safelyHolder.setResizeOptions(bitmapWidth, bitmapHeight);
+        safelyHolder.buildControllerUri();
+    }
+
+    public static void setImageLocal(FrescoView frescoView, String path, int bitmapWidth, int bitmapHeight, LoadingRenderer renderer) {
+        FrescoViewSafelyHolder safelyHolder = new FrescoViewSafelyHolder(frescoView);
+
+        Uri imageUri = new Uri.Builder().scheme(UriUtil.LOCAL_FILE_SCHEME).path(path).build();
+        safelyHolder.setImageUri(imageUri);
+        safelyHolder.setResizeOptions(bitmapWidth, bitmapHeight);
+        safelyHolder.setLoadingRender(renderer);
         safelyHolder.buildControllerUri();
     }
 

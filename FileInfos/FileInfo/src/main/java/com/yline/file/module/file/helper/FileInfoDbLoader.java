@@ -8,9 +8,9 @@ import com.yline.file.common.FileThreadPool;
 import com.yline.file.common.FileType;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.model.FileInfoModel;
-import com.yline.log.LogFileUtil;
 import com.yline.utils.FileSizeUtil;
 import com.yline.utils.FileUtil;
+import com.yline.utils.LogUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class FileInfoDbLoader {
         FileThreadPool.fixedThreadExecutor(new Runnable() {
             @Override
             public void run() {
-                LogFileUtil.v("path = " + path);
+                LogUtil.v("path = " + path);
 
                 final List<FileInfoModel> resultList = loadFileList(path);
                 IApplication.getHandler().post(new Runnable() {

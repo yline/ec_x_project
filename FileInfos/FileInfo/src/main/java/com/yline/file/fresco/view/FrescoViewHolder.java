@@ -11,6 +11,9 @@ import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.drawable.ScalingUtils;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.imagepipeline.common.ImageDecodeOptions;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
@@ -20,6 +23,7 @@ import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.yline.file.fresco.common.FrescoCallback;
+import com.yline.file.fresco.drawable.LoadingDrawable;
 
 import java.util.concurrent.Executor;
 
@@ -31,7 +35,7 @@ import java.util.concurrent.Executor;
  */
 class FrescoViewHolder {
     private Uri imageUri; // 网络链接
-    protected FrescoView frescoView;
+    protected final FrescoView frescoView;
     private FrescoCallback.OnBdttErrorCallback onBdttErrorCallback; // 全局统一错误回调
 
     private ViewGroup.LayoutParams layoutParams; // View的大小
@@ -41,6 +45,7 @@ class FrescoViewHolder {
 
     private boolean isAutoPlayAnimations; // 自动播放
     private boolean isTapToRetryEnable; // 重试，仅仅4次机会
+    private LoadingDrawable mLoadingDrawable;
 
     private FrescoCallback.OnSimpleLoadCallback onSimpleLoadCallback; // 简易回调
     private FrescoCallback.OnSimpleProcessorCallback onSimpleProcessorCallback; // Bitmap处理简单回调
@@ -65,6 +70,10 @@ class FrescoViewHolder {
 
     public void setResizeOptions(ResizeOptions resizeOptions) {
         this.resizeOptions = resizeOptions;
+    }
+
+    public void setLoadingDrawable(LoadingDrawable drawable) {
+        this.mLoadingDrawable = drawable;
     }
 
     public void setAutoPlayAnimations(boolean autoPlayAnimations) {
@@ -112,6 +121,10 @@ class FrescoViewHolder {
             public void onSubmit(String id, Object callerContext) {
                 super.onSubmit(id, callerContext);
 
+                if (null != mLoadingDrawable) {
+                    mLoadingDrawable.start();
+                }
+
                 if (null != onSimpleLoadCallback) {
                     onSimpleLoadCallback.onStart(id, callerContext);
                 }
@@ -120,6 +133,9 @@ class FrescoViewHolder {
             @Override
             public void onFailure(String id, Throwable throwable) {
                 super.onFailure(id, throwable);
+                if (null != mLoadingDrawable) {
+                    mLoadingDrawable.stop();
+                }
 
                 if (null != onSimpleLoadCallback) {
                     onSimpleLoadCallback.onFailure(id, throwable);
@@ -134,13 +150,22 @@ class FrescoViewHolder {
             public void onFinalImageSet(String id, ImageInfo imageInfo, Animatable animatable) {
                 super.onFinalImageSet(id, imageInfo, animatable);
 
+                if (null != mLoadingDrawable) {
+                    mLoadingDrawable.stop();
+                }
                 if (null != onSimpleLoadCallback) {
                     onSimpleLoadCallback.onSuccess(id, imageInfo, animatable);
                 }
             }
         });
 
-        frescoView.setController(controllerBuilder.build());
+        DraweeController draweeController = controllerBuilder.build();
+        if (null != mLoadingDrawable) {
+            GenericDraweeHierarchy genericDraweeHierarchy = frescoView.getHierarchy();
+            genericDraweeHierarchy.setProgressBarImage(mLoadingDrawable, ScalingUtils.ScaleType.FIT_CENTER);
+            draweeController.setHierarchy(genericDraweeHierarchy);
+        }
+        frescoView.setController(draweeController);
     }
 
     public void setOnSimpleProcessorCallback(FrescoCallback.OnSimpleProcessorCallback onSimpleProcessorCallback) {

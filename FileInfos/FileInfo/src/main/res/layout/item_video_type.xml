@@ -1,6 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingTop="15dp">
 
+    <!-- 图片 -->
+    <com.yline.file.fresco.view.FrescoView
+        android:id="@+id/item_video_type_fresco"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:viewAspectRatio="1.5" />
+
+    <!-- 图片底部的提示部分 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/item_video_type_fresco"
+        android:background="@color/transparent_gray_66"
+        android:paddingBottom="1dp"
+        android:paddingTop="1dp">
+
+        <!-- 时长 -->
+        <TextView
+            android:id="@+id/item_video_type_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:text="00:00:00"
+            android:textColor="@android:color/white"
+            android:textSize="11dp" />
+
+        <!-- 视频大小 -->
+        <TextView
+            android:id="@+id/item_video_type_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="3dp"
+            android:text="13.09 MB"
+            android:textColor="@android:color/white"
+            android:textSize="12dp" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_video_type_fresco"
+        android:layout_marginTop="5dp"
+        android:text="体面"
+        android:textColor="@color/gray_66"
+        android:textSize="16dp" />
 </RelativeLayout>
