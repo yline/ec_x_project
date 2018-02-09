@@ -18,6 +18,7 @@ import com.yline.file.common.LoadingView;
 import com.yline.file.module.file.db.FileDbManager;
 import com.yline.file.module.file.model.FileInfoModel;
 import com.yline.file.module.fileclassify.adapter.AbstractTypeRecyclerAdapter;
+import com.yline.file.module.fileclassify.adapter.AudioTypeRecyclerAdapter;
 import com.yline.file.module.fileclassify.adapter.FileTypeRecyclerAdapter;
 import com.yline.file.module.fileclassify.adapter.VideoTypeRecyclerAdapter;
 import com.yline.file.module.fileclassify.view.ClassifyHeaderView;
@@ -84,6 +85,9 @@ public class FileClassifyActivity extends BaseAppCompatActivity {
                     mRecyclerAdapter = new VideoTypeRecyclerAdapter();
                     break;
                 case AUDIO:
+                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                    mRecyclerAdapter = new AudioTypeRecyclerAdapter();
+                    break;
                 case IMAGE:
                 case APK:
                 case WORD:

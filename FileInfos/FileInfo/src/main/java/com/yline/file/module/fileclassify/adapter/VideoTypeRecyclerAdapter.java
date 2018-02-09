@@ -5,6 +5,8 @@ import com.yline.file.fresco.FrescoManager;
 import com.yline.file.fresco.drawable.LevelLoadingRenderer;
 import com.yline.file.fresco.view.FrescoView;
 import com.yline.file.module.file.model.FileInfoModel;
+import com.yline.file.module.fileclassify.manager.ClassifyManager;
+import com.yline.utils.FileSizeUtil;
 import com.yline.view.recycler.holder.RecyclerViewHolder;
 
 /**
@@ -31,6 +33,13 @@ public class VideoTypeRecyclerAdapter extends AbstractTypeRecyclerAdapter {
         LevelLoadingRenderer renderer = new LevelLoadingRenderer.Builder(frescoView.getContext()).build();
         FrescoManager.setImageLocal(frescoView, itemModel.getAbsolutePath(), WIDTH, HEIGHT, renderer);
 
-        //
+        // 名称
+        holder.setText(R.id.item_video_type_name, itemModel.getFileName());
+
+        // 大小
+        holder.setText(R.id.item_video_type_size, FileSizeUtil.formatFileAutoSize(itemModel.getFileSize()));
+
+        // 时长
+        holder.setText(R.id.item_video_type_duration, ClassifyManager.getVideoDurationFormat(itemModel.getAbsolutePath()));
     }
 }

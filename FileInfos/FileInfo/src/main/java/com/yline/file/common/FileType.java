@@ -13,8 +13,8 @@ import java.io.Serializable;
  * @version 1.0.0
  */
 public enum FileType implements Serializable {
-    VIDEO(10, "视频", R.drawable.icon_type_video, "%.3gp", "%.avi", "%.mov", "%.mp4", "%.mpeg", "%.mpg", "%.mpg4"), // 视频
-    AUDIO(20, "音频", R.drawable.icon_type_audio, "%.m4a", "%.mp3", "%.mpga", "%.ogg", "%.rmvb", "%.wav", "%.wma", "%.wmv"), // 音频
+    VIDEO(10, "视频", R.drawable.icon_type_video, "%.3gp", "%.avi", "%.mov", "%.mp4", "%.mpeg", "%.rmvb", "%.mpg", "%.mpg4"), // 视频
+    AUDIO(20, "音频", R.drawable.icon_type_audio, "%.m4a", "%.mp3", "%.mpga", "%.ogg", "%.wav", "%.wma", "%.wmv"), // 音频
     IMAGE(30, "图片", R.drawable.icon_type_image, "%.jpg", "%.gif", "%.png", "%.jpeg", "%.bmp", "%.webp"), // 图片
     APK(40, "安装包", R.drawable.icon_type_app, "%.apk"), // App安装包
     WORD(50, "Word", R.drawable.icon_type_word, "%.doc", "%.docx"), // word

@@ -60,11 +60,11 @@ public class IntentUtils {
     }
 
     public static boolean isFileTypeAudio(String path) {
-        return (path.endsWith(".m4a") || path.endsWith(".mp3") || path.endsWith(".mpga") || path.endsWith(".ogg") || path.endsWith(".rmvb") || path.endsWith(".wav") || path.endsWith(".wma") || path.endsWith(".wmv"));
+        return (path.endsWith(".m4a") || path.endsWith(".mp3") || path.endsWith(".mpga") || path.endsWith(".ogg") || path.endsWith(".wav") || path.endsWith(".wma") || path.endsWith(".wmv"));
     }
 
     public static boolean isFileTypeVideo(@NonNull String path) {
-        return (path.endsWith(".3gp") || path.endsWith(".avi") || path.endsWith(".mov") || path.endsWith(".mp4") || path.endsWith(".mpeg") || path.endsWith(".mpg") || path.endsWith(".mpg4"));
+        return (path.endsWith(".3gp") || path.endsWith(".avi") || path.endsWith(".mov") || path.endsWith(".mp4") || path.endsWith(".rmvb") || path.endsWith(".mpeg") || path.endsWith(".mpg") || path.endsWith(".mpg4"));
     }
 
     public static boolean isFileTypeImage(@NonNull String path) {

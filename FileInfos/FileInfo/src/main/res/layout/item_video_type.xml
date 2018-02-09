@@ -47,6 +47,7 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/item_video_type_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/item_video_type_fresco"
