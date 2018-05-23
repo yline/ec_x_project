@@ -1,4 +1,4 @@
-package com.finance.activity;
+package com.finance;
 
 import com.yline.application.BaseApplication;
 

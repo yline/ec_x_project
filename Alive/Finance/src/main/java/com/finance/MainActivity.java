@@ -1,26 +1,22 @@
-package com.finance.activity;
+package com.finance;
 
 import android.os.Bundle;
 import android.view.View;
 
-import com.finance.R;
-import com.finance.helper.ComputeHelper;
+import com.finance.util.FinanceUtils;
 import com.yline.base.BaseActivity;
 
 public class MainActivity extends BaseActivity {
-    private ComputeHelper computeHelper;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        computeHelper = new ComputeHelper();
         findViewById(R.id.btn_equal_alipay).setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                computeHelper.calculateEqualMonthlyAlipay(10000, ComputeHelper.interestDay2Month(4.0f), 12);
+                FinanceUtils.calculateEqualMonthlyAlipay(10000, FinanceUtils.interestDay2Month(4.0f), 12);
             }
         });
 
@@ -28,7 +24,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                computeHelper.calculateEqualMonthly(10000, ComputeHelper.interestDay2Month(4.0f), 12);
+                FinanceUtils.calculateEqualMonthly(10000, FinanceUtils.interestDay2Month(4.0f), 12);
             }
         });
 
@@ -36,7 +32,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                computeHelper.calculateFirstInterestAlipay(10000, ComputeHelper.interestDay2Month(4.0f), 12);
+                FinanceUtils.calculateFirstInterestAlipay(10000, FinanceUtils.interestDay2Month(4.0f), 12);
             }
         });
 
@@ -44,7 +40,7 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onClick(View v) {
-                computeHelper.calculateMatching(10000, ComputeHelper.interestDay2Month(4.0f), 12);
+                FinanceUtils.calculateMatching(10000, FinanceUtils.interestDay2Month(4.0f), 12);
             }
         });
     }

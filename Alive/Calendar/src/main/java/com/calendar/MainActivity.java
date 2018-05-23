@@ -1,9 +1,10 @@
-package com.calendar.activity;
+package com.calendar;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.calendar.countdown.CountDownActivity;
 import com.calendar.util.LunarCalendar;
 import com.yline.log.LogFileUtil;
 import com.yline.test.BaseTestActivity;
@@ -31,12 +32,19 @@ public class MainActivity extends BaseTestActivity {
                 tvDistanceCalendar.setText(result);
             }
         });
+
+        addButton("倒计时", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CountDownActivity.Companion.launcher(MainActivity.this);
+            }
+        });
     }
 
     /**
      * 计算距离截至日期的天数
      *
-     * @return
+     * @return 仅仅计算日期
      */
     public String distanceCalendar() {
         // 计算 非闰月 日期

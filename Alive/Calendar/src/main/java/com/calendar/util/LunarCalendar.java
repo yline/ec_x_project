@@ -3,6 +3,12 @@ package com.calendar.util;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+/**
+ * 阴历和阳历相互转换
+ *
+ * @author yline 2018/5/22 -- 19:56
+ * @version 1.0.0
+ */
 public class LunarCalendar {
     /**
      * 支持转换的最小农历年份
