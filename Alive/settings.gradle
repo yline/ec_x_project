@@ -1,1 +1,1 @@
-include ':Alives', ':Finance', ':Calendar'
+include ':Finance'
