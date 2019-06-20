@@ -5,6 +5,9 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'https://raw.githubusercontent.com/wuxiaosu/MvnRepository/master'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.1'
