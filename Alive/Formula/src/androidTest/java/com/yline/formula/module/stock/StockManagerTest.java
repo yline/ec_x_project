@@ -25,15 +25,23 @@ public class StockManagerTest {
 
     @Test
     public void testAssessmentValuation() {
-        double valueA10 = StockManager.discountRateModel(0.09, 10);
-        double valueA20 = StockManager.discountRateModel(0.09, 20);
-        double valueAN = StockManager.discountRateModel(0.09, 0.001);
+        double valueA10 = StockManager.discountRateModel(1, 0.09, 10);
+        double valueA20 = StockManager.discountRateModel(1, 0.09, 20);
+        double valueAN = StockManager.discountRateModel(1, 0.09, 0.001);
         LogUtil.v("A10 = " + valueA10 + ", A20 = " + valueA20 + ", AN = " + valueAN);
 
-        double valueB10 = StockManager.discountRateModel(0.07, 10);
-        double valueB20 = StockManager.discountRateModel(0.07, 20);
-        double valueBN = StockManager.discountRateModel(0.07, 0.001);
+        double valueB10 = StockManager.discountRateModel(1, 0.07, 10);
+        double valueB20 = StockManager.discountRateModel(1, 0.07, 20);
+        double valueBN = StockManager.discountRateModel(1, 0.07, 0.001);
         LogUtil.v("B10 = " + valueB10 + ", B20 = " + valueB20 + ", BN = " + valueBN);
 
+        double valueC10 = StockManager.discountRateModel(1, 0.03, 10);
+        double valueC20 = StockManager.discountRateModel(1, 0.03, 20);
+        double valueCN = StockManager.discountRateModel(1, 0.03, 0.001);
+        LogUtil.v("C10 = " + valueC10 + ", C20 = " + valueC20 + ", CN = " + valueCN);
+
+        AssessmentValuation.Result resultA = StockManager.discountRateModel(630_00, 0.05, 0.09, 0.03, 10, 221_00);
+        LogUtil.v("predict price = " + resultA.getStockPredictPrice());
+        assertEquals(54.30, resultA.getStockPredictPrice(), 0.01);
     }
 }

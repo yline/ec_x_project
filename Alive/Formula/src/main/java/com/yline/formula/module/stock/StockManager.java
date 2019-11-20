@@ -78,30 +78,48 @@ public class StockManager {
     }
 
     /**
-     * 折现率模型
+     * 折现率模型，计算出现金流的未来总值
      * 第0年，1元
      * 第1年，1/(1+rate)元
      * 第2年，1/(1+rate)^2元
      * 第n年，1/(1+rate)^n元
      * 则求和
      *
-     * @param rate 折现率
-     * @param year 年份
+     * @param cashNum 当前现金流
+     * @param rate    折现率
+     * @param year    年份
      * @return n年后的倍率
      */
-    public static double discountRateModel(double rate, int year) {
-        return AssessmentValuation.discountRateModel(rate, year);
+    public static double discountRateModel(double cashNum, double rate, int year) {
+        return AssessmentValuation.discountRateModel(cashNum, rate, year);
     }
 
 
     /**
-     * 折现率模型
+     * 折现率模型，计算出现金流的未来总值
      *
-     * @param rate   折现率
-     * @param border 当每年的现金流，相对于今年的比率小于该值时，不再执行
+     * @param cashNum 当前现金流
+     * @param rate    折现率
+     * @param border  当每年的现金流，相对于今年的比率小于该值时，不再执行
      * @return 最终的倍率
      */
-    public static double discountRateModel(double rate, double border) {
-        return AssessmentValuation.discountRateModel(rate, border);
+    public static double discountRateModel(double cashNum, double rate, double border) {
+        return AssessmentValuation.discountRateModel(cashNum, rate, border);
+    }
+
+
+    /**
+     * 使用，折线现金流模型，对公司进行估值
+     *
+     * @param freeCashNum    下一年度自由现金流(财报报表)，单位：万
+     * @param freeCashRate   自由现金流增长率，单位：1
+     * @param countRate      每年折现率，单位：1
+     * @param perpetuityRate 永续年金，增长率(参考国债增长率)，单位：1
+     * @param year           年份，单位：1
+     * @param stockCount     发行在外的股份数，单位：万
+     * @return 股价估值，单位：1
+     */
+    public static AssessmentValuation.Result discountRateModel(double freeCashNum, double freeCashRate, double countRate, double perpetuityRate, int year, double stockCount) {
+        return AssessmentValuation.discountRateModel(freeCashNum, freeCashRate, countRate, perpetuityRate, year, stockCount);
     }
 }
