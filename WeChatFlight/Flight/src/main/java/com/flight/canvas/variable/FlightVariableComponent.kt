@@ -1,11 +1,9 @@
 package com.flight.canvas.variable
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.*
 import com.flight.canvas.common.BaseComponent
 import com.flight.canvas.common.FlightData
-import com.flight.canvas.fsp.CFPSMaker
 import com.project.wechatflight.R
 import kotlin.properties.Delegates
 
@@ -25,7 +23,6 @@ class FlightVariableComponent : BaseComponent() {    // resources: Resources, wi
     private lateinit var mBitmapBigBomb: Bitmap
     lateinit var bigBombRect: Rect
 
-    private lateinit var mCfpsMaker: CFPSMaker
     private lateinit var mBitmapPause: Bitmap
     private lateinit var mBitmapStart: Bitmap
     lateinit var pauseRect: Rect
@@ -39,7 +36,7 @@ class FlightVariableComponent : BaseComponent() {    // resources: Resources, wi
         // 大炸弹
         mBitmapBigBomb = BitmapFactory.decodeResource(context.resources, R.drawable.bomb)
         bigBombRect = Rect(20, mapHeight - 20 - mBitmapBigBomb.getHeight(), 20 + mBitmapBigBomb.getWidth(), mapHeight - 20)
-        mCfpsMaker = CFPSMaker()
+
 
         // 暂停
         mBitmapPause = BitmapFactory.decodeResource(context.resources, R.drawable.game_pause)
@@ -65,8 +62,7 @@ class FlightVariableComponent : BaseComponent() {    // resources: Resources, wi
 
     fun drawVariable(canvas: Canvas, scorePaint: Paint?, isPause: Boolean) {
         canvas.drawText("分数:$mTotalScore", 20f, 30f, scorePaint!!)
-        mCfpsMaker.makeFPS()
-        canvas.drawText(mCfpsMaker.fPS + " FPS", mapWidth - 155.toFloat(), 30f, scorePaint)
+
         canvas.drawBitmap(mBitmapBigBomb, 20f, mapHeight - 20 - mBitmapBigBomb.height.toFloat(), scorePaint)
         canvas.drawText("×$mBigBombNumber", 20 + mBitmapBigBomb.width.toFloat(), mapHeight - 30.toFloat(), scorePaint)
         if (!isPause) {

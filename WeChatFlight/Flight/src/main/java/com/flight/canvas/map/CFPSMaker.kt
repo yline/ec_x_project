@@ -1,4 +1,4 @@
-package com.flight.canvas.fsp
+package com.flight.canvas.map
 
 import java.text.DecimalFormat
 
@@ -10,13 +10,16 @@ import java.text.DecimalFormat
  */
 class CFPSMaker {
     /** 现在这一秒的 帧数, 即1s钟执行的次数  */
-    var nowFPS = 0.0
+    private var nowFPS = 0.0
 
     // 中间变量
     private var interval = 0L
     private var time: Long = 0
     private var frameCount: Long = 0
     private val df = DecimalFormat("0.0")
+
+    var fPS: String = df.format(nowFPS)
+
     fun makeFPS() {
         frameCount++
         interval += PERIOD
@@ -29,8 +32,6 @@ class CFPSMaker {
             time = timeNow
         }
     }
-
-    var fPS: String = df.format(nowFPS)
 
     companion object {
         const val FPS = 8
