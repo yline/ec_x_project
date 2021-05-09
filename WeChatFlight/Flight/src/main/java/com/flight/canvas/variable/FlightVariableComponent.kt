@@ -1,9 +1,13 @@
-package com.flight.canvas
+package com.flight.canvas.variable
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
+import com.flight.canvas.common.BaseComponent
+import com.flight.canvas.common.FlightData
 import com.flight.canvas.fsp.CFPSMaker
 import com.project.wechatflight.R
+import kotlin.properties.Delegates
 
 /**
  * 就一些界面上固定位置的东西
@@ -11,32 +15,44 @@ import com.project.wechatflight.R
  * @author yline
  * @date 2016-4-3
  */
-class FlightVariable(resources: Resources, width: Int, height: Int) {
+class FlightVariableComponent : BaseComponent() {    // resources: Resources, width: Int, height: Int
     private var mBigBombNumber = 0
     private var mTotalScore: Long = 0
-    private var mapWidth = 0
-    private var mapHeight = 0
-    private var mBitmapBigBomb: Bitmap
-    var bigBombRect: Rect
 
-    private var mCfpsMaker: CFPSMaker
-    private var mBitmapPause: Bitmap
-    private var mBitmapStart: Bitmap
-    var pauseRect: Rect
+    private var mapWidth by Delegates.notNull<Int>()
+    private var mapHeight by Delegates.notNull<Int>()
 
-    init {
-        mapWidth = width
-        mapHeight = height
+    private lateinit var mBitmapBigBomb: Bitmap
+    lateinit var bigBombRect: Rect
+
+    private lateinit var mCfpsMaker: CFPSMaker
+    private lateinit var mBitmapPause: Bitmap
+    private lateinit var mBitmapStart: Bitmap
+    lateinit var pauseRect: Rect
+
+    override fun onMainInit(context: Context) {
+        val flightData = acquire(FlightData::class.java) as FlightData
+        // val flightData = FlightData()
+        mapWidth = flightData.mapWidth
+        mapHeight = flightData.mapHeight
 
         // 大炸弹
-        mBitmapBigBomb = BitmapFactory.decodeResource(resources, R.drawable.bomb)
+        mBitmapBigBomb = BitmapFactory.decodeResource(context.resources, R.drawable.bomb)
         bigBombRect = Rect(20, mapHeight - 20 - mBitmapBigBomb.getHeight(), 20 + mBitmapBigBomb.getWidth(), mapHeight - 20)
         mCfpsMaker = CFPSMaker()
 
         // 暂停
-        mBitmapPause = BitmapFactory.decodeResource(resources, R.drawable.game_pause)
-        mBitmapStart = BitmapFactory.decodeResource(resources, R.drawable.game_start)
+        mBitmapPause = BitmapFactory.decodeResource(context.resources, R.drawable.game_pause)
+        mBitmapStart = BitmapFactory.decodeResource(context.resources, R.drawable.game_start)
         pauseRect = Rect(mapWidth - 20 - mBitmapPause.getWidth(), mapHeight - 20 - mBitmapPause.getHeight(), mapWidth - 20, mapHeight - 20)
+    }
+
+    override fun onThreadMeasure(diffHeight: Float) {
+
+    }
+
+    override fun onThreadDraw(canvas: Canvas) {
+
     }
 
     fun setBigBombNumber(number: Int) {

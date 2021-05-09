@@ -2,22 +2,22 @@
     package="com.project.wechatflight">
 
     <application
-        android:name="com.flight.application.MainApplication"
+        android:name="com.flight.MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name="com.flight.activity.MainActivity"
-            android:label="@string/app_name" />
-        <activity android:name="com.flight.activity.StartActivity">
+        <activity android:name="com.flight.start.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.flight.flight.FlightActivity"
+            android:label="@string/app_name" />
     </application>
 
 </manifest>

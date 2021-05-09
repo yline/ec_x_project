@@ -1,4 +1,4 @@
-package com.flight.application
+package com.flight
 
 import com.yline.application.BaseApplication
 

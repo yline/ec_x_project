@@ -4,7 +4,6 @@ import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
-import com.flight.application.MainApplication
 import com.yline.log.LogFileUtil.v
 import java.util.*
 
@@ -37,8 +36,8 @@ class EnemyController(resources: Resources, rect: Rect) {
         mEnemy3 = Enemy3(mResources, mRandom, mMapRect, 0)
     }
 
-
     private var isStart = false
+
     fun caculateEnemy(durateTime: Float, height: Float, frizTime1: Float, frizTime2: Float, frizTime3: Float) {
         if (!isEnd) {
             // 敌机产生 时间间隔

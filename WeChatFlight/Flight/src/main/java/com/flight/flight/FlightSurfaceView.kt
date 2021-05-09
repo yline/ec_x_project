@@ -1,4 +1,4 @@
-package com.flight.activity
+package com.flight.flight
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,7 +10,11 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import com.flight.activity.MainController
+import com.flight.canvas.common.FlightData
+import com.flight.utils.ThreadPoolUtil
 import com.yline.log.LogUtil
+import com.yline.utils.provider.Provider
 
 /**
  * 确立一些背景参数
@@ -18,7 +22,7 @@ import com.yline.log.LogUtil
  * @author yline
  * @date 2016-4-2
  */
-class MainSurfaceView constructor(context: Context?, attrs: AttributeSet? = null) : SurfaceView(context, attrs), SurfaceHolder.Callback, Runnable {
+class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = null) : SurfaceView(context, attrs), SurfaceHolder.Callback, Runnable {
     private val mSurfaceHolder: SurfaceHolder
 
     private var isDrawing = false
@@ -44,8 +48,6 @@ class MainSurfaceView constructor(context: Context?, attrs: AttributeSet? = null
         this.isFocusable = true
     }
 
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
-
     override fun surfaceCreated(holder: SurfaceHolder) {
         // 只有在这里才能拿到具体的值,而不是零
         mBgWidth = this.width
@@ -54,14 +56,17 @@ class MainSurfaceView constructor(context: Context?, attrs: AttributeSet? = null
         mBgRect.set(0, 0, mBgWidth, mBgHeight)
         mBgPaint.color = Color.BLACK
         mBgPaint.isAntiAlias = true
+
         mMainController = MainController(this.resources, mBgRect, mBgPaint)
-        mMainController?.init()
+        mMainController?.onMainInit(this.context)
 
         LogUtil.v("mBgWidth = $mBgWidth,mBgHeight = $mBgHeight")
         isDrawing = true
 
-        Thread(this, "surfaceview").start()
+        ThreadPoolUtil.execute(this)
     }
+
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
 
     override fun surfaceDestroyed(holder: SurfaceHolder) {
         isDrawing = false
@@ -71,21 +76,30 @@ class MainSurfaceView constructor(context: Context?, attrs: AttributeSet? = null
         var startTime = System.nanoTime() // 毫微秒
         while (isDrawing) {
             // 确定刷新时间间隔的参数
-            val durateTime = (System.nanoTime() - startTime) / 1000000000.0f // 秒 单位
+            val durateTime = (System.nanoTime() - startTime) / 1000_000_000.0f // 秒 单位
             startTime = System.nanoTime() // 重新赋值
+
             if (mMainController?.isPause != true) {
+                val bitmapHeight = Provider.acquire(FlightData::class.java)?.mapHeight ?: 1280
+                val velocity = durateTime * bitmapHeight / 20f  // 20s 运行完一个 bitmap
+
+                mMainController?.onThreadMeasure(velocity)
                 mMainController?.updateFrame(durateTime)
 
                 synchronized(mSurfaceHolder) {
                     mCanvas = mSurfaceHolder.lockCanvas()
                     if (null != mCanvas) {
                         mCanvas?.drawRect(mBgRect, mBgPaint) // 确定绘制的范围
+                        mMainController?.onThreadDraw(mCanvas!!)
                         mMainController?.renderFrame(mCanvas!!)
+
                         mSurfaceHolder.unlockCanvasAndPost(mCanvas)
                     }
                 }
             }
         }
+
+        Thread.sleep(1000)
     }
 
     @SuppressLint("ClickableViewAccessibility")

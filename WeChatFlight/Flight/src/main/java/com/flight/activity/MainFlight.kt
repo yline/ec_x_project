@@ -7,6 +7,7 @@ class MainFlight private constructor() {
     }
 
     private var gameOverCallback: OnGameOverCallback? = null
+
     fun setOnGameOverCallback(callback: OnGameOverCallback?) {
         gameOverCallback = callback
     }
