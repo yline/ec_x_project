@@ -23,12 +23,11 @@ class MainController(private val mResources: Resources, // 背景
     private lateinit var mScorePaint: Paint
 
     // controller
-    private lateinit var supplyComponent: SupplyComponent
-    private lateinit var enemyComponent: EnemyComponent
-
     private val mapComponent = FlightMapComponent()
     private var variableComponent = FlightVariableComponent()
     private var heroComponent = FlightHeroComponent()
+    private lateinit var supplyComponent: SupplyComponent
+    private lateinit var enemyComponent: EnemyComponent
 
     private val componentList: List<BaseComponent> = arrayListOf(
             mapComponent, variableComponent, heroComponent
@@ -58,8 +57,8 @@ class MainController(private val mResources: Resources, // 背景
         mScorePaint.typeface = font
         mScorePaint.textSize = 30f
 
-        supplyComponent = SupplyComponent(mResources, mMapRect)
-        enemyComponent = EnemyComponent(mResources, mMapRect)
+        supplyComponent = SupplyComponent(context)
+        enemyComponent = EnemyComponent(context)
 
         mMatrix = Matrix()
         mScaleX = mBgRect.width() * 1.0f / mMapRect.width()

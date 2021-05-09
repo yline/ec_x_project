@@ -1,30 +1,46 @@
 package com.flight.canvas.supply
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
+import com.flight.canvas.common.BaseComponent
+import com.flight.canvas.common.FlightData
 import java.util.*
 
-class SupplyComponent(resources: Resources, rect: Rect) {
-    private val mRandom: Random
+class SupplyComponent(context: Context) : BaseComponent() {
+    private val mRandom: Random = Random()
     private val isEnd = false // hero 是否 死了
-    private var mBitmapSupply1: Bitmap
-    private var mBitmapSupply2: Bitmap
-    private var mMapRect: Rect
-    private var mSupply1: ISupply
-    private var mSupply2: ISupply
-    private var mSupplyList: MutableList<ISupply>
 
-    init {
-        mRandom = Random()
+    private lateinit var mBitmapSupply1: Bitmap
+    private lateinit var mBitmapSupply2: Bitmap
+    private lateinit var mMapRect: Rect
+    private lateinit var mSupply1: ISupply
+    private lateinit var mSupply2: ISupply
+
+    private var mSupplyList: MutableList<ISupply> = ArrayList()
+
+    override fun onMainInit(context: Context) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onThreadMeasure(diffHeight: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onThreadDraw(canvas: Canvas) {
+        TODO("Not yet implemented")
     }
 
     init {
-        mMapRect = rect
+        val resources = context.resources
+
+        val flightData = acquire(FlightData::class.java) as FlightData
+        mMapRect = Rect(0, 0, flightData.mapWidth, flightData.mapHeight)
+
         mBitmapSupply1 = BitmapFactory.decodeResource(resources, Supply1.Companion.SupplyRes)
         mBitmapSupply2 = BitmapFactory.decodeResource(resources, Supply2.Companion.SupplyRes)
         mSupply1 = Supply1(mBitmapSupply1, mRandom, mMapRect)
         mSupply2 = Supply2(mBitmapSupply2, mRandom, mMapRect)
-        mSupplyList = ArrayList()
     }
 
     private var isSupply1Start = false

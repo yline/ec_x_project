@@ -1,36 +1,49 @@
 package com.flight.canvas.enemy
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
+import com.flight.canvas.common.BaseComponent
+import com.flight.canvas.common.FlightData
 import com.yline.log.LogFileUtil.v
 import java.util.*
 
-class EnemyComponent(resources: Resources, rect: Rect) {
-    private val mRandom: Random
+class EnemyComponent(context: Context) : BaseComponent() {
+    private val mRandom: Random = Random()
     private val isEnd = false // hero 是否 死了
     private var mMapRect: Rect
-    private var mResources: Resources
-    private var mEnemy1: IEnemy
-    private var mEnemyNumber1: Int
-    private var mEnemy2: IEnemy
-    private var mEnemyNumber2: Int
-    private var mEnemy3: IEnemy
-    private var mEnemyNumber3: Int
-    private val mEnemyListTotal: MutableList<IEnemy>
 
-    init {
-        mRandom = Random()
-        mEnemyListTotal = ArrayList()
-        mEnemyNumber1 = 0
-        mEnemyNumber2 = 0
-        mEnemyNumber3 = 0
+    private lateinit var mResources: Resources
+
+    private lateinit var mEnemy1: IEnemy
+    private var mEnemyNumber1: Int = 0
+    private lateinit var mEnemy2: IEnemy
+    private var mEnemyNumber2: Int = 0
+    private lateinit var mEnemy3: IEnemy
+    private var mEnemyNumber3: Int = 0
+
+    private val mEnemyListTotal: MutableList<IEnemy> = ArrayList()
+
+    override fun onMainInit(context: Context) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onThreadMeasure(diffHeight: Float) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onThreadDraw(canvas: Canvas) {
+        TODO("Not yet implemented")
     }
 
     init {
-        mResources = resources
-        mMapRect = rect
+        mResources = context.resources
+
+        val flightData = acquire(FlightData::class.java) as FlightData
+        mMapRect = Rect(0, 0, flightData.mapWidth, flightData.mapHeight)
+
         mEnemy1 = Enemy1(mResources, mRandom, mMapRect, 0)
         mEnemy2 = Enemy2(mResources, mRandom, mMapRect, 0)
         mEnemy3 = Enemy3(mResources, mRandom, mMapRect, 0)
