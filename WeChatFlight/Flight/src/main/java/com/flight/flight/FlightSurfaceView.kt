@@ -57,7 +57,7 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
         mBgPaint.color = Color.BLACK
         mBgPaint.isAntiAlias = true
 
-        mMainController = MainController(this.resources, mBgRect, mBgPaint)
+        mMainController = MainController(mBgRect, mBgPaint)
         mMainController?.onMainInit(this.context)
 
         LogUtil.v("mBgWidth = $mBgWidth,mBgHeight = $mBgHeight")

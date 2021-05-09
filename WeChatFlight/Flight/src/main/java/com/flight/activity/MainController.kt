@@ -12,9 +12,8 @@ import com.flight.canvas.hero.HeroComponent
 import com.flight.canvas.supply.SupplyComponent
 import com.yline.log.LogUtil
 
-class MainController(private val mResources: Resources, // 背景
-                     private val mBgRect: Rect, private val mBgPaint: Paint) : BaseComponent() {
-    private lateinit var mMapRect: Rect  // 资源文件
+class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : BaseComponent() {
+    // private lateinit var mMapRect: Rect  // 资源文件
 
     // 转换关系,backGroud 和 背景资源文件
     private var mScaleX = 0f
@@ -50,7 +49,7 @@ class MainController(private val mResources: Resources, // 背景
             component.onMainInit(context)
         }
 
-        mMapRect = Rect(0, 0, mapComponent.getMapWidth(), mapComponent.getMapHeight())
+        // mMapRect = Rect(0, 0, mapComponent.getMapWidth(), mapComponent.getMapHeight())
 
         mScorePaint = Paint()
         mScorePaint.color = Color.rgb(60, 60, 60) // 颜色
@@ -59,8 +58,8 @@ class MainController(private val mResources: Resources, // 背景
         mScorePaint.textSize = 30f
 
         mMatrix = Matrix()
-        mScaleX = mBgRect.width() * 1.0f / mMapRect.width()
-        mScaleY = mBgRect.height() * 1.0f / mMapRect.height()
+        mScaleX = mBgRect.width() * 1.0f / mapComponent.getMapWidth()
+        mScaleY = mBgRect.height() * 1.0f / mapComponent.getMapHeight()
         mMatrix.setScale(mScaleX, mScaleY)
     }
 
