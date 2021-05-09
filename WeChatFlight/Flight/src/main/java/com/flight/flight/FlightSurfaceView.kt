@@ -89,7 +89,8 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
                 synchronized(mSurfaceHolder) {
                     mCanvas = mSurfaceHolder.lockCanvas()
                     if (null != mCanvas) {
-                        mCanvas?.drawRect(mBgRect, mBgPaint) // 确定绘制的范围
+                        // mCanvas?.drawRect(mBgRect, mBgPaint) // 确定绘制的范围
+
                         mMainController?.onThreadDraw(mCanvas!!)
                         mMainController?.renderFrame(mCanvas!!)
 

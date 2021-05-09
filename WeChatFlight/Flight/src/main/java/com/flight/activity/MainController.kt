@@ -8,7 +8,7 @@ import com.flight.canvas.variable.FlightVariableComponent
 import com.flight.canvas.common.BaseComponent
 import com.flight.canvas.common.FlightData
 import com.flight.canvas.enemy.EnemyController
-import com.flight.canvas.hero.FlightHero
+import com.flight.canvas.hero.FlightHeroComponent
 import com.flight.canvas.supply.SupplyController
 import com.yline.log.LogUtil
 
@@ -23,16 +23,15 @@ class MainController(private val mResources: Resources, // 背景
     private lateinit var mScorePaint: Paint
 
     // controller
-    private lateinit var mFlightHero: FlightHero
     private lateinit var mSupplyController: SupplyController
     private lateinit var mEnemyController: EnemyController
 
     private val mapComponent = FlightMapComponent()
     private var variableComponent = FlightVariableComponent()
+    private lateinit var heroComponent: FlightHeroComponent
 
     private val componentList: List<BaseComponent> = arrayListOf(
-            mapComponent,
-            variableComponent
+            mapComponent, variableComponent
     )
 
     override fun onMainInit(context: Context) {
@@ -51,14 +50,15 @@ class MainController(private val mResources: Resources, // 背景
             component.onMainInit(context)
         }
 
+        mMapRect = Rect(0, 0, mapComponent.getMapWidth(), mapComponent.getMapHeight())
+        heroComponent = FlightHeroComponent(context)
+
         mScorePaint = Paint()
         mScorePaint.color = Color.rgb(60, 60, 60) // 颜色
         val font = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD_ITALIC) // 字体
         mScorePaint.typeface = font
         mScorePaint.textSize = 30f
 
-        mMapRect = Rect(0, 0, mapComponent.getMapWidth(), mapComponent.getMapHeight())
-        mFlightHero = FlightHero(mResources, mMapRect)
 
         mSupplyController = SupplyController(mResources, mMapRect)
         mEnemyController = EnemyController(mResources, mMapRect)
@@ -70,8 +70,8 @@ class MainController(private val mResources: Resources, // 背景
     }
 
     override fun onThreadMeasure(diffHeight: Float) {
-        variableComponent.setBigBombNumber(mFlightHero.bigBombNumber)
-        variableComponent.setTotalScore(mFlightHero.score)
+        variableComponent.setBigBombNumber(heroComponent.bigBombNumber)
+        variableComponent.setTotalScore(heroComponent.score)
 
 //        mFlightHero.caculateFlightHero(durateTime, -12 * mFlightMap.velocity)
 //        // handleSupplyAttack	// 需要条件触发
@@ -132,15 +132,17 @@ class MainController(private val mResources: Resources, // 背景
     override fun onThreadDraw(canvas: Canvas) {
         canvas.save() // 配套使用
         canvas.concat(mMatrix)
-        mFlightHero.drawHero(canvas, mBgPaint) //	带子弹
-        mSupplyController.drawSupplies(canvas, mBgPaint)
-        mEnemyController.drawEnemies(canvas, mBgPaint)
-        variableComponent.drawVariable(canvas, mScorePaint, isPause)
-        canvas.restore() // 配套使用
 
         for (component in componentList) {
             component.onThreadDraw(canvas)
         }
+
+        heroComponent.drawHero(canvas, mBgPaint) //	带子弹
+        mSupplyController.drawSupplies(canvas, mBgPaint)
+        mEnemyController.drawEnemies(canvas, mBgPaint)
+        variableComponent.drawVariable(canvas, mScorePaint, isPause)
+
+        canvas.restore() // 配套使用
     }
 
     /**
@@ -191,13 +193,13 @@ class MainController(private val mResources: Resources, // 背景
         setBgXY(x, y)
         isClickBigBomb = variableComponent.bigBombRect.contains(mBgX.toInt(), mBgY.toInt())
         isClickPause = variableComponent.pauseRect.contains(mBgX.toInt(), mBgY.toInt())
-        isControllHero = mFlightHero.heroRect.contains(mBgX.toInt(), mBgY.toInt())
+        isControllHero = heroComponent.heroRect.contains(mBgX.toInt(), mBgY.toInt())
     }
 
     fun onTouchMove(x: Float, y: Float) {
         setBgXY(x, y)
         if (!isPause && isControllHero) {
-            mFlightHero.moveTo(mBgX, mBgY)
+            heroComponent.moveTo(mBgX, mBgY)
         }
     }
 
@@ -205,9 +207,9 @@ class MainController(private val mResources: Resources, // 背景
         setBgXY(x, y)
         if (Math.abs(x - downX) < 10 && Math.abs(y - downY) < 10) { // 移动范围小
             if (!isPause && isClickBigBomb) { // 在范围内,并且不是 暂停
-                if (mFlightHero.bigBombNumber > 0) {
-                    mFlightHero.reduceBigBombNumber()
-                    mFlightHero.addScore(mEnemyController.handleBigBombing())
+                if (heroComponent.bigBombNumber > 0) {
+                    heroComponent.reduceBigBombNumber()
+                    heroComponent.addScore(mEnemyController.handleBigBombing())
                 }
             }
             if (isClickPause) {

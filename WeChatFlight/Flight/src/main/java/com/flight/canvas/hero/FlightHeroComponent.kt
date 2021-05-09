@@ -1,7 +1,10 @@
 package com.flight.canvas.hero
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
+import com.flight.canvas.common.BaseComponent
+import com.flight.canvas.common.FlightData
 import com.flight.canvas.state.Counter
 import com.flight.canvas.state.CycleState
 import com.flight.canvas.state.IFlightState
@@ -19,7 +22,7 @@ import java.util.*
  * @author yline
  * @date 2016-4-3
  */
-class FlightHero(resources: Resources, rect: Rect) {
+class FlightHeroComponent(context: Context) : BaseComponent() {
     companion object {
         const val styleNormal = 0 // 杀伤力 1
         const val styleDouble = 1 // 杀伤力 2
@@ -72,10 +75,21 @@ class FlightHero(resources: Resources, rect: Rect) {
     // 倒计时,每隔几个出现一个true
     private var mCounter: Counter
 
+    override fun onMainInit(context: Context) {
+    }
+
+    override fun onThreadMeasure(diffHeight: Float) {
+    }
+
+    override fun onThreadDraw(canvas: Canvas) {
+    }
+
     init {
         // 赋值
-        mResources = resources
-        mMapRect = rect
+        mResources = context.resources
+
+        val flightData = acquire(FlightData::class.java) as FlightData
+        mMapRect = Rect(0, 0, flightData.mapWidth, flightData.mapHeight)
 
         // 辅助 资源初始化
         mCounter = Counter()
@@ -89,8 +103,8 @@ class FlightHero(resources: Resources, rect: Rect) {
         positionY = heroRect.top
 
         // bullet 资源初始化
-        mBitmapBullet1 = BitmapFactory.decodeResource(resources, Bullet1.Companion.bulletRes)
-        mBitmapBullet2 = BitmapFactory.decodeResource(resources, Bullet2.Companion.bulletRes)
+        mBitmapBullet1 = BitmapFactory.decodeResource(mResources, Bullet1.Companion.bulletRes)
+        mBitmapBullet2 = BitmapFactory.decodeResource(mResources, Bullet2.Companion.bulletRes)
         mBullet = Bullet1(mBitmapBullet1, mMapRect.top, mMapRect.bottom, 0)
         mBulletList = ArrayList()
         mBulletStyle = styleNormal

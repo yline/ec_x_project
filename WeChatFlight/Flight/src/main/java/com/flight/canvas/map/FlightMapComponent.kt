@@ -26,8 +26,8 @@ class FlightMapComponent : BaseComponent() {
     override fun onMainInit(context: Context) {
         // 背景图
         mMapBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.background_1)
-        mMapHeight = mMapBitmap.height
         mMapWidth = mMapBitmap.width
+        mMapHeight = mMapBitmap.height
 
         mMapPaint.color = Color.BLACK
         mMapPaint.isAntiAlias = true
