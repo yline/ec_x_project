@@ -11,7 +11,7 @@ import com.project.wechatflight.R
  * @author yline
  * @date 2016-4-3
  */
-class FlightMapComponent : BaseComponent() {
+class MapComponent : BaseComponent() {
 
     // 资源文件
     private var mMapWidth: Int = 0

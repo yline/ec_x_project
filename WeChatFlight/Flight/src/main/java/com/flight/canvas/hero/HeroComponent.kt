@@ -22,7 +22,7 @@ import java.util.*
  * @author yline
  * @date 2016-4-3
  */
-class FlightHeroComponent() : BaseComponent() {
+class HeroComponent() : BaseComponent() {
     companion object {
         const val styleNormal = 0 // 杀伤力 1
         const val styleDouble = 1 // 杀伤力 2

@@ -7,7 +7,7 @@ import com.flight.canvas.common.BaseComponent
 import com.flight.canvas.common.FlightData
 import java.util.*
 
-class SupplyComponent(context: Context) : BaseComponent() {
+class SupplyComponent() : BaseComponent() {
     private val mRandom: Random = Random()
     private val isEnd = false // hero 是否 死了
 
@@ -20,18 +20,6 @@ class SupplyComponent(context: Context) : BaseComponent() {
     private var mSupplyList: MutableList<ISupply> = ArrayList()
 
     override fun onMainInit(context: Context) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onThreadMeasure(diffHeight: Float) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onThreadDraw(canvas: Canvas) {
-        TODO("Not yet implemented")
-    }
-
-    init {
         val resources = context.resources
 
         val flightData = acquire(FlightData::class.java) as FlightData
@@ -41,6 +29,12 @@ class SupplyComponent(context: Context) : BaseComponent() {
         mBitmapSupply2 = BitmapFactory.decodeResource(resources, Supply2.Companion.SupplyRes)
         mSupply1 = Supply1(mBitmapSupply1, mRandom, mMapRect)
         mSupply2 = Supply2(mBitmapSupply2, mRandom, mMapRect)
+    }
+
+    override fun onThreadMeasure(diffHeight: Float) {
+    }
+
+    override fun onThreadDraw(canvas: Canvas) {
     }
 
     private var isSupply1Start = false

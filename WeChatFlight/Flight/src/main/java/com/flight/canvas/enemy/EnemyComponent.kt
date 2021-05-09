@@ -10,10 +10,10 @@ import com.flight.canvas.common.FlightData
 import com.yline.log.LogFileUtil.v
 import java.util.*
 
-class EnemyComponent(context: Context) : BaseComponent() {
+class EnemyComponent() : BaseComponent() {
     private val mRandom: Random = Random()
     private val isEnd = false // hero 是否 死了
-    private var mMapRect: Rect
+    private lateinit var mMapRect: Rect
 
     private lateinit var mResources: Resources
 
@@ -27,18 +27,6 @@ class EnemyComponent(context: Context) : BaseComponent() {
     private val mEnemyListTotal: MutableList<IEnemy> = ArrayList()
 
     override fun onMainInit(context: Context) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onThreadMeasure(diffHeight: Float) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onThreadDraw(canvas: Canvas) {
-        TODO("Not yet implemented")
-    }
-
-    init {
         mResources = context.resources
 
         val flightData = acquire(FlightData::class.java) as FlightData
@@ -47,6 +35,12 @@ class EnemyComponent(context: Context) : BaseComponent() {
         mEnemy1 = Enemy1(mResources, mRandom, mMapRect, 0)
         mEnemy2 = Enemy2(mResources, mRandom, mMapRect, 0)
         mEnemy3 = Enemy3(mResources, mRandom, mMapRect, 0)
+    }
+
+    override fun onThreadMeasure(diffHeight: Float) {
+    }
+
+    override fun onThreadDraw(canvas: Canvas) {
     }
 
     private var isStart = false

@@ -13,7 +13,7 @@ import kotlin.properties.Delegates
  * @author yline
  * @date 2016-4-3
  */
-class FlightVariableComponent : BaseComponent() {    // resources: Resources, width: Int, height: Int
+class VariableComponent : BaseComponent() {    // resources: Resources, width: Int, height: Int
     private var mBigBombNumber = 0
     private var mTotalScore: Long = 0
 

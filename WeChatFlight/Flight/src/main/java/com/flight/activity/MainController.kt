@@ -3,12 +3,12 @@ package com.flight.activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
-import com.flight.canvas.map.FlightMapComponent
-import com.flight.canvas.variable.FlightVariableComponent
+import com.flight.canvas.map.MapComponent
+import com.flight.canvas.variable.VariableComponent
 import com.flight.canvas.common.BaseComponent
 import com.flight.canvas.common.FlightData
 import com.flight.canvas.enemy.EnemyComponent
-import com.flight.canvas.hero.FlightHeroComponent
+import com.flight.canvas.hero.HeroComponent
 import com.flight.canvas.supply.SupplyComponent
 import com.yline.log.LogUtil
 
@@ -23,20 +23,21 @@ class MainController(private val mResources: Resources, // 背景
     private lateinit var mScorePaint: Paint
 
     // controller
-    private val mapComponent = FlightMapComponent()
-    private var variableComponent = FlightVariableComponent()
-    private var heroComponent = FlightHeroComponent()
-    private lateinit var supplyComponent: SupplyComponent
-    private lateinit var enemyComponent: EnemyComponent
+    private val mapComponent = MapComponent()
+    private var variableComponent = VariableComponent()
+    private var heroComponent = HeroComponent()
+    private var supplyComponent = SupplyComponent()
+    private var enemyComponent = EnemyComponent()
 
     private val componentList: List<BaseComponent> = arrayListOf(
-            mapComponent, variableComponent, heroComponent
+            mapComponent, variableComponent, heroComponent,
+            supplyComponent, enemyComponent
     )
 
     override fun onMainInit(context: Context) {
         for (component in componentList) {
             // 首个
-            if (component is FlightMapComponent) {
+            if (component is MapComponent) {
                 component.onMainInit(context)
 
                 val flightData = FlightData()
@@ -56,9 +57,6 @@ class MainController(private val mResources: Resources, // 背景
         val font = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD_ITALIC) // 字体
         mScorePaint.typeface = font
         mScorePaint.textSize = 30f
-
-        supplyComponent = SupplyComponent(context)
-        enemyComponent = EnemyComponent(context)
 
         mMatrix = Matrix()
         mScaleX = mBgRect.width() * 1.0f / mMapRect.width()
