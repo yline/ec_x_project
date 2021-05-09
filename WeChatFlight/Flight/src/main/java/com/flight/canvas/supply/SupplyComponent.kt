@@ -4,7 +4,7 @@ import android.content.res.Resources
 import android.graphics.*
 import java.util.*
 
-class SupplyController(resources: Resources, rect: Rect) {
+class SupplyComponent(resources: Resources, rect: Rect) {
     private val mRandom: Random
     private val isEnd = false // hero 是否 死了
     private var mBitmapSupply1: Bitmap

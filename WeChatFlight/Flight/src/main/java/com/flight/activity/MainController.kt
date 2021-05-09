@@ -7,9 +7,9 @@ import com.flight.canvas.map.FlightMapComponent
 import com.flight.canvas.variable.FlightVariableComponent
 import com.flight.canvas.common.BaseComponent
 import com.flight.canvas.common.FlightData
-import com.flight.canvas.enemy.EnemyController
+import com.flight.canvas.enemy.EnemyComponent
 import com.flight.canvas.hero.FlightHeroComponent
-import com.flight.canvas.supply.SupplyController
+import com.flight.canvas.supply.SupplyComponent
 import com.yline.log.LogUtil
 
 class MainController(private val mResources: Resources, // 背景
@@ -23,15 +23,15 @@ class MainController(private val mResources: Resources, // 背景
     private lateinit var mScorePaint: Paint
 
     // controller
-    private lateinit var mSupplyController: SupplyController
-    private lateinit var mEnemyController: EnemyController
+    private lateinit var supplyComponent: SupplyComponent
+    private lateinit var enemyComponent: EnemyComponent
 
     private val mapComponent = FlightMapComponent()
     private var variableComponent = FlightVariableComponent()
-    private lateinit var heroComponent: FlightHeroComponent
+    private var heroComponent = FlightHeroComponent()
 
     private val componentList: List<BaseComponent> = arrayListOf(
-            mapComponent, variableComponent
+            mapComponent, variableComponent, heroComponent
     )
 
     override fun onMainInit(context: Context) {
@@ -51,7 +51,6 @@ class MainController(private val mResources: Resources, // 背景
         }
 
         mMapRect = Rect(0, 0, mapComponent.getMapWidth(), mapComponent.getMapHeight())
-        heroComponent = FlightHeroComponent(context)
 
         mScorePaint = Paint()
         mScorePaint.color = Color.rgb(60, 60, 60) // 颜色
@@ -59,9 +58,8 @@ class MainController(private val mResources: Resources, // 背景
         mScorePaint.typeface = font
         mScorePaint.textSize = 30f
 
-
-        mSupplyController = SupplyController(mResources, mMapRect)
-        mEnemyController = EnemyController(mResources, mMapRect)
+        supplyComponent = SupplyComponent(mResources, mMapRect)
+        enemyComponent = EnemyComponent(mResources, mMapRect)
 
         mMatrix = Matrix()
         mScaleX = mBgRect.width() * 1.0f / mMapRect.width()
@@ -138,8 +136,8 @@ class MainController(private val mResources: Resources, // 背景
         }
 
         heroComponent.drawHero(canvas, mBgPaint) //	带子弹
-        mSupplyController.drawSupplies(canvas, mBgPaint)
-        mEnemyController.drawEnemies(canvas, mBgPaint)
+        supplyComponent.drawSupplies(canvas, mBgPaint)
+        enemyComponent.drawEnemies(canvas, mBgPaint)
         variableComponent.drawVariable(canvas, mScorePaint, isPause)
 
         canvas.restore() // 配套使用
@@ -209,7 +207,7 @@ class MainController(private val mResources: Resources, // 背景
             if (!isPause && isClickBigBomb) { // 在范围内,并且不是 暂停
                 if (heroComponent.bigBombNumber > 0) {
                     heroComponent.reduceBigBombNumber()
-                    heroComponent.addScore(mEnemyController.handleBigBombing())
+                    heroComponent.addScore(enemyComponent.handleBigBombing())
                 }
             }
             if (isClickPause) {

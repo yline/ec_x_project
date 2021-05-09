@@ -22,33 +22,33 @@ import java.util.*
  * @author yline
  * @date 2016-4-3
  */
-class FlightHeroComponent(context: Context) : BaseComponent() {
+class FlightHeroComponent() : BaseComponent() {
     companion object {
         const val styleNormal = 0 // 杀伤力 1
         const val styleDouble = 1 // 杀伤力 2
     }
 
     // 引用系统资源
-    private var mResources: Resources
+    private lateinit var mResources: Resources
 
     // 系统 背景
-    private var mMapRect: Rect
+    private lateinit var mMapRect: Rect
 
     // hero	图片状态
     private lateinit var mFlightState: IFlightState
 
     // hero 图片资源
-    private var mBitmapHero: Bitmap
+    private lateinit var mBitmapHero: Bitmap
 
     // hero 当前矩形
-    var heroRect: Rect
+    lateinit var heroRect: Rect
 
     // hero 当前位置,配合矩形一起使用
     private var positionX = 0
     private var positionY = 0
 
     // hero 状态
-    private var mState: HeroState
+    private lateinit var mState: HeroState
 
     // hero 大招 个数
     var bigBombNumber = 0
@@ -60,31 +60,22 @@ class FlightHeroComponent(context: Context) : BaseComponent() {
         private set
 
     // bullet 资源
-    private var mBitmapBullet1: Bitmap
-    private var mBitmapBullet2: Bitmap
+    private lateinit var mBitmapBullet1: Bitmap
+    private lateinit var mBitmapBullet2: Bitmap
 
     // bullet 对象
-    private var mBullet: IBullet
+    private lateinit var mBullet: IBullet
 
     // bullet 对象集合
-    private var mBulletList: MutableList<IBullet>
+    private lateinit var mBulletList: MutableList<IBullet>
 
     // bullet 类型
     private var mBulletStyle = 0
 
     // 倒计时,每隔几个出现一个true
-    private var mCounter: Counter
+    private lateinit var mCounter: Counter
 
     override fun onMainInit(context: Context) {
-    }
-
-    override fun onThreadMeasure(diffHeight: Float) {
-    }
-
-    override fun onThreadDraw(canvas: Canvas) {
-    }
-
-    init {
         // 赋值
         mResources = context.resources
 
@@ -108,6 +99,12 @@ class FlightHeroComponent(context: Context) : BaseComponent() {
         mBullet = Bullet1(mBitmapBullet1, mMapRect.top, mMapRect.bottom, 0)
         mBulletList = ArrayList()
         mBulletStyle = styleNormal
+    }
+
+    override fun onThreadMeasure(diffHeight: Float) {
+    }
+
+    override fun onThreadDraw(canvas: Canvas) {
     }
 
     /**

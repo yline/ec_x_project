@@ -7,7 +7,7 @@ import android.graphics.Rect
 import com.yline.log.LogFileUtil.v
 import java.util.*
 
-class EnemyController(resources: Resources, rect: Rect) {
+class EnemyComponent(resources: Resources, rect: Rect) {
     private val mRandom: Random
     private val isEnd = false // hero 是否 死了
     private var mMapRect: Rect
