@@ -1,20 +1,16 @@
 package com.flight.activity
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.*
+import com.flight.canvas.common.*
 import com.flight.canvas.map.MapComponent
 import com.flight.canvas.variable.VariableComponent
-import com.flight.canvas.common.BaseComponent
-import com.flight.canvas.common.FlightData
 import com.flight.canvas.enemy.EnemyComponent
 import com.flight.canvas.hero.HeroComponent
 import com.flight.canvas.supply.SupplyComponent
 import com.yline.log.LogUtil
 
 class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : BaseComponent() {
-    // private lateinit var mMapRect: Rect  // 资源文件
-
     // 转换关系,backGroud 和 背景资源文件
     private var mScaleX = 0f
     private var mScaleY = 0f
@@ -33,23 +29,10 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
             supplyComponent, enemyComponent
     )
 
-    override fun onMainInit(context: Context) {
+    override fun onMainInit(context: Context, initData: InitData) {
         for (component in componentList) {
-            // 首个
-            if (component is MapComponent) {
-                component.onMainInit(context)
-
-                val flightData = FlightData()
-                flightData.mapWidth = mapComponent.getMapWidth()
-                flightData.mapHeight = mapComponent.getMapHeight()
-                provide(flightData)
-                continue
-            }
-
-            component.onMainInit(context)
+            component.onMainInit(context, initData)
         }
-
-        // mMapRect = Rect(0, 0, mapComponent.getMapWidth(), mapComponent.getMapHeight())
 
         mScorePaint = Paint()
         mScorePaint.color = Color.rgb(60, 60, 60) // 颜色
@@ -58,77 +41,83 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
         mScorePaint.textSize = 30f
 
         mMatrix = Matrix()
-        mScaleX = mBgRect.width() * 1.0f / mapComponent.getMapWidth()
-        mScaleY = mBgRect.height() * 1.0f / mapComponent.getMapHeight()
+        mScaleX = mBgRect.width() * 1.0f / initData.mapWidth
+        mScaleY = mBgRect.height() * 1.0f / initData.mapHeight
         mMatrix.setScale(mScaleX, mScaleY)
     }
 
-    override fun onThreadMeasure(diffHeight: Float) {
+    override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
         variableComponent.setBigBombNumber(heroComponent.bigBombNumber)
         variableComponent.setTotalScore(heroComponent.score)
 
-//        mFlightHero.caculateFlightHero(durateTime, -12 * mFlightMap.velocity)
-//        // handleSupplyAttack	// 需要条件触发
-//        // handleEnemyAttack	// 需要条件触发
-//        // handleBulletAttack	// 需要条件触发
-//        mSupplyController.caculateSupply(durateTime, 2 * mFlightMap.velocity, 10f, 5f)
-//        // handleHeroAttack	// 需要条件触发
-//        mEnemyController.caculateEnemy(durateTime, 2 * mFlightMap.velocity, 10f, 10f, 10f)
+        heroComponent.caculateFlightHero(fromData.spaceTime, -12 * fromData.spaceHeight)
+        // handleSupplyAttack	// 需要条件触发
+        // handleEnemyAttack	// 需要条件触发
+        // handleBulletAttack	// 需要条件触发
+        supplyComponent.caculateSupply(fromData.spaceTime, 2 * fromData.spaceHeight, 10f, 5f)
+        // handleHeroAttack	// 需要条件触发
+        enemyComponent.caculateEnemy(fromData.spaceTime, 2 * fromData.spaceHeight, 10f, 10f, 10f)
         // handleHeroAttack	// 需要条件触发
         // handleBulletAttack	// 需要条件触发
 
         // 撞击操作,这是公共的部分,就公共的操作
         // 爆炸状态不算;only 正常状态
         // 1,hero + supply遍历,supply消失、hero加属性
-//        for (iSupply in mSupplyController.supplyList) {
-//            if (iSupply.isNormal && mFlightHero.isNormal) { // 正常状态
-//                if (Rect.intersects(mFlightHero.heroRect, iSupply.rect)) {
-//                    mFlightHero.handleSupplyAttack(iSupply)
-//                    mSupplyController.handleHeroAttack(iSupply)
-//                }
-//            }
-//        }
-//        for (iEnemy in mEnemyController.enemyList) {
-//            // 2,hero + enemy遍历,enemy状态处于爆炸状态、hero处于爆炸状态
-//            if (mFlightHero.isNormal && iEnemy.isRunning) { // 正常状态
-//                if (Rect.intersects(mFlightHero.heroRect, iEnemy.rect)) {
-//                    mFlightHero.handleEnemyAttack() // 拿分
-//                    mFlightHero.addScore(mEnemyController.handleHeroAttack(iEnemy))
-//                    isGameOver = true
-//                }
-//            }
-//
-//            // 3,子弹 + enemy遍历,enemy自身判断、bullet消失处理
-//            for (iBullet in mFlightHero.bulletList) {
-//                if (iEnemy.isRunning && iBullet.isRunning) {
-//                    if (Rect.intersects(iBullet.rect, iEnemy.rect)) {
-//                        mFlightHero.handleBulletAttack(iBullet) // 拿分
-//                        mFlightHero.addScore(mEnemyController.handleBulletAttack(iEnemy, iBullet.atk))
-//                    }
-//                }
-//            }
-//        }
-//        if (isGameOver) {
-//            if (gameOverDelay < 0) {
-//                isGameOver = false
-//                // 游戏结束	MainActivity 中直接操作了
-//                MainFlight.instance.setGameOverCallback(mFlightHero.score)
-//            } else {
-//                gameOverDelay -= durateTime
-//            }
-//        }
+        for (iSupply in supplyComponent.supplyList) {
+            if (iSupply.isNormal && heroComponent.isNormal) { // 正常状态
+                if (Rect.intersects(heroComponent.heroRect, iSupply.rect!!)) {
+                    heroComponent.handleSupplyAttack(iSupply)
+                    supplyComponent.handleHeroAttack(iSupply)
+                }
+            }
+        }
+        for (iEnemy in enemyComponent.enemyList) {
+            // 2,hero + enemy遍历,enemy状态处于爆炸状态、hero处于爆炸状态
+            if (heroComponent.isNormal && iEnemy.isRunning) { // 正常状态
+                if (Rect.intersects(heroComponent.heroRect, iEnemy.rect!!)) {
+                    heroComponent.handleEnemyAttack() // 拿分
+                    heroComponent.addScore(enemyComponent.handleHeroAttack(iEnemy))
+                    isGameOver = true
+                }
+            }
+
+            // 3,子弹 + enemy遍历,enemy自身判断、bullet消失处理
+            for (iBullet in heroComponent.bulletList) {
+                if (iEnemy.isRunning && iBullet.isRunning) {
+                    if (Rect.intersects(iBullet.rect!!, iEnemy.rect!!)) {
+                        heroComponent.handleBulletAttack(iBullet) // 拿分
+                        heroComponent.addScore(enemyComponent.handleBulletAttack(iEnemy, iBullet.atk))
+                    }
+                }
+            }
+        }
+        if (isGameOver) {
+            if (gameOverDelay < 0) {
+                isGameOver = false
+                // 游戏结束	MainActivity 中直接操作了
+                MainFlight.instance.setGameOverCallback(heroComponent.score)
+            } else {
+                gameOverDelay -= fromData.spaceTime
+            }
+        }
 
         for (component in componentList) {
-            component.onThreadMeasure(diffHeight)
+            component.onThreadMeasure(fromData, toData)
         }
     }
 
-    override fun onThreadDraw(canvas: Canvas) {
+    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+        for (component in componentList) {
+            component.onThreadAttack(toData, attackData)
+        }
+    }
+
+    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
         canvas.save() // 配套使用
         canvas.concat(mMatrix)
 
         for (component in componentList) {
-            component.onThreadDraw(canvas)
+            component.onThreadDraw(canvas, attackData)
         }
 
         heroComponent.drawHero(canvas, mBgPaint) //	带子弹

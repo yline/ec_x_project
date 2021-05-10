@@ -2,7 +2,7 @@ package com.flight.canvas.map
 
 import android.content.Context
 import android.graphics.*
-import com.flight.canvas.common.BaseComponent
+import com.flight.canvas.common.*
 import com.project.wechatflight.R
 
 /**
@@ -23,7 +23,7 @@ class MapComponent : BaseComponent() {
     private lateinit var mCfpsMaker: CFPSMaker
     private lateinit var mFpsPaint: Paint
 
-    override fun onMainInit(context: Context) {
+    override fun onMainInit(context: Context, initData: InitData) {
         // 背景图
         mMapBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.background_1)
         mMapWidth = mMapBitmap.width
@@ -40,19 +40,26 @@ class MapComponent : BaseComponent() {
         val font = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD_ITALIC) // 字体
         mFpsPaint.typeface = font
         mFpsPaint.textSize = 30f
+
+        // 赋值
+        initData.mapWidth = mMapWidth
+        initData.mapHeight = mMapHeight
     }
 
     // 历史 偏移量
     private var mMapOffsetY = 0f
 
-    override fun onThreadMeasure(diffHeight: Float) {
-        mMapOffsetY = (mMapOffsetY + diffHeight) % mMapHeight
+    override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
+        mMapOffsetY = (mMapOffsetY + fromData.spaceHeight) % mMapHeight
 
         // FPS
         mCfpsMaker.makeFPS()
     }
 
-    override fun onThreadDraw(canvas: Canvas) {
+    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+    }
+
+    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
         // 由于未变化之前,因此这里的高度为图片本身的高度而不是窗口的高度
         canvas.drawBitmap(mMapBitmap, 0f, mMapOffsetY - mMapHeight, mMapPaint)
         canvas.drawBitmap(mMapBitmap, 0f, mMapOffsetY, mMapPaint)
@@ -60,10 +67,6 @@ class MapComponent : BaseComponent() {
         // FPS
         canvas.drawText(mCfpsMaker.fPS + " FPS", mMapWidth - 155.toFloat(), 30f, mFpsPaint)
     }
-
-    fun getMapWidth() = mMapWidth
-
-    fun getMapHeight() = mMapHeight
 
 /*
     var velocity = 4f

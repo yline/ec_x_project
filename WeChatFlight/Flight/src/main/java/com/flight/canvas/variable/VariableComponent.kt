@@ -2,8 +2,7 @@ package com.flight.canvas.variable
 
 import android.content.Context
 import android.graphics.*
-import com.flight.canvas.common.BaseComponent
-import com.flight.canvas.common.FlightData
+import com.flight.canvas.common.*
 import com.project.wechatflight.R
 import kotlin.properties.Delegates
 
@@ -27,16 +26,13 @@ class VariableComponent : BaseComponent() {    // resources: Resources, width: I
     private lateinit var mBitmapStart: Bitmap
     lateinit var pauseRect: Rect
 
-    override fun onMainInit(context: Context) {
-        val flightData = acquire(FlightData::class.java) as FlightData
-        // val flightData = FlightData()
-        mapWidth = flightData.mapWidth
-        mapHeight = flightData.mapHeight
+    override fun onMainInit(context: Context, initData: InitData) {
+        mapWidth = initData.mapWidth
+        mapHeight = initData.mapHeight
 
         // 大炸弹
         mBitmapBigBomb = BitmapFactory.decodeResource(context.resources, R.drawable.bomb)
         bigBombRect = Rect(20, mapHeight - 20 - mBitmapBigBomb.getHeight(), 20 + mBitmapBigBomb.getWidth(), mapHeight - 20)
-
 
         // 暂停
         mBitmapPause = BitmapFactory.decodeResource(context.resources, R.drawable.game_pause)
@@ -44,12 +40,13 @@ class VariableComponent : BaseComponent() {    // resources: Resources, width: I
         pauseRect = Rect(mapWidth - 20 - mBitmapPause.getWidth(), mapHeight - 20 - mBitmapPause.getHeight(), mapWidth - 20, mapHeight - 20)
     }
 
-    override fun onThreadMeasure(diffHeight: Float) {
-
+    override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
     }
 
-    override fun onThreadDraw(canvas: Canvas) {
+    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+    }
 
+    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
     }
 
     fun setBigBombNumber(number: Int) {

@@ -5,8 +5,7 @@ import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
-import com.flight.canvas.common.BaseComponent
-import com.flight.canvas.common.FlightData
+import com.flight.canvas.common.*
 import com.yline.log.LogFileUtil.v
 import java.util.*
 
@@ -26,21 +25,23 @@ class EnemyComponent() : BaseComponent() {
 
     private val mEnemyListTotal: MutableList<IEnemy> = ArrayList()
 
-    override fun onMainInit(context: Context) {
+    override fun onMainInit(context: Context, initData: InitData) {
         mResources = context.resources
 
-        val flightData = acquire(FlightData::class.java) as FlightData
-        mMapRect = Rect(0, 0, flightData.mapWidth, flightData.mapHeight)
+        mMapRect = Rect(0, 0, initData.mapWidth, initData.mapHeight)
 
         mEnemy1 = Enemy1(mResources, mRandom, mMapRect, 0)
         mEnemy2 = Enemy2(mResources, mRandom, mMapRect, 0)
         mEnemy3 = Enemy3(mResources, mRandom, mMapRect, 0)
     }
 
-    override fun onThreadMeasure(diffHeight: Float) {
+    override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
     }
 
-    override fun onThreadDraw(canvas: Canvas) {
+    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+    }
+
+    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
     }
 
     private var isStart = false

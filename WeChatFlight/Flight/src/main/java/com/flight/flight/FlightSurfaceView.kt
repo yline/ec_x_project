@@ -11,7 +11,10 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.flight.activity.MainController
-import com.flight.canvas.common.FlightData
+import com.flight.canvas.common.AttackData
+import com.flight.canvas.common.InitData
+import com.flight.canvas.common.MeasureFromData
+import com.flight.canvas.common.MeasureToData
 import com.flight.utils.ThreadPoolUtil
 import com.yline.log.LogUtil
 import com.yline.utils.provider.Provider
@@ -37,6 +40,12 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
     // 其它参数
     private var mMainController: MainController? = null
 
+    // 交互数据
+    private val initData = InitData()
+    private val measureFromData = MeasureFromData()
+    private val measureToData = MeasureToData()
+    private val attackData = AttackData()
+
     init {
         this.keepScreenOn = true
 
@@ -58,7 +67,7 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
         mBgPaint.isAntiAlias = true
 
         mMainController = MainController(mBgRect, mBgPaint)
-        mMainController?.onMainInit(this.context)
+        mMainController?.onMainInit(this.context, initData)
 
         LogUtil.v("mBgWidth = $mBgWidth,mBgHeight = $mBgHeight")
         isDrawing = true
@@ -76,26 +85,25 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
         var startTime = System.nanoTime() // 毫微秒
         while (isDrawing) {
             // 确定刷新时间间隔的参数
-            val durateTime = (System.nanoTime() - startTime) / 1000_000_000.0f // 秒 单位
+            val spaceTime = (System.nanoTime() - startTime) / 1000_000_000.0f // 秒 单位
             startTime = System.nanoTime() // 重新赋值
 
             if (mMainController?.isPause != true) {
-                val bitmapHeight = Provider.acquire(FlightData::class.java)?.mapHeight ?: 1280
-                val velocity = durateTime * bitmapHeight / 20f  // 20s 运行完一个 bitmap
+                measureFromData.spaceTime = spaceTime
+                measureFromData.spaceHeight = spaceTime * initData.mapHeight / 20f  // 20s 运行完一个 bitmap
 
-                mMainController?.onThreadMeasure(velocity)
-                mMainController?.updateFrame(durateTime)
+                mMainController?.onThreadMeasure(measureFromData, measureToData)
+                mMainController?.updateFrame(spaceTime)
+
+                mMainController?.onThreadAttack(measureToData, attackData)
 
                 synchronized(mSurfaceHolder) {
                     mCanvas = mSurfaceHolder.lockCanvas()
-                    if (null != mCanvas) {
-                        // mCanvas?.drawRect(mBgRect, mBgPaint) // 确定绘制的范围
-
-                        mMainController?.onThreadDraw(mCanvas!!)
-                        mMainController?.renderFrame(mCanvas!!)
-
-                        mSurfaceHolder.unlockCanvasAndPost(mCanvas)
+                    mCanvas?.let {
+                        mMainController?.onThreadDraw(it, attackData)
+                        mMainController?.renderFrame(it)
                     }
+                    mSurfaceHolder.unlockCanvasAndPost(mCanvas)
                 }
             }
         }

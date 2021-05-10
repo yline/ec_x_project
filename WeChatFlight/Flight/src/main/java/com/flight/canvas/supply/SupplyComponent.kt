@@ -1,10 +1,8 @@
 package com.flight.canvas.supply
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.*
-import com.flight.canvas.common.BaseComponent
-import com.flight.canvas.common.FlightData
+import com.flight.canvas.common.*
 import java.util.*
 
 class SupplyComponent() : BaseComponent() {
@@ -19,11 +17,10 @@ class SupplyComponent() : BaseComponent() {
 
     private var mSupplyList: MutableList<ISupply> = ArrayList()
 
-    override fun onMainInit(context: Context) {
+    override fun onMainInit(context: Context, initData: InitData) {
         val resources = context.resources
 
-        val flightData = acquire(FlightData::class.java) as FlightData
-        mMapRect = Rect(0, 0, flightData.mapWidth, flightData.mapHeight)
+        mMapRect = Rect(0, 0, initData.mapWidth, initData.mapHeight)
 
         mBitmapSupply1 = BitmapFactory.decodeResource(resources, Supply1.Companion.SupplyRes)
         mBitmapSupply2 = BitmapFactory.decodeResource(resources, Supply2.Companion.SupplyRes)
@@ -31,10 +28,13 @@ class SupplyComponent() : BaseComponent() {
         mSupply2 = Supply2(mBitmapSupply2, mRandom, mMapRect)
     }
 
-    override fun onThreadMeasure(diffHeight: Float) {
+    override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
     }
 
-    override fun onThreadDraw(canvas: Canvas) {
+    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+    }
+
+    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
     }
 
     private var isSupply1Start = false

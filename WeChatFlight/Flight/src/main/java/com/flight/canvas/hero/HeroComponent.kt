@@ -3,8 +3,7 @@ package com.flight.canvas.hero
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
-import com.flight.canvas.common.BaseComponent
-import com.flight.canvas.common.FlightData
+import com.flight.canvas.common.*
 import com.flight.canvas.state.Counter
 import com.flight.canvas.state.CycleState
 import com.flight.canvas.state.IFlightState
@@ -75,12 +74,11 @@ class HeroComponent() : BaseComponent() {
     // 倒计时,每隔几个出现一个true
     private lateinit var mCounter: Counter
 
-    override fun onMainInit(context: Context) {
+    override fun onMainInit(context: Context, initData: InitData) {
         // 赋值
         mResources = context.resources
 
-        val flightData = acquire(FlightData::class.java) as FlightData
-        mMapRect = Rect(0, 0, flightData.mapWidth, flightData.mapHeight)
+        mMapRect = Rect(0, 0, initData.mapWidth, initData.mapHeight)
 
         // 辅助 资源初始化
         mCounter = Counter()
@@ -101,10 +99,13 @@ class HeroComponent() : BaseComponent() {
         mBulletStyle = styleNormal
     }
 
-    override fun onThreadMeasure(diffHeight: Float) {
+    override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
     }
 
-    override fun onThreadDraw(canvas: Canvas) {
+    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+    }
+
+    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
     }
 
     /**

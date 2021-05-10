@@ -8,19 +8,30 @@ abstract class BaseComponent {
     /**
      * 主线程 初始化
      */
-    abstract fun onMainInit(context: Context)
+    abstract fun onMainInit(context: Context, initData: InitData)
 
     /**
-     * 子线程 计算
+     * 子线程
      * @diffHeight 每次移动的高度
      */
-    abstract fun onThreadMeasure(diffHeight: Float)
+    /**
+     * @param fromData 每次测量 起源数据
+     * @param toData 每次测量 结果
+     */
+    abstract fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData)
+
+    /**
+     * @param toData 每次测量 结果
+     * @param attackData 每次 组件间 交互的结果
+     */
+    abstract fun onThreadAttack(toData: MeasureToData, attackData: AttackData)
 
     /**
      * 子线程 绘制
-     * @canvas  画布
+     * @param canvas  画布
+     * @param attackData 每次 组件间 交互的结果
      */
-    abstract fun onThreadDraw(canvas: Canvas)
+    abstract fun onThreadDraw(canvas: Canvas, attackData: AttackData)
 
     fun <T> acquire(clz: Class<T>): T? {
         return Provider.acquire(clz)

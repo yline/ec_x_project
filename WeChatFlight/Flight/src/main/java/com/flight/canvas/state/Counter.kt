@@ -24,7 +24,7 @@ class Counter {
     }
 
     /**
-     * 倒计时,只要一直被执行,那么每过friz/durate次就会返回一次true
+     * 倒计时,只要一直被执行, 那么每过 friz/durate 次 就会返回一次true
      * @param tag    标签
      * @param durate    每次刷新间隔
      * @param friz        通知间隔
