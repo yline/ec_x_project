@@ -145,10 +145,9 @@ class HeroComponent() : BaseComponent() {
     override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
     }
 
-    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
-    }
+    private val paint = Paint()
 
-    fun drawHero(canvas: Canvas, paint: Paint?) {
+    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
         if (HeroState.normal == mState || HeroState.bombing == mState) {
             canvas.drawBitmap(mBitmapHero, heroRect.left.toFloat(), heroRect.top.toFloat(), paint)
         }

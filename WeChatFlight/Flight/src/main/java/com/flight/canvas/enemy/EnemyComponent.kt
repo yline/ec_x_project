@@ -78,7 +78,12 @@ class EnemyComponent() : BaseComponent() {
     override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
     }
 
+    private val paint = Paint()
+
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
+        for (iEnemy in mEnemyListTotal) {
+            iEnemy.draw(canvas, paint)
+        }
     }
 
     private var isStart = false
@@ -96,12 +101,6 @@ class EnemyComponent() : BaseComponent() {
             mEnemyNumber3 -= 1
         }
         v("number1 = $mEnemyNumber1,number2 = $mEnemyNumber2,number3 = $mEnemyNumber3")
-    }
-
-    fun drawEnemies(canvas: Canvas, paint: Paint?) {
-        for (iEnemy in mEnemyListTotal) {
-            iEnemy.draw(canvas, paint)
-        }
     }
 
     /**

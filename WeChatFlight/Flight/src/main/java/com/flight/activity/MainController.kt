@@ -14,8 +14,7 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
     // 转换关系,backGroud 和 背景资源文件
     private var mScaleX = 0f
     private var mScaleY = 0f
-    private lateinit var mMatrix: Matrix
-    private lateinit var mScorePaint: Paint
+    private val mMatrix = Matrix()
 
     // controller
     private val mapComponent = MapComponent()
@@ -34,13 +33,6 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
             component.onMainInit(context, initData)
         }
 
-        mScorePaint = Paint()
-        mScorePaint.color = Color.rgb(60, 60, 60) // 颜色
-        val font = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD_ITALIC) // 字体
-        mScorePaint.typeface = font
-        mScorePaint.textSize = 30f
-
-        mMatrix = Matrix()
         mScaleX = mBgRect.width() * 1.0f / initData.mapWidth
         mScaleY = mBgRect.height() * 1.0f / initData.mapHeight
         mMatrix.setScale(mScaleX, mScaleY)
@@ -101,6 +93,8 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
         for (component in componentList) {
             component.onThreadAttack(toData, attackData)
         }
+
+        attackData.isPause = isPause
     }
 
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
@@ -110,11 +104,6 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
         for (component in componentList) {
             component.onThreadDraw(canvas, attackData)
         }
-
-        heroComponent.drawHero(canvas, mBgPaint) //	带子弹
-        supplyComponent.drawSupplies(canvas, mBgPaint)
-        enemyComponent.drawEnemies(canvas, mBgPaint)
-        variableComponent.drawVariable(canvas, mScorePaint, isPause)
 
         canvas.restore() // 配套使用
     }

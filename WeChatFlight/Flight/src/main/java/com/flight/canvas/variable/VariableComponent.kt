@@ -26,6 +26,8 @@ class VariableComponent : BaseComponent() {    // resources: Resources, width: I
     private lateinit var mBitmapStart: Bitmap
     lateinit var pauseRect: Rect
 
+    private var scorePaint = Paint()
+
     override fun onMainInit(context: Context, initData: InitData) {
         mapWidth = initData.mapWidth
         mapHeight = initData.mapHeight
@@ -38,6 +40,11 @@ class VariableComponent : BaseComponent() {    // resources: Resources, width: I
         mBitmapPause = BitmapFactory.decodeResource(context.resources, R.drawable.game_pause)
         mBitmapStart = BitmapFactory.decodeResource(context.resources, R.drawable.game_start)
         pauseRect = Rect(mapWidth - 20 - mBitmapPause.getWidth(), mapHeight - 20 - mBitmapPause.getHeight(), mapWidth - 20, mapHeight - 20)
+
+        scorePaint.color = Color.rgb(60, 60, 60) // 颜色
+        val font = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD_ITALIC) // 字体
+        scorePaint.typeface = font
+        scorePaint.textSize = 30f
     }
 
     override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
@@ -47,6 +54,15 @@ class VariableComponent : BaseComponent() {    // resources: Resources, width: I
     }
 
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
+        canvas.drawText("分数:$mTotalScore", 20f, 30f, scorePaint)
+
+        canvas.drawBitmap(mBitmapBigBomb, 20f, mapHeight - 20 - mBitmapBigBomb.height.toFloat(), scorePaint)
+        canvas.drawText("×$mBigBombNumber", 20 + mBitmapBigBomb.width.toFloat(), mapHeight - 30.toFloat(), scorePaint)
+        if (!attackData.isPause) {
+            canvas.drawBitmap(mBitmapPause, pauseRect.left.toFloat(), pauseRect.top.toFloat(), scorePaint)
+        } else {
+            canvas.drawBitmap(mBitmapStart, pauseRect.left.toFloat(), pauseRect.top.toFloat(), scorePaint)
+        }
     }
 
     fun setBigBombNumber(number: Int) {
@@ -56,17 +72,4 @@ class VariableComponent : BaseComponent() {    // resources: Resources, width: I
     fun setTotalScore(score: Long) {
         mTotalScore = score
     }
-
-    fun drawVariable(canvas: Canvas, scorePaint: Paint?, isPause: Boolean) {
-        canvas.drawText("分数:$mTotalScore", 20f, 30f, scorePaint!!)
-
-        canvas.drawBitmap(mBitmapBigBomb, 20f, mapHeight - 20 - mBitmapBigBomb.height.toFloat(), scorePaint)
-        canvas.drawText("×$mBigBombNumber", 20 + mBitmapBigBomb.width.toFloat(), mapHeight - 30.toFloat(), scorePaint)
-        if (!isPause) {
-            canvas.drawBitmap(mBitmapPause, pauseRect.left.toFloat(), pauseRect.top.toFloat(), scorePaint)
-        } else {
-            canvas.drawBitmap(mBitmapStart, pauseRect.left.toFloat(), pauseRect.top.toFloat(), scorePaint)
-        }
-    }
-
 }

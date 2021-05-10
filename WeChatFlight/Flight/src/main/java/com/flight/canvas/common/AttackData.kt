@@ -5,5 +5,5 @@ package com.flight.canvas.common
  * @author yline 5/10/21 -- 10:58 AM
  */
 class AttackData {
-
+    var isPause: Boolean = false
 }

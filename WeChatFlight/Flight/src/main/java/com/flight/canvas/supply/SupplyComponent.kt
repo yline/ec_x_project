@@ -57,17 +57,16 @@ class SupplyComponent() : BaseComponent() {
     override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
     }
 
+    private val paint = Paint()
+
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
-    }
-
-    private var isSupply1Start = false
-    private var isSupply2Start = false
-
-    fun drawSupplies(canvas: Canvas, paint: Paint?) {
         for (iSupply in mSupplyList) {
             iSupply.draw(canvas, paint)
         }
     }
+
+    private var isSupply1Start = false
+    private var isSupply2Start = false
 
     /**
      * 负责 补给撞击后操作
