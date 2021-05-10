@@ -6,4 +6,7 @@ package com.flight.canvas.common
  */
 class AttackData {
     var isPause: Boolean = false
+
+    var supply1Num: Int = 0 // 装备1 的数量
+    var supply2Num: Int = 0 // 装备2 的数量
 }

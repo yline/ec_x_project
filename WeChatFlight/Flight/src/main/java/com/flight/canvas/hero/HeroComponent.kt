@@ -140,6 +140,8 @@ class HeroComponent() : BaseComponent() {
                 break // 跳出整个循环,这是因为在该循环的时候,iterator的原因导致的错误
             }
         }
+
+        toData.heroRect.set(heroRect)
     }
 
     override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {

@@ -61,34 +61,34 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
         // 撞击操作,这是公共的部分,就公共的操作
         // 爆炸状态不算;only 正常状态
         // 1,hero + supply遍历,supply消失、hero加属性
-        for (iSupply in supplyComponent.supplyList) {
-            if (iSupply.isNormal && heroComponent.isNormal) { // 正常状态
-                if (Rect.intersects(heroComponent.heroRect, iSupply.rect!!)) {
-                    heroComponent.handleSupplyAttack(iSupply)
-                    supplyComponent.handleHeroAttack(iSupply)
-                }
-            }
-        }
-        for (iEnemy in enemyComponent.enemyList) {
-            // 2,hero + enemy遍历,enemy状态处于爆炸状态、hero处于爆炸状态
-            if (heroComponent.isNormal && iEnemy.isRunning) { // 正常状态
-                if (Rect.intersects(heroComponent.heroRect, iEnemy.rect!!)) {
-                    heroComponent.handleEnemyAttack() // 拿分
-                    heroComponent.addScore(enemyComponent.handleHeroAttack(iEnemy))
-                    isGameOver = true
-                }
-            }
-
-            // 3,子弹 + enemy遍历,enemy自身判断、bullet消失处理
-            for (iBullet in heroComponent.bulletList) {
-                if (iEnemy.isRunning && iBullet.isRunning) {
-                    if (Rect.intersects(iBullet.rect!!, iEnemy.rect!!)) {
-                        heroComponent.handleBulletAttack(iBullet) // 拿分
-                        heroComponent.addScore(enemyComponent.handleBulletAttack(iEnemy, iBullet.atk))
-                    }
-                }
-            }
-        }
+//        for (iSupply in supplyComponent.supplyList) {
+//            if (iSupply.isNormal && heroComponent.isNormal) { // 正常状态
+//                if (Rect.intersects(heroComponent.heroRect, iSupply.rect!!)) {
+//                    heroComponent.handleSupplyAttack(iSupply)
+//                    supplyComponent.handleHeroAttack(iSupply)
+//                }
+//            }
+//        }
+//        for (iEnemy in enemyComponent.enemyList) {
+//            // 2,hero + enemy遍历,enemy状态处于爆炸状态、hero处于爆炸状态
+//            if (heroComponent.isNormal && iEnemy.isRunning) { // 正常状态
+//                if (Rect.intersects(heroComponent.heroRect, iEnemy.rect!!)) {
+//                    heroComponent.handleEnemyAttack() // 拿分
+//                    heroComponent.addScore(enemyComponent.handleHeroAttack(iEnemy))
+//                    isGameOver = true
+//                }
+//            }
+//
+//            // 3,子弹 + enemy遍历,enemy自身判断、bullet消失处理
+//            for (iBullet in heroComponent.bulletList) {
+//                if (iEnemy.isRunning && iBullet.isRunning) {
+//                    if (Rect.intersects(iBullet.rect!!, iEnemy.rect!!)) {
+//                        heroComponent.handleBulletAttack(iBullet) // 拿分
+//                        heroComponent.addScore(enemyComponent.handleBulletAttack(iEnemy, iBullet.atk))
+//                    }
+//                }
+//            }
+//        }
 
         for (component in componentList) {
             component.onThreadAttack(toData, attackData)
@@ -108,24 +108,8 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
         canvas.restore() // 配套使用
     }
 
-    /**
-     * 更新数据
-     *
-     * @param durateTime 间隔时间
-     */
-    fun updateFrame(durateTime: Float) {
-    }
-
     private var isGameOver = false
     private var gameOverDelay = 2.0f // 延迟 1s 暂停
-
-    /**
-     * 更新界面
-     *
-     * @param canvas 绘制的画布
-     */
-    fun renderFrame(canvas: Canvas) {
-    }
 
     // 暂停按钮点击
     private var isControllHero = false

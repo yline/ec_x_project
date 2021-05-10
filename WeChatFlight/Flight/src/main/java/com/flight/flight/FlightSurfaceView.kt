@@ -93,15 +93,12 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
                 measureFromData.spaceHeight = spaceTime * initData.mapHeight / 20f  // 20s 运行完一个 bitmap
 
                 mMainController?.onThreadMeasure(measureFromData, measureToData)
-                mMainController?.updateFrame(spaceTime)
-
                 mMainController?.onThreadAttack(measureToData, attackData)
 
                 synchronized(mSurfaceHolder) {
                     mCanvas = mSurfaceHolder.lockCanvas()
                     mCanvas?.let {
                         mMainController?.onThreadDraw(it, attackData)
-                        mMainController?.renderFrame(it)
                     }
                     mSurfaceHolder.unlockCanvasAndPost(mCanvas)
                 }

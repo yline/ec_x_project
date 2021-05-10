@@ -67,15 +67,4 @@ class MapComponent : BaseComponent() {
         // FPS
         canvas.drawText(mCfpsMaker.fPS + " FPS", mMapWidth - 155.toFloat(), 30f, mFpsPaint)
     }
-
-/*
-    var velocity = 4f
-        private set
-
-    val mapWidth: Int
-        get() = mBitmapMap.width
-
-    val mapHeight: Int
-        get() = mBitmapMap.height*/
-
 }
