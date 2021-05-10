@@ -100,29 +100,14 @@ class HeroComponent() : BaseComponent() {
     }
 
     override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
-    }
-
-    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
-    }
-
-    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
-    }
-
-    /**
-     * 负责子弹移动、飞机移动、子弹产生
-     *
-     * @param durateTime 刷新频率
-     * @param height     子弹速度
-     */
-    fun caculateFlightHero(durateTime: Float, height: Float) {
         if (HeroState.normal == mState) {        // 正常状态
             // hero 切换图片资源
-            if (mCounter.caculate("caculate_change", durateTime, 0.15f)) {
+            if (mCounter.caculate("caculate_change", fromData.spaceTime, 0.15f)) {
                 mBitmapHero = BitmapFactory.decodeResource(mResources, mFlightState.next())
             }
 
             // hero 隔段时间 发送 bullet
-            if (mBullet.fireBullet(heroRect.centerX(), heroRect.top, durateTime, 0.15f)) {
+            if (mBullet.fireBullet(heroRect.centerX(), heroRect.top, fromData.spaceTime, 0.15f)) {
                 if (mBulletStyle == styleNormal) {
                     mBullet = Bullet1(mBitmapBullet1, mMapRect.top, mMapRect.bottom, 0)
                     mBulletList.add(mBullet)
@@ -140,7 +125,7 @@ class HeroComponent() : BaseComponent() {
 
         // 爆炸 阶段
         if (HeroState.bombing == mState) {
-            if (mCounter.caculate("caculate_bombing", durateTime, 0.1f)) {
+            if (mCounter.caculate("caculate_bombing", fromData.spaceTime, 0.1f)) {
                 if (mFlightState.hasNext()) {
                     mBitmapHero = BitmapFactory.decodeResource(mResources, mFlightState.next())
                 } else {
@@ -149,12 +134,18 @@ class HeroComponent() : BaseComponent() {
             }
         }
         for (iBullet in mBulletList) {
-            iBullet.caculateHeroBullet(0f, height)
+            iBullet.caculateHeroBullet(0f, -12 * fromData.spaceHeight)
             if (iBullet.isEnd) {
                 mBulletList.remove(iBullet)
                 break // 跳出整个循环,这是因为在该循环的时候,iterator的原因导致的错误
             }
         }
+    }
+
+    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+    }
+
+    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
     }
 
     fun drawHero(canvas: Canvas, paint: Paint?) {

@@ -36,17 +36,12 @@ class EnemyComponent() : BaseComponent() {
     }
 
     override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
-    }
+        val durateTime = fromData.spaceTime
+        val height = 2 * fromData.spaceHeight
+        val frizTime1 = 10f
+        val frizTime2 = 10f
+        val frizTime3 = 10f
 
-    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
-    }
-
-    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
-    }
-
-    private var isStart = false
-
-    fun caculateEnemy(durateTime: Float, height: Float, frizTime1: Float, frizTime2: Float, frizTime3: Float) {
         if (!isEnd) {
             // 敌机产生 时间间隔
             isStart = mEnemy1.start(durateTime, frizTime1)
@@ -79,6 +74,14 @@ class EnemyComponent() : BaseComponent() {
             }
         }
     }
+
+    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+    }
+
+    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
+    }
+
+    private var isStart = false
 
     /**
      * 出界就减少个数

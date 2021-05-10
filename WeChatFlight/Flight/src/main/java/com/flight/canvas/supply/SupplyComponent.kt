@@ -29,29 +29,17 @@ class SupplyComponent() : BaseComponent() {
     }
 
     override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
-    }
+        val durateTime = fromData.spaceTime
+        val height = 2 * fromData.spaceHeight
 
-    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
-    }
-
-    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
-    }
-
-    private var isSupply1Start = false
-    private var isSupply2Start = false
-
-    /**
-     * 负责 补给移动、补给产生
-     */
-    fun caculateSupply(durateTime: Float, height: Float, frizTime1: Float, frizTime2: Float) {
         if (!isEnd) {
             // 补给	产生时间间隔
-            isSupply1Start = mSupply1.start(durateTime, frizTime1)
+            isSupply1Start = mSupply1.start(durateTime, 10f)
             if (isSupply1Start) {
                 mSupplyList.add(mSupply1)
                 mSupply1 = Supply1(mBitmapSupply1, mRandom, mMapRect)
             }
-            isSupply2Start = mSupply2.start(durateTime, frizTime2)
+            isSupply2Start = mSupply2.start(durateTime, 5f)
             if (isSupply2Start) {
                 mSupplyList.add(mSupply2)
                 mSupply2 = Supply2(mBitmapSupply2, mRandom, mMapRect)
@@ -65,6 +53,15 @@ class SupplyComponent() : BaseComponent() {
             }
         }
     }
+
+    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+    }
+
+    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
+    }
+
+    private var isSupply1Start = false
+    private var isSupply2Start = false
 
     fun drawSupplies(canvas: Canvas, paint: Paint?) {
         for (iSupply in mSupplyList) {

@@ -50,16 +50,22 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
         variableComponent.setBigBombNumber(heroComponent.bigBombNumber)
         variableComponent.setTotalScore(heroComponent.score)
 
-        heroComponent.caculateFlightHero(fromData.spaceTime, -12 * fromData.spaceHeight)
-        // handleSupplyAttack	// 需要条件触发
-        // handleEnemyAttack	// 需要条件触发
-        // handleBulletAttack	// 需要条件触发
-        supplyComponent.caculateSupply(fromData.spaceTime, 2 * fromData.spaceHeight, 10f, 5f)
-        // handleHeroAttack	// 需要条件触发
-        enemyComponent.caculateEnemy(fromData.spaceTime, 2 * fromData.spaceHeight, 10f, 10f, 10f)
-        // handleHeroAttack	// 需要条件触发
-        // handleBulletAttack	// 需要条件触发
+        if (isGameOver) {
+            if (gameOverDelay < 0) {
+                isGameOver = false
+                // 游戏结束	MainActivity 中直接操作了
+                MainFlight.instance.setGameOverCallback(heroComponent.score)
+            } else {
+                gameOverDelay -= fromData.spaceTime
+            }
+        }
 
+        for (component in componentList) {
+            component.onThreadMeasure(fromData, toData)
+        }
+    }
+
+    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
         // 撞击操作,这是公共的部分,就公共的操作
         // 爆炸状态不算;only 正常状态
         // 1,hero + supply遍历,supply消失、hero加属性
@@ -91,22 +97,7 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
                 }
             }
         }
-        if (isGameOver) {
-            if (gameOverDelay < 0) {
-                isGameOver = false
-                // 游戏结束	MainActivity 中直接操作了
-                MainFlight.instance.setGameOverCallback(heroComponent.score)
-            } else {
-                gameOverDelay -= fromData.spaceTime
-            }
-        }
 
-        for (component in componentList) {
-            component.onThreadMeasure(fromData, toData)
-        }
-    }
-
-    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
         for (component in componentList) {
             component.onThreadAttack(toData, attackData)
         }
