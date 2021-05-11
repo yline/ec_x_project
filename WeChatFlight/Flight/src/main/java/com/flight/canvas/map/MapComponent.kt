@@ -2,6 +2,7 @@ package com.flight.canvas.map
 
 import android.content.Context
 import android.graphics.*
+import com.flight.canvas.BitmapManager
 import com.flight.canvas.common.*
 import com.project.wechatflight.R
 
@@ -25,11 +26,11 @@ class MapComponent : BaseComponent() {
     private var scorePaint = Paint()
 
     private lateinit var mBitmapBigBomb: Bitmap
-    private lateinit var bigBombRect: Rect
+    private lateinit var bigBombRect: RectF
 
     private lateinit var mBitmapPause: Bitmap
     private lateinit var mBitmapStart: Bitmap
-    private lateinit var pauseRect: Rect
+    private lateinit var pauseRect: RectF
 
     override fun onMainInit(context: Context, initData: InitData) {
         // 背景图
@@ -49,23 +50,27 @@ class MapComponent : BaseComponent() {
         mFpsPaint.typeface = font
         mFpsPaint.textSize = 30f
 
-        // 赋值
-        initData.mapWidth = mMapWidth
-        initData.mapHeight = mMapHeight
-
+        // score
         scorePaint.color = Color.rgb(60, 60, 60) // 颜色
         scorePaint.typeface = font
         scorePaint.textSize = 30f
 
         // 大炸弹
-        mBitmapBigBomb = BitmapFactory.decodeResource(context.resources, R.drawable.bomb)
-        bigBombRect = Rect(20, mMapHeight - 20 - mBitmapBigBomb.getHeight(), 20 + mBitmapBigBomb.getWidth(), mMapHeight - 20)
+        mBitmapBigBomb = BitmapManager.newBitmap(context.resources, R.drawable.bomb)
+        bigBombRect = RectF(0f, 0f, mBitmapBigBomb.width.toFloat(), mBitmapBigBomb.height.toFloat())
+        bigBombRect.offsetTo(20.0f, mMapHeight - 20.0f - mBitmapBigBomb.height)
 
         // 暂停
-        mBitmapPause = BitmapFactory.decodeResource(context.resources, R.drawable.game_pause)
-        mBitmapStart = BitmapFactory.decodeResource(context.resources, R.drawable.game_start)
-        pauseRect = Rect(mMapWidth - 20 - mBitmapPause.getWidth(), mMapHeight - 20 - mBitmapPause.getHeight(), mMapWidth - 20, mMapHeight - 20)
+        mBitmapPause = BitmapManager.newBitmap(context.resources, R.drawable.game_pause)
+        mBitmapStart = BitmapManager.newBitmap(context.resources, R.drawable.game_start)
+        pauseRect = RectF(0.0f, 0.0f, mBitmapPause.width.toFloat(), mBitmapPause.height.toFloat())
+        pauseRect.offsetTo(mMapWidth - 20.0f - mBitmapPause.width, mMapHeight - 20.0f - mBitmapBigBomb.height)
 
+        // 赋值
+        initData.mapWidth = mMapWidth
+        initData.mapHeight = mMapHeight
+        initData.bigBombRect = bigBombRect
+        initData.pauseRect = pauseRect
     }
 
     // 历史 偏移量
@@ -88,7 +93,6 @@ class MapComponent : BaseComponent() {
 
         // FPS
         canvas.drawText(mCfpsMaker.fPS + " FPS", mMapWidth - 155.toFloat(), 30f, mFpsPaint)
-
         canvas.drawText("分数:${attackData.totalScore}", 20f, 30f, scorePaint)
 
         canvas.drawBitmap(mBitmapBigBomb, 20f, mMapHeight - 20 - mBitmapBigBomb.height.toFloat(), scorePaint)

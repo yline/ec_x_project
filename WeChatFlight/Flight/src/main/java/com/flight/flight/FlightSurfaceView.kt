@@ -2,10 +2,7 @@ package com.flight.flight
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.SurfaceHolder
@@ -46,6 +43,13 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
     private val measureToData = MeasureToData()
     private val attackData = AttackData()
 
+    private var mScaleX = 0f
+    private var mScaleY = 0f
+    private val mMatrix = Matrix()
+
+    private var mBgX = 0f
+    private var mBgY = 0f
+
     init {
         this.keepScreenOn = true
 
@@ -66,11 +70,15 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
         mBgPaint.color = Color.BLACK
         mBgPaint.isAntiAlias = true
 
-        mMainController = MainController(mBgRect, mBgPaint)
+        mMainController = MainController(mBgRect)
         mMainController?.onMainInit(this.context, initData)
 
         LogUtil.v("mBgWidth = $mBgWidth,mBgHeight = $mBgHeight")
         isDrawing = true
+
+        mScaleX = mBgRect.width() * 1.0f / initData.mapWidth
+        mScaleY = mBgRect.height() * 1.0f / initData.mapHeight
+        mMatrix.setScale(mScaleX, mScaleY)
 
         ThreadPoolUtil.execute(this)
     }
@@ -88,7 +96,7 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
             val spaceTime = (System.nanoTime() - startTime) / 1000_000_000.0f // 秒 单位
             startTime = System.nanoTime() // 重新赋值
 
-            if (mMainController?.isPause != true) {
+            if (!attackData.isPause) {
                 measureFromData.spaceTime = spaceTime
                 measureFromData.spaceHeight = spaceTime * initData.mapHeight / 20f  // 20s 运行完一个 bitmap
 
@@ -98,7 +106,10 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
                 synchronized(mSurfaceHolder) {
                     mCanvas = mSurfaceHolder.lockCanvas()
                     mCanvas?.let {
+                        it.save() // 配套使用
+                        it.concat(mMatrix)
                         mMainController?.onThreadDraw(it, attackData)
+                        it.restore() // 配套使用
                     }
                     mSurfaceHolder.unlockCanvasAndPost(mCanvas)
                 }
@@ -108,14 +119,62 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
         Thread.sleep(1000)
     }
 
+    private var downX = 0f
+    private var downY = 0f
+
+    private var isHeroTouched = false
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        setBgXY(event.x, event.y)
+
         when (event.action) {
-            MotionEvent.ACTION_DOWN -> mMainController?.onTouchDown(event.x, event.y)
-            MotionEvent.ACTION_MOVE -> mMainController?.onTouchMove(event.x, event.y)
-            MotionEvent.ACTION_UP -> mMainController?.onTouchUp(event.x, event.y)
+            MotionEvent.ACTION_DOWN -> {
+                LogUtil.v("mBgX = $mBgX, mBgY = $mBgY")
+                downX = x
+                downY = y
+
+                isHeroTouched = measureToData.heroRect.contains(mBgX, mBgY)
+            }
+            MotionEvent.ACTION_MOVE -> {
+                // 非 暂停 状态下，飞机移动
+                if (!attackData.isPause && isHeroTouched) {
+                    mMainController?.controlHero(mBgX, mBgY)
+                }
+            }
+            MotionEvent.ACTION_UP -> {
+                // 确定是点击事件
+                if (Math.abs(x - downX) < 10 && Math.abs(y - downY) < 10) {
+                    // 点击 大炸弹使用
+                    val isClickBigBomb = initData.bigBombRect.contains(mBgX, mBgY)
+                    if (!attackData.isPause && isClickBigBomb && attackData.supply1Num > 0) {
+                        attackData.supply1Num -= 1
+
+                        // todo 炸掉 界面所有的 敌机
+                    }
+
+                    // 点击 暂停 或 开始
+                    val isClickPause = initData.pauseRect.contains(mBgX, mBgY)
+                    if (isClickPause) {
+                        attackData.isPause = !attackData.isPause
+                    }
+                }
+
+                isHeroTouched = false
+            }
         }
         return true
+    }
+
+    /**
+     * 百分比适配需要
+     *
+     * @param x
+     * @param y
+     */
+    private fun setBgXY(x: Float, y: Float) {
+        mBgX = x / mScaleX
+        mBgY = y / mScaleY
     }
 
     fun gameStop() {
