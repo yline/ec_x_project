@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import com.flight.canvas.common.*
 import com.project.wechatflight.R
+import com.yline.log.LogUtil
 import java.util.*
 import kotlin.math.min
 
@@ -32,9 +33,6 @@ class SupplyComponent() : BaseComponent() {
         newSupply(fromData.spaceTime)?.let {
             supplyList.add(it)
         }
-
-        // 越界 供给 移除
-        supplyList.removeAll { it.isDestroy() }
 
         // 当前 供给 运行
         val height = 2 * fromData.spaceHeight
@@ -75,6 +73,13 @@ class SupplyComponent() : BaseComponent() {
     }
 
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
+        // 越界 供给 移除
+        supplyList.removeAll { it.isDestroy() }
+
+        if (supplyList.size > 10) {
+            LogUtil.e("supplySize = ${supplyList.size}")
+        }
+
         for (iSupply in this.supplyList) {
             iSupply.draw(canvas, paint)
         }

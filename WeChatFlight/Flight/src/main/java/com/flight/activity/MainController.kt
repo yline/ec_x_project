@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.*
 import com.flight.canvas.common.*
 import com.flight.canvas.map.MapComponent
-import com.flight.canvas.variable.VariableComponent
 import com.flight.canvas.enemy.EnemyComponent
 import com.flight.canvas.hero.BulletComponent
 import com.flight.canvas.hero.HeroComponent
@@ -19,15 +18,14 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
 
     // controller
     private val mapComponent = MapComponent()
-    private var variableComponent = VariableComponent()
     private var bulletComponent = BulletComponent()
     private var heroComponent = HeroComponent()
     private var supplyComponent = SupplyComponent()
     private var enemyComponent = EnemyComponent()
 
     private val componentList: List<BaseComponent> = arrayListOf(
-            mapComponent, variableComponent, bulletComponent, heroComponent,
-            supplyComponent, enemyComponent
+            mapComponent, bulletComponent,
+            heroComponent, enemyComponent, supplyComponent
     )
 
     override fun onMainInit(context: Context, initData: InitData) {
@@ -41,9 +39,6 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
     }
 
     override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
-        variableComponent.setBigBombNumber(heroComponent.bigBombNumber)
-        variableComponent.setTotalScore(heroComponent.score)
-
         if (isGameOver) {
             if (gameOverDelay < 0) {
                 isGameOver = false
@@ -140,8 +135,8 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
         downX = x
         downY = y
         setBgXY(x, y)
-        isClickBigBomb = variableComponent.bigBombRect.contains(mBgX.toInt(), mBgY.toInt())
-        isClickPause = variableComponent.pauseRect.contains(mBgX.toInt(), mBgY.toInt())
+        // isClickBigBomb = variableComponent.bigBombRect.contains(mBgX.toInt(), mBgY.toInt())
+        // isClickPause = variableComponent.pauseRect.contains(mBgX.toInt(), mBgY.toInt())
         isControllHero = heroComponent.heroRect.contains(mBgX, mBgY)
     }
 

@@ -58,7 +58,11 @@ abstract class IBullet(private val resources: Resources, private val random: Ran
      * 2: 被 战机吃掉 了
      */
     fun isDestroy(): Boolean {
-        return (mBulletRect.top > initData.mapHeight) || isAttacked
+        if (mBulletRect.bottom < 0) {
+            return true
+        }
+
+        return false
     }
 
     fun getRectF() = mBulletRect

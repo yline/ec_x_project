@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import com.flight.canvas.common.*
+import com.yline.log.LogUtil
 import java.util.*
 
 class EnemyComponent() : BaseComponent() {
@@ -55,9 +56,6 @@ class EnemyComponent() : BaseComponent() {
             mEnemyListTotal.add(it)
         }
 
-        // 敌机 销毁 移除
-        mEnemyListTotal.removeAll { it.isDestroy() }
-
         val height = 2 * fromData.spaceHeight
 
         // 当前 敌机 运行
@@ -67,9 +65,17 @@ class EnemyComponent() : BaseComponent() {
     }
 
     override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+
     }
 
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
+        // 敌机 销毁 移除
+        mEnemyListTotal.removeAll { it.isDestroy() }
+
+        if (mEnemyListTotal.size > 10) {
+            LogUtil.e("enemySize = ${mEnemyListTotal.size}")
+        }
+
         for (iEnemy in mEnemyListTotal) {
             iEnemy.draw(canvas, paint)
         }

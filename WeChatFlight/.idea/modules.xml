@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/WeChatFlight.iml" filepath="$PROJECT_DIR$/.idea/modules/WeChatFlight.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Flight/WeChatFlight.Flight.iml" filepath="$PROJECT_DIR$/.idea/modules/Flight/WeChatFlight.Flight.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/as_x_project.WeChatFlight.iml" filepath="$PROJECT_DIR$/.idea/modules/as_x_project.WeChatFlight.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Flight/as_x_project.WeChatFlight.Flight.iml" filepath="$PROJECT_DIR$/.idea/modules/Flight/as_x_project.WeChatFlight.Flight.iml" />
     </modules>
   </component>
 </project>

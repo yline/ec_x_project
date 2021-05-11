@@ -12,7 +12,6 @@ import com.project.wechatflight.R
  * @date 2016-4-3
  */
 class MapComponent : BaseComponent() {
-
     // 资源文件
     private var mMapWidth: Int = 0
     private var mMapHeight: Int = 0
@@ -22,6 +21,15 @@ class MapComponent : BaseComponent() {
     // FPS
     private lateinit var mCfpsMaker: CFPSMaker
     private lateinit var mFpsPaint: Paint
+
+    private var scorePaint = Paint()
+
+    private lateinit var mBitmapBigBomb: Bitmap
+    private lateinit var bigBombRect: Rect
+
+    private lateinit var mBitmapPause: Bitmap
+    private lateinit var mBitmapStart: Bitmap
+    private lateinit var pauseRect: Rect
 
     override fun onMainInit(context: Context, initData: InitData) {
         // 背景图
@@ -44,6 +52,20 @@ class MapComponent : BaseComponent() {
         // 赋值
         initData.mapWidth = mMapWidth
         initData.mapHeight = mMapHeight
+
+        scorePaint.color = Color.rgb(60, 60, 60) // 颜色
+        scorePaint.typeface = font
+        scorePaint.textSize = 30f
+
+        // 大炸弹
+        mBitmapBigBomb = BitmapFactory.decodeResource(context.resources, R.drawable.bomb)
+        bigBombRect = Rect(20, mMapHeight - 20 - mBitmapBigBomb.getHeight(), 20 + mBitmapBigBomb.getWidth(), mMapHeight - 20)
+
+        // 暂停
+        mBitmapPause = BitmapFactory.decodeResource(context.resources, R.drawable.game_pause)
+        mBitmapStart = BitmapFactory.decodeResource(context.resources, R.drawable.game_start)
+        pauseRect = Rect(mMapWidth - 20 - mBitmapPause.getWidth(), mMapHeight - 20 - mBitmapPause.getHeight(), mMapWidth - 20, mMapHeight - 20)
+
     }
 
     // 历史 偏移量
@@ -66,5 +88,16 @@ class MapComponent : BaseComponent() {
 
         // FPS
         canvas.drawText(mCfpsMaker.fPS + " FPS", mMapWidth - 155.toFloat(), 30f, mFpsPaint)
+
+        canvas.drawText("分数:${attackData.totalScore}", 20f, 30f, scorePaint)
+
+        canvas.drawBitmap(mBitmapBigBomb, 20f, mMapHeight - 20 - mBitmapBigBomb.height.toFloat(), scorePaint)
+        canvas.drawText("×${attackData.supply1Num}", 20 + mBitmapBigBomb.width.toFloat(), mMapHeight - 30.toFloat(), scorePaint)
+
+        if (!attackData.isPause) {
+            canvas.drawBitmap(mBitmapPause, pauseRect.left.toFloat(), pauseRect.top.toFloat(), scorePaint)
+        } else {
+            canvas.drawBitmap(mBitmapStart, pauseRect.left.toFloat(), pauseRect.top.toFloat(), scorePaint)
+        }
     }
 }

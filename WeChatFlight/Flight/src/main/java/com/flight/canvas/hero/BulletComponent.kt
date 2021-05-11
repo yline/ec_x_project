@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.RectF
 import com.flight.canvas.common.*
+import com.yline.log.LogUtil
 import java.util.*
 
 class BulletComponent : BaseComponent() {
@@ -63,9 +64,6 @@ class BulletComponent : BaseComponent() {
             mBulletList.add(it)
         }
 
-        // 敌机 销毁 移除
-        mBulletList.removeAll { it.isDestroy() }
-
         val height = -12 * fromData.spaceHeight
 
         // 当前 敌机 运行
@@ -83,6 +81,13 @@ class BulletComponent : BaseComponent() {
     }
 
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
+        // 敌机 销毁 移除
+        mBulletList.removeAll { it.isDestroy() }
+
+        if (mBulletList.size > 20) {
+            LogUtil.e("bulletSize = ${mBulletList.size}")
+        }
+
         // 子弹	遍历 + drawBullet
         for (bullet in mBulletList) {
             bullet.draw(canvas, paint)

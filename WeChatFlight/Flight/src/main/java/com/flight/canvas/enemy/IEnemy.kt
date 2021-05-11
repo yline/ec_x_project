@@ -23,6 +23,10 @@ abstract class IEnemy(private val resources: Resources, private val random: Rand
     }
 
     fun isDestroy(): Boolean {
+        // 越界了
+        if (mEnemyRectF.top > initData.mapHeight) {
+            return true
+        }
         return false
     }
 
