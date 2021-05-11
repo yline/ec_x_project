@@ -11,7 +11,6 @@ import java.util.*
 
 class EnemyComponent() : BaseComponent() {
     private val mRandom: Random = Random()
-    private val isEnd = false // hero 是否 死了
     private lateinit var mMapRect: Rect
 
     private lateinit var mResources: Resources
@@ -25,53 +24,53 @@ class EnemyComponent() : BaseComponent() {
 
     private val mEnemyListTotal: MutableList<IEnemy> = ArrayList()
 
+    private var nextEnemyTime = 0.0f
+
     override fun onMainInit(context: Context, initData: InitData) {
         mResources = context.resources
 
         mMapRect = Rect(0, 0, initData.mapWidth, initData.mapHeight)
 
-        mEnemy1 = Enemy1(mResources, mRandom, mMapRect, 0)
-        mEnemy2 = Enemy2(mResources, mRandom, mMapRect, 0)
-        mEnemy3 = Enemy3(mResources, mRandom, mMapRect, 0)
+        mEnemy1 = Enemy1(mResources, mRandom, initData).init()
+        mEnemy2 = Enemy2(mResources, mRandom, initData).init()
+        mEnemy3 = Enemy3(mResources, mRandom, initData).init()
+    }
+
+    private fun newEnemy(spaceTime: Float): IEnemy? {
+        // 还没到 供给 时间
+        if (nextEnemyTime > 0) {
+            nextEnemyTime -= spaceTime
+            return null
+        }
+
+        // 重新设值
+        nextEnemyTime = 1.0f + mRandom.nextInt(3)
+
+        // 供给 时间 到了
+        val nextInt = mRandom.nextInt(3)
+        if (nextInt >= 2) {
+            return mEnemy1.clone()
+        } else if (nextInt == 1) {
+            return mEnemy2.clone()
+        } else {
+            return mEnemy3.clone()
+        }
     }
 
     override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
-        val durateTime = fromData.spaceTime
+        // 新的 敌机 出现
+        newEnemy(fromData.spaceTime)?.let {
+            mEnemyListTotal.add(it)
+        }
+
+        // 敌机 销毁 移除
+        mEnemyListTotal.removeAll { it.isDestroy() }
+
         val height = 2 * fromData.spaceHeight
-        val frizTime1 = 10f
-        val frizTime2 = 10f
-        val frizTime3 = 10f
 
-        if (!isEnd) {
-            // 敌机产生 时间间隔
-            isStart = mEnemy1.start(durateTime, frizTime1)
-            if (isStart) {
-                mEnemyListTotal.add(mEnemy1)
-                mEnemyNumber1 += 1
-                mEnemy1 = Enemy1(mResources, mRandom, mMapRect, 0)
-            }
-            isStart = mEnemy2.start(durateTime, frizTime2)
-            if (isStart) {
-                mEnemyListTotal.add(mEnemy2)
-                mEnemyNumber2 += 1
-                mEnemy2 = Enemy2(mResources, mRandom, mMapRect, 0)
-            }
-            isStart = mEnemy3.start(durateTime, frizTime3)
-            if (isStart) {
-                mEnemyListTotal.add(mEnemy3)
-                mEnemyNumber3 += 1
-                mEnemy3 = Enemy3(mResources, mRandom, mMapRect, 0)
-            }
-
-            // 移动, + 出界处理
-            for (iEnemy in mEnemyListTotal) {
-                iEnemy.caculate(durateTime, 0f, height)
-                if (iEnemy.isEnd) {
-                    mEnemyListTotal.remove(iEnemy)
-                    reduceEnemyNumber(iEnemy)
-                    break
-                }
-            }
+        // 当前 敌机 运行
+        for (iEnemy in mEnemyListTotal) {
+            iEnemy.move(0.0f, height)
         }
     }
 
@@ -103,32 +102,32 @@ class EnemyComponent() : BaseComponent() {
         v("number1 = $mEnemyNumber1,number2 = $mEnemyNumber2,number3 = $mEnemyNumber3")
     }
 
-    /**
-     * 大炸弹 的操作
-     * @return
-     */
-    fun handleBigBombing(): Int {
-        var score = 0
-        for (iEnemy in mEnemyListTotal) {
-            score += iEnemy.hitted(Int.MAX_VALUE)
-        }
-        return score
-    }
+//    /**
+//     * 大炸弹 的操作
+//     * @return
+//     */
+//    fun handleBigBombing(): Int {
+//        var score = 0
+//        for (iEnemy in mEnemyListTotal) {
+//            score += iEnemy.hitted(Int.MAX_VALUE)
+//        }
+//        return score
+//    }
 
-    /**
-     * hero撞击后 操作
-     */
-    fun handleHeroAttack(iEnemy: IEnemy): Int {
-        iEnemy.blowUp()
-        return iEnemy.score
-    }
+//    /**
+//     * hero撞击后 操作
+//     */
+//    fun handleHeroAttack(iEnemy: IEnemy): Int {
+//        iEnemy.blowUp()
+//        return iEnemy.score
+//    }
 
-    /**
-     * 子弹撞击后操作
-     */
-    fun handleBulletAttack(iEnemy: IEnemy, atk: Int): Int {
-        return iEnemy.hitted(atk)
-    }
+//    /**
+//     * 子弹撞击后操作
+//     */
+//    fun handleBulletAttack(iEnemy: IEnemy, atk: Int): Int {
+//        return iEnemy.hitted(atk)
+//    }
 
     val enemyList: List<IEnemy>
         get() = mEnemyListTotal

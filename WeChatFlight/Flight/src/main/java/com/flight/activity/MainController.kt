@@ -156,7 +156,7 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
             if (!isPause && isClickBigBomb) { // 在范围内,并且不是 暂停
                 if (heroComponent.bigBombNumber > 0) {
                     heroComponent.reduceBigBombNumber()
-                    heroComponent.addScore(enemyComponent.handleBigBombing())
+//                    heroComponent.addScore(enemyComponent.handleBigBombing())
                 }
             }
             if (isClickPause) {

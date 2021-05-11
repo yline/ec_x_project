@@ -21,12 +21,8 @@ class SupplyComponent() : BaseComponent() {
 
     override fun onMainInit(context: Context, initData: InitData) {
         val resources = context.resources
-
-        val bitmapSupply1 = BitmapFactory.decodeResource(resources, R.drawable.supply1) // 炸弹
-        val bitmapSupply2 = BitmapFactory.decodeResource(resources, R.drawable.supply2) // 双子弹
-
-        supply1 = Supply1(bitmapSupply1, random, initData)
-        supply2 = Supply2(bitmapSupply2, random, initData)
+        supply1 = Supply1(resources, random, initData).init()
+        supply2 = Supply2(resources, random, initData).init()
 
         nextSupplyTime = 1.0f + random.nextInt(3)
     }

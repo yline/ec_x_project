@@ -6,7 +6,9 @@ import com.flight.flight.FlightActivity
 import com.project.wechatflight.R
 import com.yline.application.SDKManager
 import com.yline.base.BaseActivity
+import com.yline.log.LogUtil
 import kotlinx.android.synthetic.main.activity_start.*
+import java.lang.Exception
 
 /**
  * 经验教训几条:
@@ -41,7 +43,7 @@ class StartActivity : BaseActivity() {
             FlightActivity.launchForResult(this, request_code)
         }
         btn_out.setOnClickListener {
-            finish()
+             finish()
         }
 
         btn_history_score.setOnClickListener {
