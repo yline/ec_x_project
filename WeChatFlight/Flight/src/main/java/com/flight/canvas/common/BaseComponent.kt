@@ -21,16 +21,6 @@ abstract class BaseComponent {
     abstract fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData)
 
     /**
-     * 1: hero 和 supply 的交互. hero 提供数据，supply 处理
-     * 2: bullet 和 enemy 的交互,
-     * 3: hero 和 enemy 的交互,
-     *
-     * @param toData 每次测量 结果
-     * @param attackData 每次 组件间 交互的结果
-     */
-    abstract fun onThreadAttack(toData: MeasureToData, attackData: AttackData)
-
-    /**
      * 子线程 绘制
      * @param canvas  画布
      * @param attackData 每次 组件间 交互的结果

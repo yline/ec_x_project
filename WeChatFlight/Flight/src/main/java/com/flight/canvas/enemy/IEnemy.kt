@@ -11,6 +11,8 @@ import java.util.*
 abstract class IEnemy(private val resources: Resources, private val random: Random, private val initData: InitData) {
     private val mEnemyRectF = RectF()
 
+    private var mHP: Int = 0
+
     fun init(): IEnemy {
         val bitmap = BitmapManager.newBitmap(resources, getSourceArray()[0])
 
@@ -19,7 +21,17 @@ abstract class IEnemy(private val resources: Resources, private val random: Rand
 
         mEnemyRectF.set(left, top, left + bitmap.width, top + bitmap.height)
 
+        mHP = getHP()
+
         return this
+    }
+
+    fun isHPEmpty(): Boolean {
+        return mHP <= 0
+    }
+
+    fun changeHP(dHP: Int) {
+        mHP += dHP
     }
 
     fun isDestroy(): Boolean {
@@ -27,6 +39,11 @@ abstract class IEnemy(private val resources: Resources, private val random: Rand
         if (mEnemyRectF.top > initData.mapHeight) {
             return true
         }
+
+        if (isHPEmpty()) {
+            return true
+        }
+
         return false
     }
 
@@ -37,6 +54,8 @@ abstract class IEnemy(private val resources: Resources, private val random: Rand
     abstract fun getSourceArray(): IntArray
 
     abstract fun getScore(): Int
+
+    abstract fun getHP(): Int
 
     fun clone(): IEnemy {
         return clone(resources, random, initData).init()

@@ -83,9 +83,6 @@ class MapComponent : BaseComponent() {
         mCfpsMaker.makeFPS()
     }
 
-    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
-    }
-
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
         // 由于未变化之前,因此这里的高度为图片本身的高度而不是窗口的高度
         canvas.drawBitmap(mMapBitmap, 0f, mMapOffsetY - mMapHeight, mMapPaint)

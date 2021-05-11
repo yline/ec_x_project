@@ -10,7 +10,8 @@ import java.util.*
 
 abstract class IBullet(private val resources: Resources, private val random: Random, private val initData: InitData) {
     private val mBulletRect = RectF()
-    private var isAttacked = false
+
+    var isAttacked = false
 
     fun init(heroRect: RectF): IBullet {
         val bitmap = BitmapManager.newBitmap(resources, getSourceId())
@@ -31,18 +32,6 @@ abstract class IBullet(private val resources: Resources, private val random: Ran
         canvas.drawBitmap(bitmap, mBulletRect.left, mBulletRect.top, paint)
     }
 
-    fun isAttack(heroRect: RectF): Boolean {
-        if (isAttacked) {
-            return false
-        }
-
-        if (RectF.intersects(heroRect, mBulletRect)) {
-            isAttacked = true
-            return true
-        }
-        return false
-    }
-
     fun clone(): IBullet {
         return clone(resources, random, initData)
     }
@@ -51,6 +40,8 @@ abstract class IBullet(private val resources: Resources, private val random: Ran
 
     protected abstract fun getSourceId(): Int
 
+    abstract fun getATK(): Int
+
     /**
      * 被销毁
      * 1: 供给越界
@@ -58,6 +49,10 @@ abstract class IBullet(private val resources: Resources, private val random: Ran
      */
     fun isDestroy(): Boolean {
         if (mBulletRect.bottom < 0) {
+            return true
+        }
+
+        if (isAttacked) {
             return true
         }
 

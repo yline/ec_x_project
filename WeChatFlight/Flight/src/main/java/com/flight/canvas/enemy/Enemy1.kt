@@ -30,6 +30,9 @@ class Enemy1(resources: Resources, random: Random, initData: InitData)
         return 2
     }
 
+    override fun getHP(): Int {
+        return 4
+    }
 
 //
 //    // 中间变量

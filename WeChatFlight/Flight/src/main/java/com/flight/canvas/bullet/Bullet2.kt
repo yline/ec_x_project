@@ -16,6 +16,11 @@ class Bullet2(resources: Resources, random: Random, initData: InitData)
         return R.drawable.bullet2
     }
 
+    override fun getATK(): Int {
+        return 2
+    }
+
+
 //    override var rect: Rect? = null
 //        private set
 //    private var mState: BulletState

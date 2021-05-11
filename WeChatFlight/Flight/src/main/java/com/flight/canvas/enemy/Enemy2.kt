@@ -25,6 +25,10 @@ class Enemy2(resources: Resources, random: Random, initData: InitData)
     override fun getScore(): Int {
         return 10
     }
+
+    override fun getHP(): Int {
+        return 20
+    }
 //
 //    // 中间变量
 //    private var mHp = 0

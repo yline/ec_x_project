@@ -59,19 +59,6 @@ class SupplyComponent() : BaseComponent() {
         }
     }
 
-    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
-        for (iSupply in this.supplyList) {
-            if (iSupply.isAttack(toData.heroRect)) {
-                if (iSupply is Supply1) {
-                    attackData.supply1Num += 1
-                    attackData.supply1Num = min(3, attackData.supply1Num)   // 上限为 3
-                } else {
-                    attackData.supply2Num += 1
-                }
-            }
-        }
-    }
-
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
         // 越界 供给 移除
         supplyList.removeAll { it.isDestroy() }

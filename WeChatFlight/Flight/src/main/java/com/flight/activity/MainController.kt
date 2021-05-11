@@ -7,7 +7,9 @@ import com.flight.canvas.map.MapComponent
 import com.flight.canvas.enemy.EnemyComponent
 import com.flight.canvas.bullet.BulletComponent
 import com.flight.canvas.hero.HeroComponent
+import com.flight.canvas.supply.Supply1
 import com.flight.canvas.supply.SupplyComponent
+import kotlin.math.min
 
 class MainController : BaseComponent() {
     private val mapComponent = MapComponent()
@@ -36,20 +38,50 @@ class MainController : BaseComponent() {
         }
     }
 
-    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
-        // 撞击操作,这是公共的部分,就公共的操作
-        // 爆炸状态不算;only 正常状态
-        // 1,hero + supply遍历,supply消失、hero加属性
-//        for (iSupply in supplyComponent.supplyList) {
-//            if (iSupply.isNormal && heroComponent.isNormal) { // 正常状态
-//                if (Rect.intersects(heroComponent.heroRect, iSupply.rect!!)) {
-//                    heroComponent.handleSupplyAttack(iSupply)
-//                    supplyComponent.handleHeroAttack(iSupply)
-//                }
-//            }
-//        }
-//        for (iEnemy in enemyComponent.enemyList) {
-//            // 2,hero + enemy遍历,enemy状态处于爆炸状态、hero处于爆炸状态
+    fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+        // bullet + enemy; enemy自身判断、bullet消失处理
+        for (iEnemy in toData.enemyList) {
+            if (iEnemy.isHPEmpty()) continue
+
+            for (iBullet in toData.bulletList) {
+                if (iBullet.isAttacked) continue
+
+                // 表示 击中 了
+                if (RectF.intersects(iBullet.getRectF(), iEnemy.getRectF())) {
+                    iEnemy.changeHP(-iBullet.getATK())
+                    iBullet.isAttacked = true
+
+                    if (iEnemy.isHPEmpty()) {
+                        attackData.totalScore += iEnemy.getScore()
+                    }
+                }
+            }
+        }
+
+        // hero + supply; supply消失、hero加属性
+        for (iSupply in toData.supplyList) {
+            if (iSupply.isAttacked) continue
+
+            if (RectF.intersects(iSupply.getRectF(), toData.heroRect)) {
+                // 更新 炸弹状态
+                if (iSupply is Supply1) {
+                    attackData.supply1Num += 1
+                    attackData.supply1Num = min(3, attackData.supply1Num)   // 上限为 3
+                } else {
+                    attackData.supply2Num += 1
+                }
+
+                iSupply.isAttacked = true
+            }
+        }
+
+        // hero + enemy 遍历;
+        for (iEnemy in toData.enemyList) {
+            if (iEnemy.isHPEmpty()) continue
+
+            // todo hero 需要一个单独的类
+
+            //            // 2,hero + enemy遍历,enemy状态处于爆炸状态、hero处于爆炸状态
 //            if (heroComponent.isNormal && iEnemy.isRunning) { // 正常状态
 //                if (Rect.intersects(heroComponent.heroRect, iEnemy.rect!!)) {
 //                    heroComponent.handleEnemyAttack() // 拿分
@@ -57,17 +89,7 @@ class MainController : BaseComponent() {
 //                    isGameOver = true
 //                }
 //            }
-//
-//            // 3,子弹 + enemy遍历,enemy自身判断、bullet消失处理
-//            for (iBullet in heroComponent.bulletList) {
-//                if (iEnemy.isRunning && iBullet.isRunning) {
-//                    if (Rect.intersects(iBullet.rect!!, iEnemy.rect!!)) {
-//                        heroComponent.handleBulletAttack(iBullet) // 拿分
-//                        heroComponent.addScore(enemyComponent.handleBulletAttack(iEnemy, iBullet.atk))
-//                    }
-//                }
-//            }
-//        }
+        }
 
         if (attackData.isHeroDestroy) {
             if (attackData.heroDestroyTime < System.currentTimeMillis()) {
@@ -77,10 +99,6 @@ class MainController : BaseComponent() {
                 MainFlight.instance.setGameOverCallback(attackData.totalScore)
             }
             return
-        }
-
-        for (component in componentList) {
-            component.onThreadAttack(toData, attackData)
         }
     }
 

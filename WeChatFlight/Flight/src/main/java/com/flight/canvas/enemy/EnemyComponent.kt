@@ -64,10 +64,6 @@ class EnemyComponent() : BaseComponent() {
         }
     }
 
-    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
-
-    }
-
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
         // 敌机 销毁 移除
         mEnemyListTotal.removeAll { it.isDestroy() }

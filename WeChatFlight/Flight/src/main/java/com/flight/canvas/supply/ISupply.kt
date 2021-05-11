@@ -13,7 +13,7 @@ abstract class ISupply(private val resources: Resources, private val random: Ran
     // 保证 精准度
     private val mSupplyRect = RectF()
 
-    private var isAttacked = false
+    var isAttacked = false
 
     fun init(): ISupply {
         val bitmap = BitmapManager.newBitmap(resources, getSourceId())
@@ -32,18 +32,6 @@ abstract class ISupply(private val resources: Resources, private val random: Ran
     fun draw(canvas: Canvas, paint: Paint) {
         val bitmap = BitmapManager.newBitmap(resources, getSourceId())
         canvas.drawBitmap(bitmap, mSupplyRect.left, mSupplyRect.top, paint)
-    }
-
-    fun isAttack(heroRect: RectF): Boolean {
-        if (isAttacked) {
-            return false
-        }
-
-        if (RectF.intersects(heroRect, mSupplyRect)) {
-            isAttacked = true
-            return true
-        }
-        return false
     }
 
     fun clone(): ISupply {

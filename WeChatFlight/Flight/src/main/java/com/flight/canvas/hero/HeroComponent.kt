@@ -93,9 +93,6 @@ class HeroComponent() : BaseComponent() {
         toData.heroRect = heroRect
     }
 
-    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
-    }
-
     private val paint = Paint()
 
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {

@@ -58,25 +58,19 @@ class BulletComponent : BaseComponent() {
     }
 
     override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
-        // 新的 敌机 出现
+        // 新的 子弹 出现
         newBullet(fromData.spaceTime, toData.heroRect)?.let {
             mBulletList.add(it)
         }
 
         val height = -12 * fromData.spaceHeight
 
-        // 当前 敌机 运行
+        // 当前 子弹 运行
         for (iBullet in mBulletList) {
             iBullet.move(0.0f, height)
         }
 
-        // 所有 敌机 的位置
-
-    }
-
-    override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
-
-
+        toData.bulletList = mBulletList
     }
 
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
