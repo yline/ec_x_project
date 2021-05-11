@@ -1,4 +1,4 @@
-package com.flight.canvas.common
+package com.flight.canvas
 
 import android.content.res.Resources
 import android.graphics.Bitmap

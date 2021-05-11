@@ -1,23 +1,24 @@
 package com.flight.canvas.enemy
 
 import android.content.res.Resources
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Rect
-import com.flight.canvas.common.BitmapManager
+import android.graphics.RectF
+import com.flight.canvas.BitmapManager
 import com.flight.canvas.common.InitData
 import java.util.*
 
 abstract class IEnemy(private val resources: Resources, private val random: Random, private val initData: InitData) {
-    private var mLeft: Float = 0.0f
-    private var mTop: Float = 0.0f
+    private val mEnemyRectF = RectF()
 
     fun init(): IEnemy {
         val bitmap = BitmapManager.newBitmap(resources, getSourceArray()[0])
 
-        mLeft = random.nextInt(initData.mapWidth - bitmap.width).toFloat()
-        mTop = -bitmap.height.toFloat()
+        val left = random.nextInt(initData.mapWidth - bitmap.width).toFloat()
+        val top = -bitmap.height.toFloat()
+
+        mEnemyRectF.set(left, top, left + bitmap.width, top + bitmap.height)
+
         return this
     }
 
@@ -26,8 +27,7 @@ abstract class IEnemy(private val resources: Resources, private val random: Rand
     }
 
     fun move(dx: Float, dy: Float) {
-        mLeft += dx
-        mTop += dy
+        mEnemyRectF.offset(dx, dy)
     }
 
     abstract fun getSourceArray(): IntArray
@@ -40,10 +40,12 @@ abstract class IEnemy(private val resources: Resources, private val random: Rand
 
     fun draw(canvas: Canvas, paint: Paint) {
         val bitmap = BitmapManager.newBitmap(resources, getSourceArray()[0])
-        canvas.drawBitmap(bitmap, mLeft, mTop, paint)
+        canvas.drawBitmap(bitmap, mEnemyRectF.left, mEnemyRectF.top, paint)
     }
 
     protected abstract fun clone(resources: Resources, random: Random, initData: InitData): IEnemy
+
+    fun getRectF() = mEnemyRectF
 
 //
 //    abstract fun start(durateTime: Float, frizTime: Float): Boolean

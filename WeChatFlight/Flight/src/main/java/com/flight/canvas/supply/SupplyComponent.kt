@@ -21,8 +21,8 @@ class SupplyComponent() : BaseComponent() {
 
     override fun onMainInit(context: Context, initData: InitData) {
         val resources = context.resources
-        supply1 = Supply1(resources, random, initData).init()
-        supply2 = Supply2(resources, random, initData).init()
+        supply1 = Supply1(resources, random, initData)
+        supply2 = Supply2(resources, random, initData)
 
         nextSupplyTime = 1.0f + random.nextInt(3)
     }
@@ -55,9 +55,9 @@ class SupplyComponent() : BaseComponent() {
 
         // 供给 时间 到了
         if (random.nextInt(2) >= 1) {
-            return supply1.clone()
+            return supply1.clone().init()
         } else {
-            return supply2.clone()
+            return supply2.clone().init()
         }
     }
 

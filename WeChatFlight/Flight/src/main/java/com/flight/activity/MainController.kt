@@ -6,6 +6,7 @@ import com.flight.canvas.common.*
 import com.flight.canvas.map.MapComponent
 import com.flight.canvas.variable.VariableComponent
 import com.flight.canvas.enemy.EnemyComponent
+import com.flight.canvas.hero.BulletComponent
 import com.flight.canvas.hero.HeroComponent
 import com.flight.canvas.supply.SupplyComponent
 import com.yline.log.LogUtil
@@ -19,12 +20,13 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
     // controller
     private val mapComponent = MapComponent()
     private var variableComponent = VariableComponent()
+    private var bulletComponent = BulletComponent()
     private var heroComponent = HeroComponent()
     private var supplyComponent = SupplyComponent()
     private var enemyComponent = EnemyComponent()
 
     private val componentList: List<BaseComponent> = arrayListOf(
-            mapComponent, variableComponent, heroComponent,
+            mapComponent, variableComponent, bulletComponent, heroComponent,
             supplyComponent, enemyComponent
     )
 
@@ -140,7 +142,7 @@ class MainController(private val mBgRect: Rect, private val mBgPaint: Paint) : B
         setBgXY(x, y)
         isClickBigBomb = variableComponent.bigBombRect.contains(mBgX.toInt(), mBgY.toInt())
         isClickPause = variableComponent.pauseRect.contains(mBgX.toInt(), mBgY.toInt())
-        isControllHero = heroComponent.heroRect.contains(mBgX.toInt(), mBgY.toInt())
+        isControllHero = heroComponent.heroRect.contains(mBgX, mBgY)
     }
 
     fun onTouchMove(x: Float, y: Float) {

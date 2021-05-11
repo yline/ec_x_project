@@ -1,39 +1,31 @@
 package com.flight.canvas.enemy
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
 import com.flight.canvas.common.*
-import com.yline.log.LogFileUtil.v
 import java.util.*
 
 class EnemyComponent() : BaseComponent() {
     private val mRandom: Random = Random()
-    private lateinit var mMapRect: Rect
-
-    private lateinit var mResources: Resources
 
     private lateinit var mEnemy1: IEnemy
-    private var mEnemyNumber1: Int = 0
     private lateinit var mEnemy2: IEnemy
-    private var mEnemyNumber2: Int = 0
     private lateinit var mEnemy3: IEnemy
-    private var mEnemyNumber3: Int = 0
 
     private val mEnemyListTotal: MutableList<IEnemy> = ArrayList()
 
     private var nextEnemyTime = 0.0f
 
+    private val paint = Paint()
+
     override fun onMainInit(context: Context, initData: InitData) {
-        mResources = context.resources
+        val resources = context.resources
 
-        mMapRect = Rect(0, 0, initData.mapWidth, initData.mapHeight)
-
-        mEnemy1 = Enemy1(mResources, mRandom, initData).init()
-        mEnemy2 = Enemy2(mResources, mRandom, initData).init()
-        mEnemy3 = Enemy3(mResources, mRandom, initData).init()
+        mEnemy1 = Enemy1(resources, mRandom, initData).init()
+        mEnemy2 = Enemy2(resources, mRandom, initData).init()
+        mEnemy3 = Enemy3(resources, mRandom, initData).init()
     }
 
     private fun newEnemy(spaceTime: Float): IEnemy? {
@@ -77,30 +69,28 @@ class EnemyComponent() : BaseComponent() {
     override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
     }
 
-    private val paint = Paint()
-
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
         for (iEnemy in mEnemyListTotal) {
             iEnemy.draw(canvas, paint)
         }
     }
 
-    private var isStart = false
+//    private var isStart = false
 
-    /**
-     * 出界就减少个数
-     * @param iEnemy
-     */
-    private fun reduceEnemyNumber(iEnemy: IEnemy?) {
-        if (iEnemy is Enemy1) {
-            mEnemyNumber1 -= 1
-        } else if (iEnemy is Enemy2) {
-            mEnemyNumber2 -= 1
-        } else if (iEnemy is Enemy3) {
-            mEnemyNumber3 -= 1
-        }
-        v("number1 = $mEnemyNumber1,number2 = $mEnemyNumber2,number3 = $mEnemyNumber3")
-    }
+//    /**
+//     * 出界就减少个数
+//     * @param iEnemy
+//     */
+//    private fun reduceEnemyNumber(iEnemy: IEnemy?) {
+//        if (iEnemy is Enemy1) {
+//            mEnemyNumber1 -= 1
+//        } else if (iEnemy is Enemy2) {
+//            mEnemyNumber2 -= 1
+//        } else if (iEnemy is Enemy3) {
+//            mEnemyNumber3 -= 1
+//        }
+//        v("number1 = $mEnemyNumber1,number2 = $mEnemyNumber2,number3 = $mEnemyNumber3")
+//    }
 
 //    /**
 //     * 大炸弹 的操作
@@ -128,8 +118,8 @@ class EnemyComponent() : BaseComponent() {
 //    fun handleBulletAttack(iEnemy: IEnemy, atk: Int): Int {
 //        return iEnemy.hitted(atk)
 //    }
-
-    val enemyList: List<IEnemy>
-        get() = mEnemyListTotal
+//
+//    val enemyList: List<IEnemy>
+//        get() = mEnemyListTotal
 
 }

@@ -1,6 +1,6 @@
 package com.flight.canvas.common
 
-import android.graphics.Rect
+import android.graphics.RectF
 
 /**
  * 测量 的结果
@@ -8,5 +8,5 @@ import android.graphics.Rect
  */
 class MeasureToData {
     // 战机 的 位置
-    val heroRect = Rect(0, 0, 0, 0)
+    var heroRect = RectF()
 }

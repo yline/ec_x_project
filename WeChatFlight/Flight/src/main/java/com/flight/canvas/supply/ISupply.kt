@@ -1,48 +1,45 @@
 package com.flight.canvas.supply
 
 import android.content.res.Resources
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Rect
-import com.flight.canvas.common.BitmapManager
+import android.graphics.RectF
+import com.flight.canvas.BitmapManager
 import com.flight.canvas.common.InitData
-import com.project.wechatflight.R
 import java.util.*
 
 abstract class ISupply(private val resources: Resources, private val random: Random, private val initData: InitData) {
+    // 保证 精准度
+    private val mSupplyRect = RectF()
 
-    private var mLeft: Float = 0.0f
-    private var mTop: Float = 0.0f
-
-    private val mSupplyRect = Rect()
     private var isAttacked = false
 
     fun init(): ISupply {
         val bitmap = BitmapManager.newBitmap(resources, getSourceId())
 
-        mLeft = random.nextInt(initData.mapWidth - bitmap.width).toFloat()
-        mTop = -bitmap.height.toFloat()
+        val left = random.nextInt(initData.mapWidth - bitmap.width).toFloat()
+        val top = -bitmap.height.toFloat()
+
+        mSupplyRect.set(left, top, left + bitmap.width.toFloat(), top + bitmap.height.toFloat())
         return this
     }
 
     fun move(dx: Float, dy: Float) {
-        mLeft += dx
-        mTop += dy
+        mSupplyRect.offset(dx, dy)
     }
 
     fun draw(canvas: Canvas, paint: Paint) {
         val bitmap = BitmapManager.newBitmap(resources, getSourceId())
-        canvas.drawBitmap(bitmap, mLeft, mTop, paint)
+        canvas.drawBitmap(bitmap, mSupplyRect.left, mSupplyRect.top, paint)
     }
 
-    fun isAttack(heroRect: Rect): Boolean {
+    fun isAttack(heroRect: RectF): Boolean {
         if (isAttacked) {
             return false
         }
 
-        mSupplyRect.offsetTo(mLeft.toInt(), mTop.toInt())
-        if (Rect.intersects(heroRect, mSupplyRect)) {
+        if (RectF.intersects(heroRect, mSupplyRect)) {
             isAttacked = true
             return true
         }
@@ -50,7 +47,7 @@ abstract class ISupply(private val resources: Resources, private val random: Ran
     }
 
     fun clone(): ISupply {
-        return clone(resources, random, initData).init()
+        return clone(resources, random, initData)
     }
 
     protected abstract fun clone(resources: Resources, random: Random, initData: InitData): ISupply
@@ -63,6 +60,8 @@ abstract class ISupply(private val resources: Resources, private val random: Ran
      * 2: 被 战机吃掉 了
      */
     fun isDestroy(): Boolean {
-        return (mTop > initData.mapHeight) || isAttacked
+        return (mSupplyRect.top > initData.mapHeight) || isAttacked
     }
+
+    fun getRectF() = mSupplyRect
 }

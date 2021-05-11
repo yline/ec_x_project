@@ -22,10 +22,6 @@ import java.util.*
  * @date 2016-4-3
  */
 class HeroComponent() : BaseComponent() {
-    companion object {
-        const val styleNormal = 0 // 杀伤力 1
-        const val styleDouble = 1 // 杀伤力 2
-    }
 
     // 引用系统资源
     private lateinit var mResources: Resources
@@ -40,11 +36,11 @@ class HeroComponent() : BaseComponent() {
     private lateinit var mBitmapHero: Bitmap
 
     // hero 当前矩形
-    lateinit var heroRect: Rect
+    lateinit var heroRect: RectF
 
     // hero 当前位置,配合矩形一起使用
-    private var positionX = 0
-    private var positionY = 0
+    private var positionX = 0.0f
+    private var positionY = 0.0f
 
     // hero 状态
     private lateinit var mState: HeroState
@@ -57,19 +53,6 @@ class HeroComponent() : BaseComponent() {
     // hero 分数
     var score: Long = 0
         private set
-
-    // bullet 资源
-    private lateinit var mBitmapBullet1: Bitmap
-    private lateinit var mBitmapBullet2: Bitmap
-
-    // bullet 对象
-    private lateinit var mBullet: IBullet
-
-    // bullet 对象集合
-    private lateinit var mBulletList: MutableList<IBullet>
-
-    // bullet 类型
-    private var mBulletStyle = 0
 
     // 倒计时,每隔几个出现一个true
     private lateinit var mCounter: Counter
@@ -87,16 +70,9 @@ class HeroComponent() : BaseComponent() {
         mFlightState = NormalState()
         mState = HeroState.normal
         mBitmapHero = BitmapFactory.decodeResource(mResources, mFlightState.next())
-        heroRect = Rect(mMapRect.right / 2 - mBitmapHero.getWidth() / 2, mMapRect.bottom - mBitmapHero.getHeight(), mMapRect.right / 2 + mBitmapHero.getWidth() / 2, mMapRect.bottom) // 如果输入满屏的话,就居中底部(近乎)显示
+        heroRect = RectF(mMapRect.right.toFloat() / 2 - mBitmapHero.getWidth() / 2, mMapRect.bottom.toFloat() - mBitmapHero.getHeight(), mMapRect.right.toFloat() / 2 + mBitmapHero.getWidth() / 2, mMapRect.bottom.toFloat()) // 如果输入满屏的话,就居中底部(近乎)显示
         positionX = heroRect.left
         positionY = heroRect.top
-
-        // bullet 资源初始化
-        mBitmapBullet1 = BitmapFactory.decodeResource(mResources, Bullet1.Companion.bulletRes)
-        mBitmapBullet2 = BitmapFactory.decodeResource(mResources, Bullet2.Companion.bulletRes)
-        mBullet = Bullet1(mBitmapBullet1, mMapRect.top, mMapRect.bottom, 0)
-        mBulletList = ArrayList()
-        mBulletStyle = styleNormal
     }
 
     override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
@@ -105,22 +81,22 @@ class HeroComponent() : BaseComponent() {
             if (mCounter.caculate("caculate_change", fromData.spaceTime, 0.15f)) {
                 mBitmapHero = BitmapFactory.decodeResource(mResources, mFlightState.next())
             }
-
-            // hero 隔段时间 发送 bullet
-            if (mBullet.fireBullet(heroRect.centerX(), heroRect.top, fromData.spaceTime, 0.15f)) {
-                if (mBulletStyle == styleNormal) {
-                    mBullet = Bullet1(mBitmapBullet1, mMapRect.top, mMapRect.bottom, 0)
-                    mBulletList.add(mBullet)
-                } else {    // 其它 都算 double
-                    mBullet = Bullet2(mBitmapBullet2, mMapRect.top, mMapRect.bottom, 0)
-                    mBulletList.add(mBullet)
-
-                    // 自动调回去
-                    if (mCounter.caculate("caculate_autoback", 1f, 30f)) {
-                        mBulletStyle = styleNormal
-                    }
-                }
-            }
+//
+//            // hero 隔段时间 发送 bullet
+//            if (mBullet.fireBullet(heroRect.centerX(), heroRect.top, fromData.spaceTime, 0.15f)) {
+//                if (mBulletStyle == styleNormal) {
+//                    mBullet = Bullet1(mBitmapBullet1, mMapRect.top, mMapRect.bottom, 0)
+//                    mBulletList.add(mBullet)
+//                } else {    // 其它 都算 double
+//                    mBullet = Bullet2(mBitmapBullet2, mMapRect.top, mMapRect.bottom, 0)
+//                    mBulletList.add(mBullet)
+//
+//                    // 自动调回去
+//                    if (mCounter.caculate("caculate_autoback", 1f, 30f)) {
+//                        mBulletStyle = styleNormal
+//                    }
+//                }
+//            }
         }
 
         // 爆炸 阶段
@@ -133,15 +109,15 @@ class HeroComponent() : BaseComponent() {
                 }
             }
         }
-        for (iBullet in mBulletList) {
-            iBullet.caculateHeroBullet(0f, -12 * fromData.spaceHeight)
-            if (iBullet.isEnd) {
-                mBulletList.remove(iBullet)
-                break // 跳出整个循环,这是因为在该循环的时候,iterator的原因导致的错误
-            }
-        }
+//        for (iBullet in mBulletList) {
+//            iBullet.caculateHeroBullet(0f, -12 * fromData.spaceHeight)
+//            if (iBullet.isEnd) {
+//                mBulletList.remove(iBullet)
+//                break // 跳出整个循环,这是因为在该循环的时候,iterator的原因导致的错误
+//            }
+//        }
 
-        toData.heroRect.set(heroRect)
+        toData.heroRect = heroRect
     }
 
     override fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
@@ -153,11 +129,6 @@ class HeroComponent() : BaseComponent() {
         if (HeroState.normal == mState || HeroState.bombing == mState) {
             canvas.drawBitmap(mBitmapHero, heroRect.left.toFloat(), heroRect.top.toFloat(), paint)
         }
-
-        // 子弹	遍历 + drawBullet
-        for (bullet in mBulletList) {
-            bullet.drawBullet(canvas, paint)
-        }
     }
 
     /**
@@ -168,8 +139,8 @@ class HeroComponent() : BaseComponent() {
      */
     fun moveTo(x: Float, y: Float) {
         if (isInBridge(x, y) && mState == HeroState.normal) {
-            positionX = (x - mBitmapHero.width / 2).toInt()
-            positionY = (y - mBitmapHero.height / 2).toInt()
+            positionX = x - mBitmapHero.width / 2
+            positionY = y - mBitmapHero.height / 2
         }
         heroRect.offsetTo(positionX - 1, positionY - 1)
     }
@@ -181,16 +152,16 @@ class HeroComponent() : BaseComponent() {
     /**
      * hero加属性,bullet
      */
-    fun handleSupplyAttack(iSupply: ISupply?) {
-        if (iSupply is Supply1) {    // big炸弹
-            if (bigBombNumber < MaxBigBombNumber) {
-                bigBombNumber += 1
-            }
-        } else if (iSupply is Supply2) {    // 多发子弹
-            mBulletStyle = styleDouble
-            mCounter.clearCaculate("caculate_autoback")
-        }
-    }
+//    fun handleSupplyAttack(iSupply: ISupply?) {
+//        if (iSupply is Supply1) {    // big炸弹
+//            if (bigBombNumber < MaxBigBombNumber) {
+//                bigBombNumber += 1
+//            }
+//        } else if (iSupply is Supply2) {    // 多发子弹
+//            mBulletStyle = styleDouble
+//            mCounter.clearCaculate("caculate_autoback")
+//        }
+//    }
 
     /**
      * hero转变为爆炸状态
@@ -200,19 +171,19 @@ class HeroComponent() : BaseComponent() {
         mFlightState = BombingState()
     }
 
-    /**
-     * 撞击到的时候的处理
-     *
-     * @param iBullet 有交集时的子弹对象
-     * @return 伤害值
-     */
-    fun handleBulletAttack(iBullet: IBullet): Int {
-        if (iBullet.isRunning) {
-            iBullet.disppear()
-            return iBullet.atk
-        }
-        return 0
-    }
+//    /**
+//     * 撞击到的时候的处理
+//     *
+//     * @param iBullet 有交集时的子弹对象
+//     * @return 伤害值
+//     */
+//    fun handleBulletAttack(iBullet: IBullet): Int {
+//        if (iBullet.isRunning) {
+//            iBullet.disppear()
+//            return iBullet.atk
+//        }
+//        return 0
+//    }
 
     fun addScore(score: Int) {
         this.score += score.toLong()
@@ -224,8 +195,8 @@ class HeroComponent() : BaseComponent() {
     val isEnd: Boolean
         get() = if (mState == HeroState.end) true else false
 
-    val bulletList: List<IBullet>
-        get() = mBulletList
+//    val bulletList: List<IBullet>
+//        get() = mBulletList
 
     fun reduceBigBombNumber() {
         bigBombNumber -= 1
