@@ -5,13 +5,11 @@ import android.graphics.*
 import com.flight.canvas.common.*
 import com.flight.canvas.map.MapComponent
 import com.flight.canvas.enemy.EnemyComponent
-import com.flight.canvas.hero.BulletComponent
+import com.flight.canvas.bullet.BulletComponent
 import com.flight.canvas.hero.HeroComponent
 import com.flight.canvas.supply.SupplyComponent
-import com.yline.log.LogUtil
 
-class MainController(private val mBgRect: Rect) : BaseComponent() {
-    // controller
+class MainController : BaseComponent() {
     private val mapComponent = MapComponent()
     private var bulletComponent = BulletComponent()
     private var heroComponent = HeroComponent()
@@ -23,7 +21,6 @@ class MainController(private val mBgRect: Rect) : BaseComponent() {
             heroComponent, enemyComponent, supplyComponent
     )
 
-
     private var isGameOver = false
     private var gameOverDelay = 2.0f // 延迟 1s 暂停
 
@@ -34,16 +31,6 @@ class MainController(private val mBgRect: Rect) : BaseComponent() {
     }
 
     override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
-        if (isGameOver) {
-            if (gameOverDelay < 0) {
-                isGameOver = false
-                // 游戏结束	MainActivity 中直接操作了
-                MainFlight.instance.setGameOverCallback(heroComponent.score)
-            } else {
-                gameOverDelay -= fromData.spaceTime
-            }
-        }
-
         for (component in componentList) {
             component.onThreadMeasure(fromData, toData)
         }
@@ -81,6 +68,16 @@ class MainController(private val mBgRect: Rect) : BaseComponent() {
 //                }
 //            }
 //        }
+
+        if (attackData.isHeroDestroy) {
+            if (attackData.heroDestroyTime < System.currentTimeMillis()) {
+                attackData.isHeroDestroy = false
+
+                // 游戏结束	MainActivity 中直接操作了
+                MainFlight.instance.setGameOverCallback(attackData.totalScore)
+            }
+            return
+        }
 
         for (component in componentList) {
             component.onThreadAttack(toData, attackData)

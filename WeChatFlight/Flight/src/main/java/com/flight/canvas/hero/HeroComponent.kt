@@ -9,11 +9,7 @@ import com.flight.canvas.state.CycleState
 import com.flight.canvas.state.IFlightState
 import com.flight.canvas.state.LineState
 import com.flight.canvas.state.StateConstant.HeroState
-import com.flight.canvas.supply.ISupply
-import com.flight.canvas.supply.Supply1
-import com.flight.canvas.supply.Supply2
 import com.project.wechatflight.R
-import java.util.*
 
 /**
  * hero
@@ -81,22 +77,6 @@ class HeroComponent() : BaseComponent() {
             if (mCounter.caculate("caculate_change", fromData.spaceTime, 0.15f)) {
                 mBitmapHero = BitmapFactory.decodeResource(mResources, mFlightState.next())
             }
-//
-//            // hero 隔段时间 发送 bullet
-//            if (mBullet.fireBullet(heroRect.centerX(), heroRect.top, fromData.spaceTime, 0.15f)) {
-//                if (mBulletStyle == styleNormal) {
-//                    mBullet = Bullet1(mBitmapBullet1, mMapRect.top, mMapRect.bottom, 0)
-//                    mBulletList.add(mBullet)
-//                } else {    // 其它 都算 double
-//                    mBullet = Bullet2(mBitmapBullet2, mMapRect.top, mMapRect.bottom, 0)
-//                    mBulletList.add(mBullet)
-//
-//                    // 自动调回去
-//                    if (mCounter.caculate("caculate_autoback", 1f, 30f)) {
-//                        mBulletStyle = styleNormal
-//                    }
-//                }
-//            }
         }
 
         // 爆炸 阶段
@@ -109,13 +89,6 @@ class HeroComponent() : BaseComponent() {
                 }
             }
         }
-//        for (iBullet in mBulletList) {
-//            iBullet.caculateHeroBullet(0f, -12 * fromData.spaceHeight)
-//            if (iBullet.isEnd) {
-//                mBulletList.remove(iBullet)
-//                break // 跳出整个循环,这是因为在该循环的时候,iterator的原因导致的错误
-//            }
-//        }
 
         toData.heroRect = heroRect
     }

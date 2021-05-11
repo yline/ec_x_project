@@ -1,13 +1,7 @@
-package com.flight.canvas.hero
+package com.flight.canvas.bullet
 
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
 import com.flight.canvas.common.InitData
-import com.flight.canvas.state.Counter
-import com.flight.canvas.state.StateConstant.BulletState
 import com.project.wechatflight.R
 import java.util.*
 

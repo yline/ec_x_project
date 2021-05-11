@@ -1,9 +1,8 @@
-package com.flight.canvas.hero
+package com.flight.canvas.bullet
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.RectF
 import com.flight.canvas.common.*
 import com.yline.log.LogUtil

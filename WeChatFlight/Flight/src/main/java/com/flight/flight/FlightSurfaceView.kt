@@ -14,7 +14,6 @@ import com.flight.canvas.common.MeasureFromData
 import com.flight.canvas.common.MeasureToData
 import com.flight.utils.ThreadPoolUtil
 import com.yline.log.LogUtil
-import com.yline.utils.provider.Provider
 
 /**
  * 确立一些背景参数
@@ -28,10 +27,6 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
     private var isDrawing = false
 
     // 背景大参数
-    private var mCanvas: Canvas? = null
-    private var mBgWidth = 0
-    private var mBgHeight = 0
-    private var mBgRect: Rect = Rect()
     private var mBgPaint: Paint = Paint()
 
     // 其它参数
@@ -63,21 +58,20 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
 
     override fun surfaceCreated(holder: SurfaceHolder) {
         // 只有在这里才能拿到具体的值,而不是零
-        mBgWidth = this.width
-        mBgHeight = this.height
+        val bgWidth = this.width
+        val bgHeight = this.height
 
-        mBgRect.set(0, 0, mBgWidth, mBgHeight)
         mBgPaint.color = Color.BLACK
         mBgPaint.isAntiAlias = true
 
-        mMainController = MainController(mBgRect)
+        mMainController = MainController()
         mMainController?.onMainInit(this.context, initData)
 
-        LogUtil.v("mBgWidth = $mBgWidth,mBgHeight = $mBgHeight")
+        LogUtil.v("mBgWidth = $bgWidth,mBgHeight = $bgHeight")
         isDrawing = true
 
-        mScaleX = mBgRect.width() * 1.0f / initData.mapWidth
-        mScaleY = mBgRect.height() * 1.0f / initData.mapHeight
+        mScaleX = bgWidth * 1.0f / initData.mapWidth
+        mScaleY = bgHeight * 1.0f / initData.mapHeight
         mMatrix.setScale(mScaleX, mScaleY)
 
         ThreadPoolUtil.execute(this)
@@ -104,14 +98,14 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
                 mMainController?.onThreadAttack(measureToData, attackData)
 
                 synchronized(mSurfaceHolder) {
-                    mCanvas = mSurfaceHolder.lockCanvas()
-                    mCanvas?.let {
+                    val canvas = mSurfaceHolder.lockCanvas()
+                    canvas?.let {
                         it.save() // 配套使用
                         it.concat(mMatrix)
                         mMainController?.onThreadDraw(it, attackData)
                         it.restore() // 配套使用
                     }
-                    mSurfaceHolder.unlockCanvasAndPost(mCanvas)
+                    mSurfaceHolder.unlockCanvasAndPost(canvas)
                 }
             }
         }
