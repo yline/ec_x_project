@@ -5,6 +5,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import com.flight.canvas.BitmapManager
 import com.flight.canvas.common.ContextData
+import com.flight.canvas.couter.ICounter
 
 abstract class IHero(private val contextData: ContextData) {
     companion object {
@@ -20,12 +21,11 @@ abstract class IHero(private val contextData: ContextData) {
 
     private val mHeroRectF = RectF()
 
-    private var mHP: Int = 0
-
-    private var mHeroState = 0
+    private var mHP: Int = 0    // 用来 表示 存活血量
+    private var mIsBlowUp = false   // 是否 正在处于 爆炸状态
 
     fun init(): IHero {
-        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray(STATE_NORMAL)[0])
+        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray(STATE_NORMAL).default())
 
         mHeroWidth = bitmap.width.toFloat()
         mHeroHeight = bitmap.height.toFloat()
@@ -39,28 +39,27 @@ abstract class IHero(private val contextData: ContextData) {
                 contextData.mapWidth - mHeroWidth / 2, contextData.mapHeight - mHeroHeight / 2)
 
         mHP = getHP()
-        mHeroState = STATE_NORMAL
+        mIsBlowUp = false
 
         return this
     }
 
-    fun isHPEmpty(): Boolean {
-        return mHP <= 0
-    }
-
     fun changeHP(dHP: Int) {
         mHP += dHP
+
+        if (mHP <= 0) {
+            mIsBlowUp = true
+        }
     }
 
-    fun isDestroy(): Boolean {
-        if (isHPEmpty()) {
-            return true
-        }
-        return false
+    fun finishBlowUp() {
+        mIsBlowUp = false
     }
 
     fun getHeroState(): Int {
-        return mHeroState
+        if (mHP > 0) return STATE_NORMAL
+        if (mIsBlowUp) return STATE_BLOW_UP
+        return STATE_END
     }
 
     fun moveTo(x: Float, y: Float) {
@@ -72,15 +71,11 @@ abstract class IHero(private val contextData: ContextData) {
         mHeroRectF.offsetTo(left, top)
     }
 
-    abstract fun getSourceArray(state: Int): IntArray
+    abstract fun getSourceArray(state: Int): ICounter
 
     abstract fun getHP(): Int
 
     fun draw(canvas: Canvas, paint: Paint, sourceId: Int) {
-
-    }
-
-    private fun drawInner(canvas: Canvas, paint: Paint, sourceId: Int) {
         val bitmap = BitmapManager.newBitmap(contextData.resources, sourceId)
         canvas.drawBitmap(bitmap, mHeroRectF.left, mHeroRectF.top, paint)
     }

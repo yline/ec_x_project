@@ -6,6 +6,7 @@ import com.flight.canvas.map.MapComponent
 import com.flight.canvas.enemy.EnemyComponent
 import com.flight.canvas.bullet.BulletComponent
 import com.flight.canvas.hero.HeroComponent
+import com.flight.canvas.hero.IHero
 import com.flight.canvas.supply.Supply1
 import com.flight.canvas.supply.SupplyComponent
 import kotlin.math.min
@@ -86,7 +87,7 @@ class MainController : BaseComponent() {
                     contextData.totalScore += iEnemy.getScore()
                 }
 
-                if (iHero.isHPEmpty()) {
+                if (iHero.getHeroState() != IHero.STATE_NORMAL) {
                     // todo 结束游戏
                 }
             }
