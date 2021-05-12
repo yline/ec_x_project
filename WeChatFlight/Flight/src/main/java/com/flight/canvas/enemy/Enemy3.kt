@@ -1,6 +1,9 @@
 package com.flight.canvas.enemy
 
 import com.flight.canvas.common.ContextData
+import com.flight.canvas.couter.CycleCounter
+import com.flight.canvas.couter.ICounter
+import com.flight.canvas.couter.LinearCounter
 import com.project.wechatflight.R
 
 /**
@@ -11,12 +14,26 @@ import com.project.wechatflight.R
  */
 class Enemy3(contextData: ContextData) : IEnemy(contextData) {
 
-    override fun clone(contextData: ContextData): IEnemy {
-        return Enemy3(contextData)
+    private val normalCounter = CycleCounter(intArrayOf(R.drawable.enemy3_fly_1))
+    private val hitCounter = CycleCounter(intArrayOf(R.drawable.enemy3_hit_1))
+    private val blowUpCounter = LinearCounter(intArrayOf(R.drawable.enemy3_blowup_1, R.drawable.enemy3_blowup_2,
+            R.drawable.enemy3_blowup_3, R.drawable.enemy3_blowup_4))
+
+    override fun getSourceArray(state: Int): ICounter {
+        val enemyState = getEnemyState()
+        return when (enemyState) {
+            STATE_BLOW_UP -> blowUpCounter
+            STATE_HIT -> hitCounter
+            else -> normalCounter
+        }
     }
 
-    override fun getSourceArray(): IntArray {
-        return intArrayOf(R.drawable.enemy3_fly_1)
+    override fun getEnemyState(): Int {
+        return STATE_END
+    }
+
+    override fun clone(contextData: ContextData): IEnemy {
+        return Enemy3(contextData)
     }
 
     override fun getScore(): Int {
@@ -130,26 +147,7 @@ class Enemy3(contextData: ContextData) : IEnemy(contextData) {
 //    override val isRunning: Boolean
 //        get() = if (EnemyState.normal == mState || EnemyState.hitting == mState) true else false
 //
-//    internal inner class NormalState : CycleState() {
-//        init {
-//            list.add(R.drawable.enemy3_fly_1)
-//        }
-//    }
-//
-//    internal inner class HitState : LineState() {
-//        init {
-//            list.add(R.drawable.enemy3_hit_1)
-//        }
-//    }
-//
-//    internal inner class BombingState : LineState() {
-//        init {
-//            list.add(R.drawable.enemy3_blowup_1)
-//            list.add(R.drawable.enemy3_blowup_2)
-//            list.add(R.drawable.enemy3_blowup_3)
-//            list.add(R.drawable.enemy3_blowup_4)
-//        }
-//    }
+
 //
 //    companion object {
 //        // 常量

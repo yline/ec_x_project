@@ -2,6 +2,7 @@ package com.flight.canvas.enemy
 
 import android.graphics.Canvas
 import com.flight.canvas.common.*
+import com.flight.canvas.hero.IHero
 import com.yline.log.LogUtil
 import java.util.*
 
@@ -68,7 +69,35 @@ class EnemyComponent() : BaseComponent() {
         }
 
         for (iEnemy in mEnemyListTotal) {
-            iEnemy.draw(canvas, contextData.paint)
+            val enemyState = iEnemy.getEnemyState()
+            when (enemyState) {
+                IEnemy.STATE_NORMAL -> {
+                    val sourceId = iEnemy.getSourceArray(enemyState).next(contextData.spaceTime, 0.15f)
+                    if (null != sourceId) {
+                        iEnemy.draw(canvas, contextData.paint, sourceId)
+                    } else {
+                        LogUtil.e("enemy state: normal, sourceId is null")
+                    }
+                }
+                IEnemy.STATE_HIT -> {
+                    val sourceId = iEnemy.getSourceArray(enemyState).next(contextData.spaceTime, 0.15f)
+                    if (null != sourceId) {
+                        iEnemy.draw(canvas, contextData.paint, sourceId)
+                    } else {
+                        LogUtil.e("enemy state: hint, sourceId is null")
+                    }
+                }
+                IEnemy.STATE_BLOW_UP -> {
+                    val sourceId = iEnemy.getSourceArray(enemyState).next(contextData.spaceTime, 0.6f)
+                    if (null != sourceId) {
+                        iEnemy.draw(canvas, contextData.paint, sourceId)
+                    } else {
+                        LogUtil.v("enemy state blow up, finished")
+                        // todo linjiang 敌机结束
+                        // iEnemy.finishBlowUp()
+                    }
+                }
+            }
         }
     }
 

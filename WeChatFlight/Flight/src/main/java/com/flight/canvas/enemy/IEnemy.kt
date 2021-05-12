@@ -5,14 +5,22 @@ import android.graphics.Paint
 import android.graphics.RectF
 import com.flight.canvas.BitmapManager
 import com.flight.canvas.common.ContextData
+import com.flight.canvas.couter.ICounter
 
 abstract class IEnemy(private val contextData: ContextData) {
+    companion object {
+        const val STATE_NORMAL = 1  // 正常
+        const val STATE_HIT = 2    // 受伤
+        const val STATE_BLOW_UP = 3 // 爆炸
+        const val STATE_END = 4     // 结束
+    }
+
     private val mEnemyRectF = RectF()
 
     private var mHP: Int = 0
 
     fun init(): IEnemy {
-        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray()[0])
+        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray(STATE_NORMAL).default())
 
         val left = contextData.random.nextInt(contextData.mapWidth - bitmap.width).toFloat()
         val top = -bitmap.height.toFloat()
@@ -49,58 +57,24 @@ abstract class IEnemy(private val contextData: ContextData) {
         mEnemyRectF.offset(dx, dy)
     }
 
-    abstract fun getSourceArray(): IntArray
+    abstract fun getSourceArray(state: Int): ICounter
 
     abstract fun getScore(): Int
 
     abstract fun getHP(): Int
 
+    abstract fun getEnemyState(): Int
+
     fun clone(): IEnemy {
         return clone(contextData)
     }
 
-    fun draw(canvas: Canvas, paint: Paint) {
-        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray()[0])
+    fun draw(canvas: Canvas, paint: Paint, sourceId: Int) {
+        val bitmap = BitmapManager.newBitmap(contextData.resources, sourceId)
         canvas.drawBitmap(bitmap, mEnemyRectF.left, mEnemyRectF.top, paint)
     }
 
     protected abstract fun clone(contextData: ContextData): IEnemy
 
     fun getRectF() = mEnemyRectF
-
-//
-//    abstract fun start(durateTime: Float, frizTime: Float): Boolean
-//
-//    abstract fun caculate(durateTime: Float, dx: Float, dy: Float)
-//
-//    /** 绘制有图片时候的状态  */
-//    abstract fun draw(canvas: Canvas, paint: Paint?)
-//
-//    /**
-//     * 被撞击
-//     * @param atk    杀伤力
-//     * @return    获取的分数
-//     */
-//    abstract fun hitted(atk: Int): Int
-//
-//    /**
-//     * 开始自爆状态
-//     */
-//    abstract fun blowUp()
-//
-//    /**
-//     * 是否结束,就是状态为end
-//     * @return
-//     */
-//    abstract val isEnd: Boolean
-//
-//    /**
-//     * 是否在运行状态,正常和被撞击(为销毁时)
-//     * @return
-//     */
-//    abstract val isRunning: Boolean
-//
-//    abstract val rect: Rect?
-
-//    abstract val score: Int
 }

@@ -1,17 +1,34 @@
 package com.flight.canvas.enemy
 
 import com.flight.canvas.common.ContextData
+import com.flight.canvas.couter.CycleCounter
+import com.flight.canvas.couter.ICounter
+import com.flight.canvas.couter.LinearCounter
 import com.project.wechatflight.R
 
-class Enemy2(contextData: ContextData)
-    : IEnemy(contextData) {
+class Enemy2(contextData: ContextData) : IEnemy(contextData) {
+
+    private val normalCounter = CycleCounter(intArrayOf(R.drawable.enemy2_fly_1, R.drawable.enemy2_fly_2))
+    private val hitCounter = CycleCounter(intArrayOf(R.drawable.enemy2_hit_1))
+    private val blowUpCounter = LinearCounter(intArrayOf(R.drawable.enemy2_blowup_1, R.drawable.enemy2_blowup_2,
+            R.drawable.enemy2_blowup_3, R.drawable.enemy2_blowup_4,
+            R.drawable.enemy2_blowup_5, R.drawable.enemy2_blowup_6))
+
+    override fun getSourceArray(state: Int): ICounter {
+        val enemyState = getEnemyState()
+        return when (enemyState) {
+            STATE_BLOW_UP -> blowUpCounter
+            STATE_HIT -> hitCounter
+            else -> normalCounter
+        }
+    }
+
+    override fun getEnemyState(): Int {
+        return STATE_END
+    }
 
     override fun clone(contextData: ContextData): IEnemy {
         return Enemy2(contextData)
-    }
-
-    override fun getSourceArray(): IntArray {
-        return intArrayOf(R.drawable.enemy2_fly_1, R.drawable.enemy2_fly_2)
     }
 
     override fun getScore(): Int {
