@@ -3,7 +3,6 @@ package com.flight.canvas.enemy
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Rect
 import com.flight.canvas.common.*
 import com.yline.log.LogUtil
 import java.util.*
@@ -21,12 +20,10 @@ class EnemyComponent() : BaseComponent() {
 
     private val paint = Paint()
 
-    override fun onMainInit(context: Context, initData: InitData) {
-        val resources = context.resources
-
-        mEnemy1 = Enemy1(resources, mRandom, initData).init()
-        mEnemy2 = Enemy2(resources, mRandom, initData).init()
-        mEnemy3 = Enemy3(resources, mRandom, initData).init()
+    override fun onMainInit(contextData: ContextData) {
+        mEnemy1 = Enemy1(contextData).init()
+        mEnemy2 = Enemy2(contextData).init()
+        mEnemy3 = Enemy3(contextData).init()
     }
 
     private fun newEnemy(spaceTime: Float): IEnemy? {
@@ -50,13 +47,13 @@ class EnemyComponent() : BaseComponent() {
         }
     }
 
-    override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
+    override fun onThreadMeasure(contextData: ContextData, toData: MeasureToData) {
         // 新的 敌机 出现
-        newEnemy(fromData.spaceTime)?.let {
+        newEnemy(contextData.spaceTime)?.let {
             mEnemyListTotal.add(it)
         }
 
-        val height = 2 * fromData.spaceHeight
+        val height = 2 * contextData.spaceHeight
 
         // 当前 敌机 运行
         for (iEnemy in mEnemyListTotal) {
@@ -66,7 +63,7 @@ class EnemyComponent() : BaseComponent() {
         toData.enemyList = mEnemyListTotal
     }
 
-    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
+    override fun onThreadDraw(canvas: Canvas, contextData: ContextData) {
         // 敌机 销毁 移除
         mEnemyListTotal.removeAll { it.isDestroy() }
 

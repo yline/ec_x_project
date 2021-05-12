@@ -1,6 +1,5 @@
 package com.flight.activity
 
-import android.content.Context
 import android.graphics.*
 import com.flight.canvas.common.*
 import com.flight.canvas.map.MapComponent
@@ -23,19 +22,19 @@ class MainController : BaseComponent() {
             heroComponent, bulletComponent
     )
 
-    override fun onMainInit(context: Context, initData: InitData) {
+    override fun onMainInit(contextData: ContextData) {
         for (component in componentList) {
-            component.onMainInit(context, initData)
+            component.onMainInit(contextData)
         }
     }
 
-    override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
+    override fun onThreadMeasure(contextData: ContextData, toData: MeasureToData) {
         for (component in componentList) {
-            component.onThreadMeasure(fromData, toData)
+            component.onThreadMeasure(contextData, toData)
         }
     }
 
-    fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+    fun onThreadAttack(toData: MeasureToData, contextData: ContextData) {
         // hero + supply; supply消失、hero加属性
         for (iSupply in toData.supplyList) {
             if (iSupply.isAttacked) continue
@@ -44,10 +43,10 @@ class MainController : BaseComponent() {
             if (RectF.intersects(iSupply.getRectF(), iHero.getRectF())) {
                 // 更新 炸弹状态
                 if (iSupply is Supply1) {
-                    attackData.supply1Num += 1
-                    attackData.supply1Num = min(3, attackData.supply1Num)   // 上限为 3
+                    contextData.supply1Num += 1
+                    contextData.supply1Num = min(3, contextData.supply1Num)   // 上限为 3
                 } else {
-                    attackData.supply2Num += 1
+                    contextData.supply2Num += 1
                 }
 
                 iSupply.isAttacked = true
@@ -67,7 +66,7 @@ class MainController : BaseComponent() {
                     iBullet.isAttacked = true
 
                     if (iEnemy.isHPEmpty()) {
-                        attackData.totalScore += iEnemy.getScore()
+                        contextData.totalScore += iEnemy.getScore()
                     }
                 }
             }
@@ -84,29 +83,29 @@ class MainController : BaseComponent() {
                 // iHero.changeHP(-iEnemy.getHP())
 
                 if (iEnemy.isHPEmpty()) {
-                    attackData.totalScore += iEnemy.getScore()
+                    contextData.totalScore += iEnemy.getScore()
                 }
 
-                if (iHero.isHPEmpty()){
+                if (iHero.isHPEmpty()) {
                     // todo 结束游戏
                 }
             }
         }
 
-        if (attackData.isHeroDestroy) {
-            if (attackData.heroDestroyTime < System.currentTimeMillis()) {
-                attackData.isHeroDestroy = false
+        if (contextData.isHeroDestroy) {
+            if (contextData.heroDestroyTime < System.currentTimeMillis()) {
+                contextData.isHeroDestroy = false
 
                 // 游戏结束	MainActivity 中直接操作了
-                MainFlight.instance.setGameOverCallback(attackData.totalScore)
+                MainFlight.instance.setGameOverCallback(contextData.totalScore)
             }
             return
         }
     }
 
-    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
+    override fun onThreadDraw(canvas: Canvas, contextData: ContextData) {
         for (component in componentList) {
-            component.onThreadDraw(canvas, attackData)
+            component.onThreadDraw(canvas, contextData)
         }
     }
 

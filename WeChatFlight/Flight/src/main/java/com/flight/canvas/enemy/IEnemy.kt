@@ -1,22 +1,20 @@
 package com.flight.canvas.enemy
 
-import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import com.flight.canvas.BitmapManager
-import com.flight.canvas.common.InitData
-import java.util.*
+import com.flight.canvas.common.ContextData
 
-abstract class IEnemy(private val resources: Resources, private val random: Random, private val initData: InitData) {
+abstract class IEnemy(private val contextData: ContextData) {
     private val mEnemyRectF = RectF()
 
     private var mHP: Int = 0
 
     fun init(): IEnemy {
-        val bitmap = BitmapManager.newBitmap(resources, getSourceArray()[0])
+        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray()[0])
 
-        val left = random.nextInt(initData.mapWidth - bitmap.width).toFloat()
+        val left = contextData.random.nextInt(contextData.mapWidth - bitmap.width).toFloat()
         val top = -bitmap.height.toFloat()
 
         mEnemyRectF.set(left, top, left + bitmap.width, top + bitmap.height)
@@ -36,7 +34,7 @@ abstract class IEnemy(private val resources: Resources, private val random: Rand
 
     fun isDestroy(): Boolean {
         // 越界了
-        if (mEnemyRectF.top > initData.mapHeight) {
+        if (mEnemyRectF.top > contextData.mapHeight) {
             return true
         }
 
@@ -58,15 +56,15 @@ abstract class IEnemy(private val resources: Resources, private val random: Rand
     abstract fun getHP(): Int
 
     fun clone(): IEnemy {
-        return clone(resources, random, initData).init()
+        return clone(contextData).init()
     }
 
     fun draw(canvas: Canvas, paint: Paint) {
-        val bitmap = BitmapManager.newBitmap(resources, getSourceArray()[0])
+        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray()[0])
         canvas.drawBitmap(bitmap, mEnemyRectF.left, mEnemyRectF.top, paint)
     }
 
-    protected abstract fun clone(resources: Resources, random: Random, initData: InitData): IEnemy
+    protected abstract fun clone(contextData: ContextData): IEnemy
 
     fun getRectF() = mEnemyRectF
 

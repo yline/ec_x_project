@@ -1,11 +1,9 @@
 package com.flight.canvas.hero
 
-import android.content.res.Resources
-import com.flight.canvas.common.InitData
+import com.flight.canvas.common.ContextData
 import com.project.wechatflight.R
 
-class Hero1(private val resources: Resources, private val initData: InitData)
-    : IHero(resources, initData) {
+class Hero1(private val contextData: ContextData) : IHero(contextData) {
 
     override fun getSourceArray(state: Int): IntArray {
         if (state == STATE_NORMAL) {

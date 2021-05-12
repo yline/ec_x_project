@@ -1,14 +1,10 @@
 package com.flight.canvas.hero
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.*
 import com.flight.canvas.common.*
-import com.flight.canvas.state.Counter
 import com.flight.canvas.state.CycleState
-import com.flight.canvas.state.IFlightState
 import com.flight.canvas.state.LineState
-import com.flight.canvas.state.StateConstant.HeroState
 import com.project.wechatflight.R
 
 /**
@@ -18,68 +14,19 @@ import com.project.wechatflight.R
  * @date 2016-4-3
  */
 class HeroComponent() : BaseComponent() {
-
-//    // 引用系统资源
-//    private lateinit var mResources: Resources
-//
-//    // 系统 背景
-//    private lateinit var mMapRect: Rect
-//
-//    // hero	图片状态
-//    private lateinit var mFlightState: IFlightState
-//
-//    // hero 图片资源
-//    private lateinit var mBitmapHero: Bitmap
-
-//    // hero 当前位置,配合矩形一起使用
-//    private var positionX = 0.0f
-//    private var positionY = 0.0f
-//
-//    // hero 状态
-//    private lateinit var mState: HeroState
-//
-//    // hero 大招 个数
-//    var bigBombNumber = 0
-//        private set
-//    private val MaxBigBombNumber = 3
-//
-//    // hero 分数
-//    var score: Long = 0
-//        private set
-//
-//    // 倒计时,每隔几个出现一个true
-//    private lateinit var mCounter: Counter
-
-
     private lateinit var iHero: IHero
 
     private val heroList = ArrayList<IHero>()
 
-    override fun onMainInit(context: Context, initData: InitData) {
-        // 赋值
-//        mResources = context.resources
-//
-//        mMapRect = Rect(0, 0, initData.mapWidth, initData.mapHeight)
-
-        iHero = Hero1(context.resources, initData)
+    override fun onMainInit(contextData: ContextData) {
+        iHero = Hero1(contextData)
         iHero.init()
 
         heroList.clear()
         heroList.add(iHero)
-
-        // 辅助 资源初始化
-//        mCounter = Counter()
-//
-//        // hero 资源初始化
-//        mFlightState = NormalState()
-//        mState = HeroState.normal
-//
-//        mBitmapHero = BitmapFactory.decodeResource(mResources, mFlightState.next())
-//        positionX = heroRect.left
-//        positionY = heroRect.top
     }
 
-    override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
+    override fun onThreadMeasure(contextData: ContextData, toData: MeasureToData) {
 //        if (HeroState.normal == mState) {        // 正常状态
 //            // hero 切换图片资源
 //            if (mCounter.caculate("caculate_change", fromData.spaceTime, 0.15f)) {
@@ -103,12 +50,8 @@ class HeroComponent() : BaseComponent() {
 
     private val paint = Paint()
 
-    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
+    override fun onThreadDraw(canvas: Canvas, contextData: ContextData) {
         iHero.draw(canvas, paint)
-//
-//        if (HeroState.normal == mState || HeroState.bombing == mState) {
-//            canvas.drawBitmap(mBitmapHero, heroRect.left.toFloat(), heroRect.top.toFloat(), paint)
-//        }
     }
 
     /**

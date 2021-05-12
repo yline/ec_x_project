@@ -1,13 +1,12 @@
 package com.flight.canvas.hero
 
-import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import com.flight.canvas.BitmapManager
-import com.flight.canvas.common.InitData
+import com.flight.canvas.common.ContextData
 
-abstract class IHero(private val resources: Resources, private val initData: InitData) {
+abstract class IHero(private val contextData: ContextData) {
     companion object {
         const val STATE_NORMAL = 1  // 正常运行
         const val STATE_BLOW_UP = 2 // 爆炸
@@ -23,18 +22,18 @@ abstract class IHero(private val resources: Resources, private val initData: Ini
     private var mHP: Int = 0
 
     fun init(): IHero {
-        val bitmap = BitmapManager.newBitmap(resources, getSourceArray(STATE_NORMAL)[0])
+        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray(STATE_NORMAL)[0])
 
         mHeroWidth = bitmap.width.toFloat()
         mHeroHeight = bitmap.height.toFloat()
 
-        val left = (initData.mapWidth - bitmap.width) / 2.0f
-        val top = initData.mapHeight - bitmap.height.toFloat()
+        val left = (contextData.mapWidth - bitmap.width) / 2.0f
+        val top = contextData.mapHeight - bitmap.height.toFloat()
 
         mHeroRectF.set(left, top, left + bitmap.width, top + bitmap.height)
 
         mHeroCenterRectF = RectF(mHeroWidth / 2, mHeroHeight / 2,
-                initData.mapWidth - mHeroWidth / 2, initData.mapHeight - mHeroHeight / 2)
+                contextData.mapWidth - mHeroWidth / 2, contextData.mapHeight - mHeroHeight / 2)
 
         mHP = getHP()
 
@@ -72,7 +71,7 @@ abstract class IHero(private val resources: Resources, private val initData: Ini
     fun draw(canvas: Canvas, paint: Paint) {
         val state = if (isHPEmpty()) STATE_BLOW_UP else STATE_NORMAL
 
-        val bitmap = BitmapManager.newBitmap(resources, getSourceArray(state)[0])
+        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray(state)[0])
         canvas.drawBitmap(bitmap, mHeroRectF.left, mHeroRectF.top, paint)
     }
 

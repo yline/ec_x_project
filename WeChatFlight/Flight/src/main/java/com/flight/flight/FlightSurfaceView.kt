@@ -8,13 +8,10 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.flight.activity.MainController
-import com.flight.canvas.common.AttackData
-import com.flight.canvas.common.InitData
-import com.flight.canvas.common.MeasureFromData
+import com.flight.canvas.common.ContextData
 import com.flight.canvas.common.MeasureToData
 import com.flight.utils.ThreadPoolUtil
 import com.yline.log.LogUtil
-import java.lang.Exception
 
 /**
  * 确立一些背景参数
@@ -34,10 +31,10 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
     private var mMainController: MainController? = null
 
     // 交互数据
-    private val initData = InitData()
-    private val measureFromData = MeasureFromData()
+//    private val initData = InitData()
+//    private val measureFromData = MeasureFromData()
     private val measureToData = MeasureToData()
-    private val attackData = AttackData()
+    private val contextData = ContextData(context)
 
     private var mScaleX = 0f
     private var mScaleY = 0f
@@ -66,13 +63,13 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
         mBgPaint.isAntiAlias = true
 
         mMainController = MainController()
-        mMainController?.onMainInit(this.context, initData)
+        mMainController?.onMainInit(contextData)
 
         LogUtil.v("mBgWidth = $bgWidth,mBgHeight = $bgHeight")
         isDrawing = true
 
-        mScaleX = bgWidth * 1.0f / initData.mapWidth
-        mScaleY = bgHeight * 1.0f / initData.mapHeight
+        mScaleX = bgWidth * 1.0f / contextData.mapWidth
+        mScaleY = bgHeight * 1.0f / contextData.mapHeight
         mMatrix.setScale(mScaleX, mScaleY)
 
         ThreadPoolUtil.execute(this)
@@ -91,20 +88,20 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
             val spaceTime = (System.nanoTime() - startTime) / 1000_000_000.0f // 秒 单位
             startTime = System.nanoTime() // 重新赋值
 
-            if (!attackData.isPause) {
-                measureFromData.spaceTime = spaceTime
-                measureFromData.spaceHeight = spaceTime * initData.mapHeight / 20f  // 20s 运行完一个 bitmap
+            if (!contextData.isPause) {
+                contextData.spaceTime = spaceTime
+                contextData.spaceHeight = spaceTime * contextData.mapHeight / 20f  // 20s 运行完一个 bitmap
 
                 try {
-                    mMainController?.onThreadMeasure(measureFromData, measureToData)
-                    mMainController?.onThreadAttack(measureToData, attackData)
+                    mMainController?.onThreadMeasure(contextData, measureToData)
+                    mMainController?.onThreadAttack(measureToData, contextData)
 
                     synchronized(mSurfaceHolder) {
                         val canvas = mSurfaceHolder.lockCanvas()
                         canvas?.let {
                             it.save() // 配套使用
                             it.concat(mMatrix)
-                            mMainController?.onThreadDraw(it, attackData)
+                            mMainController?.onThreadDraw(it, contextData)
                             it.restore() // 配套使用
                         }
                         mSurfaceHolder.unlockCanvasAndPost(canvas)
@@ -137,7 +134,7 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
             }
             MotionEvent.ACTION_MOVE -> {
                 // 非 暂停 状态下，飞机移动
-                if (!attackData.isPause && isHeroTouched) {
+                if (!contextData.isPause && isHeroTouched) {
                     mMainController?.controlHero(mBgX, mBgY)
                 }
             }
@@ -145,17 +142,17 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
                 // 确定是点击事件
                 if (Math.abs(x - downX) < 10 && Math.abs(y - downY) < 10) {
                     // 点击 大炸弹使用
-                    val isClickBigBomb = initData.bigBombRect.contains(mBgX, mBgY)
-                    if (!attackData.isPause && isClickBigBomb && attackData.supply1Num > 0) {
-                        attackData.supply1Num -= 1
+                    val isClickBigBomb = contextData.bigBombRect.contains(mBgX, mBgY)
+                    if (!contextData.isPause && isClickBigBomb && contextData.supply1Num > 0) {
+                        contextData.supply1Num -= 1
 
                         // todo 炸掉 界面所有的 敌机
                     }
 
                     // 点击 暂停 或 开始
-                    val isClickPause = initData.pauseRect.contains(mBgX, mBgY)
+                    val isClickPause = contextData.pauseRect.contains(mBgX, mBgY)
                     if (isClickPause) {
-                        attackData.isPause = !attackData.isPause
+                        contextData.isPause = !contextData.isPause
                     }
                 }
 

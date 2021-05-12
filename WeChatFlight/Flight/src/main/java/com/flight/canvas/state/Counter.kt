@@ -16,8 +16,6 @@ import java.util.*
  */
 class Counter {
     private val map: HashMap<String, Any>
-    var judge // 给外界用的
-            = false
 
     fun caculate(durate: Float, friz: Float): Boolean {
         return caculate(DEFAULT_TAG, durate, friz)

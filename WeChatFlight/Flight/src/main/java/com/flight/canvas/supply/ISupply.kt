@@ -1,24 +1,21 @@
 package com.flight.canvas.supply
 
-import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Rect
 import android.graphics.RectF
 import com.flight.canvas.BitmapManager
-import com.flight.canvas.common.InitData
-import java.util.*
+import com.flight.canvas.common.ContextData
 
-abstract class ISupply(private val resources: Resources, private val random: Random, private val initData: InitData) {
+abstract class ISupply(private val contextData: ContextData) {
     // 保证 精准度
     private val mSupplyRect = RectF()
 
     var isAttacked = false
 
     fun init(): ISupply {
-        val bitmap = BitmapManager.newBitmap(resources, getSourceId())
+        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceId())
 
-        val left = random.nextInt(initData.mapWidth - bitmap.width).toFloat()
+        val left = contextData.random.nextInt(contextData.mapWidth - bitmap.width).toFloat()
         val top = -bitmap.height.toFloat()
 
         mSupplyRect.set(left, top, left + bitmap.width.toFloat(), top + bitmap.height.toFloat())
@@ -30,15 +27,15 @@ abstract class ISupply(private val resources: Resources, private val random: Ran
     }
 
     fun draw(canvas: Canvas, paint: Paint) {
-        val bitmap = BitmapManager.newBitmap(resources, getSourceId())
+        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceId())
         canvas.drawBitmap(bitmap, mSupplyRect.left, mSupplyRect.top, paint)
     }
 
     fun clone(): ISupply {
-        return clone(resources, random, initData)
+        return clone(contextData)
     }
 
-    protected abstract fun clone(resources: Resources, random: Random, initData: InitData): ISupply
+    protected abstract fun clone(contextData: ContextData): ISupply
 
     protected abstract fun getSourceId(): Int
 
@@ -48,7 +45,7 @@ abstract class ISupply(private val resources: Resources, private val random: Ran
      * 2: 被 战机吃掉 了
      */
     fun isDestroy(): Boolean {
-        return (mSupplyRect.top > initData.mapHeight) || isAttacked
+        return (mSupplyRect.top > contextData.mapHeight) || isAttacked
     }
 
     fun getRectF() = mSupplyRect

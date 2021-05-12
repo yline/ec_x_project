@@ -1,19 +1,12 @@
 package com.flight.canvas.supply
 
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
-import com.flight.canvas.common.InitData
+import com.flight.canvas.common.ContextData
 import com.project.wechatflight.R
-import java.util.*
 
-class Supply2(resources: Resources, random: Random, initData: InitData)
-    : ISupply(resources, random, initData) {
+class Supply2(contextData: ContextData) : ISupply(contextData) {
 
-    override fun clone(resources: Resources, random: Random, initData: InitData): ISupply {
-        return Supply2(resources, random, initData)
+    override fun clone(contextData: ContextData): ISupply {
+        return Supply2(contextData)
     }
 
     override fun getSourceId(): Int {

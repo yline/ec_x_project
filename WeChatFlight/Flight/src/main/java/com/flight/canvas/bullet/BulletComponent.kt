@@ -1,6 +1,5 @@
 package com.flight.canvas.bullet
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
@@ -30,10 +29,10 @@ class BulletComponent : BaseComponent() {
 
     private val paint = Paint()
 
-    override fun onMainInit(context: Context, initData: InitData) {
+    override fun onMainInit(contextData: ContextData) {
         // bullet 资源初始化
-        mBullet1 = Bullet1(context.resources, mRandom, initData)
-        mBullet2 = Bullet2(context.resources, mRandom, initData)
+        mBullet1 = Bullet1(contextData)
+        mBullet2 = Bullet2(contextData)
 
         // 子弹 类型
         mBulletStyle = styleNormal
@@ -57,13 +56,13 @@ class BulletComponent : BaseComponent() {
         }
     }
 
-    override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
+    override fun onThreadMeasure(contextData: ContextData, toData: MeasureToData) {
         // 新的 子弹 出现
-        newBullet(fromData.spaceTime, toData.hero.getRectF())?.let {
+        newBullet(contextData.spaceTime, toData.hero.getRectF())?.let {
             mBulletList.add(it)
         }
 
-        val height = -12 * fromData.spaceHeight
+        val height = -12 * contextData.spaceHeight
 
         // 当前 子弹 运行
         for (iBullet in mBulletList) {
@@ -73,7 +72,7 @@ class BulletComponent : BaseComponent() {
         toData.bulletList = mBulletList
     }
 
-    override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
+    override fun onThreadDraw(canvas: Canvas, contextData: ContextData) {
         // 敌机 销毁 移除
         mBulletList.removeAll { it.isDestroy() }
 

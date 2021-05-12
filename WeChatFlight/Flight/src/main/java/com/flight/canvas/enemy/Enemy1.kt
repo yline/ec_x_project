@@ -1,25 +1,12 @@
 package com.flight.canvas.enemy
 
-import android.content.res.Resources
-import android.graphics.*
-import com.flight.canvas.common.InitData
-import com.flight.canvas.state.Counter
-import com.flight.canvas.state.CycleState
-import com.flight.canvas.state.IFlightState
-import com.flight.canvas.state.LineState
-import com.flight.canvas.state.StateConstant.EnemyState
+import com.flight.canvas.common.ContextData
 import com.project.wechatflight.R
-import java.util.*
 
-/**
- * @author yline
- * @date 2016-4-6
- */
-class Enemy1(resources: Resources, random: Random, initData: InitData)
-    : IEnemy(resources, random, initData) {
+class Enemy1(contextData: ContextData) : IEnemy(contextData) {
 
-    override fun clone(resources: Resources, random: Random, initData: InitData): IEnemy {
-        return Enemy1(resources, random, initData)
+    override fun clone(contextData: ContextData): IEnemy {
+        return Enemy1(contextData)
     }
 
     override fun getSourceArray(): IntArray {
@@ -33,6 +20,7 @@ class Enemy1(resources: Resources, random: Random, initData: InitData)
     override fun getHP(): Int {
         return 4
     }
+
 
 //
 //    // 中间变量

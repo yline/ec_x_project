@@ -1,6 +1,5 @@
 package com.flight.canvas.common
 
-import android.graphics.RectF
 import com.flight.canvas.bullet.IBullet
 import com.flight.canvas.enemy.IEnemy
 import com.flight.canvas.hero.IHero
@@ -8,7 +7,8 @@ import com.flight.canvas.supply.ISupply
 import java.util.ArrayList
 
 /**
- * 测量 的结果
+ * 计算完成的 元素
+ *
  * @author yline 5/10/21 -- 10:57 AM
  */
 class MeasureToData {
