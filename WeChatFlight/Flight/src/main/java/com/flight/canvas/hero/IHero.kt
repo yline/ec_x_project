@@ -9,7 +9,8 @@ import com.flight.canvas.common.ContextData
 abstract class IHero(private val contextData: ContextData) {
     companion object {
         const val STATE_NORMAL = 1  // 正常运行
-        const val STATE_BLOW_UP = 2 // 爆炸
+        const val STATE_BLOW_UP = 2 // 爆炸中
+        const val STATE_END = 3 // 结束
     }
 
     private var mHeroWidth: Float = 0f
@@ -20,6 +21,8 @@ abstract class IHero(private val contextData: ContextData) {
     private val mHeroRectF = RectF()
 
     private var mHP: Int = 0
+
+    private var mHeroState = 0
 
     fun init(): IHero {
         val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray(STATE_NORMAL)[0])
@@ -36,6 +39,7 @@ abstract class IHero(private val contextData: ContextData) {
                 contextData.mapWidth - mHeroWidth / 2, contextData.mapHeight - mHeroHeight / 2)
 
         mHP = getHP()
+        mHeroState = STATE_NORMAL
 
         return this
     }
@@ -55,6 +59,10 @@ abstract class IHero(private val contextData: ContextData) {
         return false
     }
 
+    fun getHeroState(): Int {
+        return mHeroState
+    }
+
     fun moveTo(x: Float, y: Float) {
         // 越界了，就不移动了
         if (!mHeroCenterRectF.contains(x, y)) return
@@ -68,10 +76,12 @@ abstract class IHero(private val contextData: ContextData) {
 
     abstract fun getHP(): Int
 
-    fun draw(canvas: Canvas, paint: Paint) {
-        val state = if (isHPEmpty()) STATE_BLOW_UP else STATE_NORMAL
+    fun draw(canvas: Canvas, paint: Paint, sourceId: Int) {
 
-        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray(state)[0])
+    }
+
+    private fun drawInner(canvas: Canvas, paint: Paint, sourceId: Int) {
+        val bitmap = BitmapManager.newBitmap(contextData.resources, sourceId)
         canvas.drawBitmap(bitmap, mHeroRectF.left, mHeroRectF.top, paint)
     }
 

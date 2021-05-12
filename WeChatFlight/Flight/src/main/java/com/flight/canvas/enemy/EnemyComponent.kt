@@ -1,8 +1,6 @@
 package com.flight.canvas.enemy
 
-import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Paint
 import com.flight.canvas.common.*
 import com.yline.log.LogUtil
 import java.util.*
@@ -18,12 +16,10 @@ class EnemyComponent() : BaseComponent() {
 
     private var nextEnemyTime = 0.0f
 
-    private val paint = Paint()
-
     override fun onMainInit(contextData: ContextData) {
-        mEnemy1 = Enemy1(contextData).init()
-        mEnemy2 = Enemy2(contextData).init()
-        mEnemy3 = Enemy3(contextData).init()
+        mEnemy1 = Enemy1(contextData)
+        mEnemy2 = Enemy2(contextData)
+        mEnemy3 = Enemy3(contextData)
     }
 
     private fun newEnemy(spaceTime: Float): IEnemy? {
@@ -39,11 +35,11 @@ class EnemyComponent() : BaseComponent() {
         // 供给 时间 到了
         val nextInt = mRandom.nextInt(3)
         if (nextInt >= 2) {
-            return mEnemy1.clone()
+            return mEnemy1.clone().init()
         } else if (nextInt == 1) {
-            return mEnemy2.clone()
+            return mEnemy2.clone().init()
         } else {
-            return mEnemy3.clone()
+            return mEnemy3.clone().init()
         }
     }
 
@@ -72,7 +68,7 @@ class EnemyComponent() : BaseComponent() {
         }
 
         for (iEnemy in mEnemyListTotal) {
-            iEnemy.draw(canvas, paint)
+            iEnemy.draw(canvas, contextData.paint)
         }
     }
 

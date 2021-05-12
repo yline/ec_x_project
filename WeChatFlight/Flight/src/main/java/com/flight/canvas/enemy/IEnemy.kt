@@ -56,7 +56,7 @@ abstract class IEnemy(private val contextData: ContextData) {
     abstract fun getHP(): Int
 
     fun clone(): IEnemy {
-        return clone(contextData).init()
+        return clone(contextData)
     }
 
     fun draw(canvas: Canvas, paint: Paint) {

@@ -48,10 +48,18 @@ class HeroComponent() : BaseComponent() {
         toData.hero = iHero
     }
 
-    private val paint = Paint()
-
     override fun onThreadDraw(canvas: Canvas, contextData: ContextData) {
-        iHero.draw(canvas, paint)
+        val heroState = iHero.getHeroState()
+        when (heroState) {
+            IHero.STATE_NORMAL -> {
+                contextData.spaceTime
+
+                iHero.draw(canvas, contextData.paint, )
+            }
+            IHero.STATE_BLOW_UP -> {
+                iHero.draw(canvas, contextData.paint, )
+            }
+        }
     }
 
     /**
