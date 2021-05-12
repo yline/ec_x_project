@@ -14,6 +14,7 @@ import com.flight.canvas.common.MeasureFromData
 import com.flight.canvas.common.MeasureToData
 import com.flight.utils.ThreadPoolUtil
 import com.yline.log.LogUtil
+import java.lang.Exception
 
 /**
  * 确立一些背景参数
@@ -94,18 +95,22 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
                 measureFromData.spaceTime = spaceTime
                 measureFromData.spaceHeight = spaceTime * initData.mapHeight / 20f  // 20s 运行完一个 bitmap
 
-                mMainController?.onThreadMeasure(measureFromData, measureToData)
-                mMainController?.onThreadAttack(measureToData, attackData)
+                try {
+                    mMainController?.onThreadMeasure(measureFromData, measureToData)
+                    mMainController?.onThreadAttack(measureToData, attackData)
 
-                synchronized(mSurfaceHolder) {
-                    val canvas = mSurfaceHolder.lockCanvas()
-                    canvas?.let {
-                        it.save() // 配套使用
-                        it.concat(mMatrix)
-                        mMainController?.onThreadDraw(it, attackData)
-                        it.restore() // 配套使用
+                    synchronized(mSurfaceHolder) {
+                        val canvas = mSurfaceHolder.lockCanvas()
+                        canvas?.let {
+                            it.save() // 配套使用
+                            it.concat(mMatrix)
+                            mMainController?.onThreadDraw(it, attackData)
+                            it.restore() // 配套使用
+                        }
+                        mSurfaceHolder.unlockCanvasAndPost(canvas)
                     }
-                    mSurfaceHolder.unlockCanvasAndPost(canvas)
+                } catch (ex: Throwable) {
+                    LogUtil.e("exception", ex)
                 }
             }
         }
@@ -128,7 +133,7 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
                 downX = x
                 downY = y
 
-                isHeroTouched = measureToData.heroRect.contains(mBgX, mBgY)
+                isHeroTouched = measureToData.hero.getRectF().contains(mBgX, mBgY)
             }
             MotionEvent.ACTION_MOVE -> {
                 // 非 暂停 状态下，飞机移动

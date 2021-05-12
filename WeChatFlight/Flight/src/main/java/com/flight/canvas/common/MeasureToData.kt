@@ -3,6 +3,7 @@ package com.flight.canvas.common
 import android.graphics.RectF
 import com.flight.canvas.bullet.IBullet
 import com.flight.canvas.enemy.IEnemy
+import com.flight.canvas.hero.IHero
 import com.flight.canvas.supply.ISupply
 import java.util.ArrayList
 
@@ -12,7 +13,7 @@ import java.util.ArrayList
  */
 class MeasureToData {
     // 战机 的 位置
-    var heroRect = RectF()
+    lateinit var hero: IHero
 
     // 敌机 的 集合
     var enemyList = ArrayList<IEnemy>()

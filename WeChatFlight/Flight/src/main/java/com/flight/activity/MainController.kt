@@ -19,12 +19,9 @@ class MainController : BaseComponent() {
     private var enemyComponent = EnemyComponent()
 
     private val componentList: List<BaseComponent> = arrayListOf(
-            mapComponent, bulletComponent,
-            heroComponent, enemyComponent, supplyComponent
+            mapComponent, enemyComponent, supplyComponent,
+            heroComponent, bulletComponent
     )
-
-    private var isGameOver = false
-    private var gameOverDelay = 2.0f // 延迟 1s 暂停
 
     override fun onMainInit(context: Context, initData: InitData) {
         for (component in componentList) {
@@ -39,6 +36,24 @@ class MainController : BaseComponent() {
     }
 
     fun onThreadAttack(toData: MeasureToData, attackData: AttackData) {
+        // hero + supply; supply消失、hero加属性
+        for (iSupply in toData.supplyList) {
+            if (iSupply.isAttacked) continue
+
+            val iHero = toData.hero
+            if (RectF.intersects(iSupply.getRectF(), iHero.getRectF())) {
+                // 更新 炸弹状态
+                if (iSupply is Supply1) {
+                    attackData.supply1Num += 1
+                    attackData.supply1Num = min(3, attackData.supply1Num)   // 上限为 3
+                } else {
+                    attackData.supply2Num += 1
+                }
+
+                iSupply.isAttacked = true
+            }
+        }
+
         // bullet + enemy; enemy自身判断、bullet消失处理
         for (iEnemy in toData.enemyList) {
             if (iEnemy.isHPEmpty()) continue
@@ -58,37 +73,24 @@ class MainController : BaseComponent() {
             }
         }
 
-        // hero + supply; supply消失、hero加属性
-        for (iSupply in toData.supplyList) {
-            if (iSupply.isAttacked) continue
-
-            if (RectF.intersects(iSupply.getRectF(), toData.heroRect)) {
-                // 更新 炸弹状态
-                if (iSupply is Supply1) {
-                    attackData.supply1Num += 1
-                    attackData.supply1Num = min(3, attackData.supply1Num)   // 上限为 3
-                } else {
-                    attackData.supply2Num += 1
-                }
-
-                iSupply.isAttacked = true
-            }
-        }
-
         // hero + enemy 遍历;
         for (iEnemy in toData.enemyList) {
             if (iEnemy.isHPEmpty()) continue
 
-            // todo hero 需要一个单独的类
+            // 表示 撞到了
+            val iHero = toData.hero
+            if (RectF.intersects(iEnemy.getRectF(), iHero.getRectF())) {
+                iEnemy.changeHP(-iHero.getHP())
+                // iHero.changeHP(-iEnemy.getHP())
 
-            //            // 2,hero + enemy遍历,enemy状态处于爆炸状态、hero处于爆炸状态
-//            if (heroComponent.isNormal && iEnemy.isRunning) { // 正常状态
-//                if (Rect.intersects(heroComponent.heroRect, iEnemy.rect!!)) {
-//                    heroComponent.handleEnemyAttack() // 拿分
-//                    heroComponent.addScore(enemyComponent.handleHeroAttack(iEnemy))
-//                    isGameOver = true
-//                }
-//            }
+                if (iEnemy.isHPEmpty()) {
+                    attackData.totalScore += iEnemy.getScore()
+                }
+
+                if (iHero.isHPEmpty()){
+                    // todo 结束游戏
+                }
+            }
         }
 
         if (attackData.isHeroDestroy) {

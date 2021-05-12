@@ -59,7 +59,7 @@ class BulletComponent : BaseComponent() {
 
     override fun onThreadMeasure(fromData: MeasureFromData, toData: MeasureToData) {
         // 新的 子弹 出现
-        newBullet(fromData.spaceTime, toData.heroRect)?.let {
+        newBullet(fromData.spaceTime, toData.hero.getRectF())?.let {
             mBulletList.add(it)
         }
 

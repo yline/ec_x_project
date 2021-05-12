@@ -34,7 +34,7 @@ class MapComponent : BaseComponent() {
 
     override fun onMainInit(context: Context, initData: InitData) {
         // 背景图
-        mMapBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.background_1)
+        mMapBitmap = BitmapManager.newBitmap(context.resources, R.drawable.background_1)
         mMapWidth = mMapBitmap.width
         mMapHeight = mMapBitmap.height
 

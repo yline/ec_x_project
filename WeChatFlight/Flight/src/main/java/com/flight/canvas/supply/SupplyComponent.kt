@@ -16,7 +16,7 @@ class SupplyComponent() : BaseComponent() {
 
     private var nextSupplyTime = 0.0f
 
-    private var supplyList: MutableList<ISupply> = ArrayList()
+    private var supplyList = ArrayList<ISupply>()
 
     private val paint = Paint()
 
@@ -39,6 +39,9 @@ class SupplyComponent() : BaseComponent() {
         for (iSupply in supplyList) {
             iSupply.move(0.0f, height)
         }
+
+        // 数据
+        toData.supplyList = supplyList
     }
 
     private fun newSupply(spaceTime: Float): ISupply? {

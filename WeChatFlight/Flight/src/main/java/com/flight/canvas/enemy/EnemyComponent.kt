@@ -15,7 +15,7 @@ class EnemyComponent() : BaseComponent() {
     private lateinit var mEnemy2: IEnemy
     private lateinit var mEnemy3: IEnemy
 
-    private val mEnemyListTotal: MutableList<IEnemy> = ArrayList()
+    private val mEnemyListTotal = ArrayList<IEnemy>()
 
     private var nextEnemyTime = 0.0f
 
@@ -62,6 +62,8 @@ class EnemyComponent() : BaseComponent() {
         for (iEnemy in mEnemyListTotal) {
             iEnemy.move(0.0f, height)
         }
+
+        toData.enemyList = mEnemyListTotal
     }
 
     override fun onThreadDraw(canvas: Canvas, attackData: AttackData) {
