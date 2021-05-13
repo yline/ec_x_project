@@ -1,11 +1,15 @@
 package com.flight.canvas.enemy
 
+import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
+import android.util.SparseArray
 import com.flight.canvas.BitmapManager
 import com.flight.canvas.common.ContextData
+import com.flight.canvas.couter.CycleCounter
 import com.flight.canvas.couter.ICounter
+import com.flight.canvas.couter.LinearCounter
 
 abstract class IEnemy(private val contextData: ContextData) {
     companion object {
@@ -17,47 +21,66 @@ abstract class IEnemy(private val contextData: ContextData) {
 
     private val mEnemyRectF = RectF()
 
-    private var mHP: Int = 0
+    protected var mHP: Int = 0 // 用来 表示 存活血量
+    protected var mIsBlowUp = false   // 是否 正在处于 爆炸状态
 
     fun init(): IEnemy {
-        val bitmap = BitmapManager.newBitmap(contextData.resources, getSourceArray(STATE_NORMAL).default())
+        val sourceRectF = getSourceRect(contextData.resources)
 
-        val left = contextData.random.nextInt(contextData.mapWidth - bitmap.width).toFloat()
-        val top = -bitmap.height.toFloat()
+        val left = contextData.random.nextInt(contextData.mapWidth - sourceRectF.width().toInt()).toFloat()
+        val top = -sourceRectF.height()
 
-        mEnemyRectF.set(left, top, left + bitmap.width, top + bitmap.height)
+        mEnemyRectF.set(sourceRectF)
+        mEnemyRectF.offsetTo(left, top)
 
         mHP = getHP()
 
         return this
     }
 
-    fun isHPEmpty(): Boolean {
-        return mHP <= 0
-    }
+    protected abstract fun getSourceRect(resources: Resources): RectF
 
     fun changeHP(dHP: Int) {
         mHP += dHP
+
+        if (mHP <= 0) {
+            mIsBlowUp = true
+        }
     }
 
-    fun isDestroy(): Boolean {
-        // 越界了
-        if (mEnemyRectF.top > contextData.mapHeight) {
-            return true
-        }
+    fun finishBlowUp() {
+        mIsBlowUp = false
+    }
 
-        if (isHPEmpty()) {
-            return true
-        }
-
-        return false
+    protected fun isOuter(): Boolean {
+        // 越界
+        return mEnemyRectF.top > contextData.mapHeight
     }
 
     fun move(dx: Float, dy: Float) {
         mEnemyRectF.offset(dx, dy)
     }
 
-    abstract fun getSourceArray(state: Int): ICounter
+    private val counterMap = SparseArray<ICounter>()
+
+    fun getSourceCounter(state: Int): ICounter? {
+        val oldCounter = counterMap[state]
+        if (null != oldCounter) return oldCounter
+
+        val sourceArray = getSourceArray(state) ?: return null
+
+        val newCounter = when (state) {
+            STATE_NORMAL, STATE_HIT -> CycleCounter(sourceArray)
+            STATE_BLOW_UP -> LinearCounter(sourceArray)
+            else -> null
+        }
+
+        // 存数据
+        newCounter?.let { counterMap.put(state, it) }
+        return newCounter
+    }
+
+    protected abstract fun getSourceArray(state: Int): IntArray?
 
     abstract fun getScore(): Int
 
@@ -69,12 +92,13 @@ abstract class IEnemy(private val contextData: ContextData) {
         return clone(contextData)
     }
 
+    protected abstract fun clone(contextData: ContextData): IEnemy
+
     fun draw(canvas: Canvas, paint: Paint, sourceId: Int) {
         val bitmap = BitmapManager.newBitmap(contextData.resources, sourceId)
         canvas.drawBitmap(bitmap, mEnemyRectF.left, mEnemyRectF.top, paint)
     }
 
-    protected abstract fun clone(contextData: ContextData): IEnemy
 
     fun getRectF() = mEnemyRectF
 }

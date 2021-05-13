@@ -2,7 +2,6 @@ package com.flight.canvas.enemy
 
 import android.graphics.Canvas
 import com.flight.canvas.common.*
-import com.flight.canvas.hero.IHero
 import com.yline.log.LogUtil
 import java.util.*
 
@@ -62,7 +61,7 @@ class EnemyComponent() : BaseComponent() {
 
     override fun onThreadDraw(canvas: Canvas, contextData: ContextData) {
         // 敌机 销毁 移除
-        mEnemyListTotal.removeAll { it.isDestroy() }
+        mEnemyListTotal.removeAll { it.getEnemyState() == IEnemy.STATE_END }
 
         if (mEnemyListTotal.size > 10) {
             LogUtil.e("enemySize = ${mEnemyListTotal.size}")
@@ -72,7 +71,7 @@ class EnemyComponent() : BaseComponent() {
             val enemyState = iEnemy.getEnemyState()
             when (enemyState) {
                 IEnemy.STATE_NORMAL -> {
-                    val sourceId = iEnemy.getSourceArray(enemyState).next(contextData.spaceTime, 0.15f)
+                    val sourceId = iEnemy.getSourceCounter(enemyState)?.next(contextData.spaceTime, 0.15f)
                     if (null != sourceId) {
                         iEnemy.draw(canvas, contextData.paint, sourceId)
                     } else {
@@ -80,7 +79,7 @@ class EnemyComponent() : BaseComponent() {
                     }
                 }
                 IEnemy.STATE_HIT -> {
-                    val sourceId = iEnemy.getSourceArray(enemyState).next(contextData.spaceTime, 0.15f)
+                    val sourceId = iEnemy.getSourceCounter(enemyState)?.next(contextData.spaceTime, 0.15f)
                     if (null != sourceId) {
                         iEnemy.draw(canvas, contextData.paint, sourceId)
                     } else {
@@ -88,13 +87,12 @@ class EnemyComponent() : BaseComponent() {
                     }
                 }
                 IEnemy.STATE_BLOW_UP -> {
-                    val sourceId = iEnemy.getSourceArray(enemyState).next(contextData.spaceTime, 0.6f)
+                    val sourceId = iEnemy.getSourceCounter(enemyState)?.next(contextData.spaceTime, 0.1f)
                     if (null != sourceId) {
                         iEnemy.draw(canvas, contextData.paint, sourceId)
                     } else {
                         LogUtil.v("enemy state blow up, finished")
-                        // todo linjiang 敌机结束
-                        // iEnemy.finishBlowUp()
+                        iEnemy.finishBlowUp()
                     }
                 }
             }

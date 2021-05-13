@@ -96,9 +96,9 @@ class MapComponent : BaseComponent() {
         canvas.drawText("×${contextData.supply1Num}", 20 + mBitmapBigBomb.width.toFloat(), mMapHeight - 30.toFloat(), scorePaint)
 
         if (!contextData.isPause) {
-            canvas.drawBitmap(mBitmapPause, pauseRect.left.toFloat(), pauseRect.top.toFloat(), scorePaint)
+            canvas.drawBitmap(mBitmapPause, pauseRect.left, pauseRect.top, scorePaint)
         } else {
-            canvas.drawBitmap(mBitmapStart, pauseRect.left.toFloat(), pauseRect.top.toFloat(), scorePaint)
+            canvas.drawBitmap(mBitmapStart, pauseRect.left, pauseRect.top, scorePaint)
         }
     }
 }

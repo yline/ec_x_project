@@ -5,6 +5,7 @@ import com.flight.canvas.common.*
 import com.flight.canvas.map.MapComponent
 import com.flight.canvas.enemy.EnemyComponent
 import com.flight.canvas.bullet.BulletComponent
+import com.flight.canvas.enemy.IEnemy
 import com.flight.canvas.hero.HeroComponent
 import com.flight.canvas.hero.IHero
 import com.flight.canvas.supply.Supply1
@@ -56,7 +57,8 @@ class MainController : BaseComponent() {
 
         // bullet + enemy; enemy自身判断、bullet消失处理
         for (iEnemy in toData.enemyList) {
-            if (iEnemy.isHPEmpty()) continue
+            val enemyState = iEnemy.getEnemyState()
+            if (enemyState == IEnemy.STATE_BLOW_UP || enemyState == IEnemy.STATE_END) continue
 
             for (iBullet in toData.bulletList) {
                 if (iBullet.isAttacked) continue
@@ -66,7 +68,7 @@ class MainController : BaseComponent() {
                     iEnemy.changeHP(-iBullet.getATK())
                     iBullet.isAttacked = true
 
-                    if (iEnemy.isHPEmpty()) {
+                    if (enemyState == IEnemy.STATE_BLOW_UP || enemyState == IEnemy.STATE_END) {
                         contextData.totalScore += iEnemy.getScore()
                     }
                 }
@@ -75,7 +77,8 @@ class MainController : BaseComponent() {
 
         // hero + enemy 遍历;
         for (iEnemy in toData.enemyList) {
-            if (iEnemy.isHPEmpty()) continue
+            val enemyState = iEnemy.getEnemyState()
+            if (enemyState == IEnemy.STATE_BLOW_UP || enemyState == IEnemy.STATE_END) continue
 
             // 表示 撞到了
             val iHero = toData.hero
@@ -83,7 +86,7 @@ class MainController : BaseComponent() {
                 iEnemy.changeHP(-iHero.getHP())
                 // iHero.changeHP(-iEnemy.getHP())
 
-                if (iEnemy.isHPEmpty()) {
+                if (enemyState == IEnemy.STATE_BLOW_UP || enemyState == IEnemy.STATE_END) {
                     contextData.totalScore += iEnemy.getScore()
                 }
 
