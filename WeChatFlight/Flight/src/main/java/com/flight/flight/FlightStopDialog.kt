@@ -1,11 +1,12 @@
 package com.flight.flight
 
-import androidx.appcompat.app.AlertDialog
-import android.app.Dialog
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.DialogFragment
 import com.project.wechatflight.R
-import kotlinx.android.synthetic.main.fragment_main.*
+import com.yline.application.SDKManager
+import com.yline.utils.UIScreenUtil
+import kotlinx.android.synthetic.main.fragment_flight_stop.*
 
 class FlightStopDialog : DialogFragment() {
     companion object {
@@ -16,10 +17,33 @@ class FlightStopDialog : DialogFragment() {
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val view = activity!!.layoutInflater.inflate(R.layout.fragment_main, null)
-        val dialog = AlertDialog.Builder(activity!!)
-        dialog.setView(view)
+    override fun onStart() {
+        super.onStart()
+
+        val window = dialog!!.window ?: return
+
+        //这里设置透明度
+        window.decorView.setPadding(0, 0, 0, 0)
+        window.setDimAmount(0.2f)
+        window.setGravity(Gravity.CENTER)
+        window.setBackgroundDrawableResource(android.R.color.transparent)
+        // window.setWindowAnimations(android.R.style.MenuBottomDialogAnimation;)
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        val layoutParams = window.attributes
+        layoutParams.width = getWidth()
+        window.attributes = layoutParams
+    }
+
+    protected fun getWidth(): Int {
+        return UIScreenUtil.getScreenWidth(SDKManager.getApplication()) - UIScreenUtil.dp2px(SDKManager.getApplication(), 40f)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_flight_stop, container)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         btn_restart.setOnClickListener {
             dialogCallback?.invoke(true)
@@ -29,7 +53,6 @@ class FlightStopDialog : DialogFragment() {
             dialogCallback?.invoke(false)
             dismiss()
         }
-        return dialog.create()
     }
 
     private var dialogCallback: ((Boolean) -> Unit)? = null

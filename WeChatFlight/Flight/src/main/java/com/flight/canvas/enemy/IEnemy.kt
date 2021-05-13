@@ -33,7 +33,7 @@ abstract class IEnemy(private val contextData: ContextData) {
         mEnemyRectF.set(sourceRectF)
         mEnemyRectF.offsetTo(left, top)
 
-        mHP = getHP()
+        mHP = getInitHP()
 
         return this
     }
@@ -82,9 +82,13 @@ abstract class IEnemy(private val contextData: ContextData) {
 
     protected abstract fun getSourceArray(state: Int): IntArray?
 
-    abstract fun getScore(): Int
+    abstract fun getInitScore(): Int
 
-    abstract fun getHP(): Int
+    fun getCurrentHP(): Int {
+        return mHP
+    }
+
+    protected abstract fun getInitHP(): Int
 
     abstract fun getEnemyState(): Int
 

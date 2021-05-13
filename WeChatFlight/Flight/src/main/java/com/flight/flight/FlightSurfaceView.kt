@@ -10,6 +10,7 @@ import android.view.SurfaceView
 import com.flight.canvas.MainController
 import com.flight.canvas.common.ContextData
 import com.flight.canvas.common.MeasureToData
+import com.flight.canvas.hero.IHero
 import com.flight.utils.ThreadPoolUtil
 import com.yline.log.LogUtil
 
@@ -92,7 +93,13 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
 
                 try {
                     mMainController?.onThreadMeasure(contextData, measureToData)
-                    mMainController?.onThreadAttack(measureToData, contextData)
+
+                    if (contextData.isUsingSupply1) {
+                        contextData.isUsingSupply1 = false
+                        mMainController?.onThreadAttackBigBomb(measureToData, contextData)
+                    } else {
+                        mMainController?.onThreadAttack(measureToData, contextData)
+                    }
 
                     synchronized(mSurfaceHolder) {
                         val canvas = mSurfaceHolder.lockCanvas()
@@ -108,7 +115,7 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
                     LogUtil.e("exception", ex)
                 }
 
-                if (contextData.isHeroDestroy) {
+                if (contextData.heroHP <= 0) {
                     heroBlowUp()
                 }
             }
@@ -131,7 +138,7 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
         postDelayed({
             isPosting = false
 
-            contextData.isHeroDestroy = false
+            contextData.heroHP = IHero.DEFAULT_HP
             isDrawing = false
 
             onFinishListener?.invoke(contextData.totalScore)
@@ -169,8 +176,7 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
                     val isClickBigBomb = contextData.bigBombRect.contains(mBgX, mBgY)
                     if (!contextData.isPause && isClickBigBomb && contextData.supply1Num > 0) {
                         contextData.supply1Num -= 1
-
-                        // todo 炸掉 界面所有的 敌机
+                        contextData.isUsingSupply1 = true
                     }
 
                     // 点击 暂停 或 开始

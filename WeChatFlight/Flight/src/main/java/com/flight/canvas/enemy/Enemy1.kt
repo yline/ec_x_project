@@ -39,11 +39,11 @@ class Enemy1(contextData: ContextData) : IEnemy(contextData) {
         return Enemy1(contextData)
     }
 
-    override fun getScore(): Int {
+    override fun getInitScore(): Int {
         return 2
     }
 
-    override fun getHP(): Int {
+    override fun getInitHP(): Int {
         return 4
     }
 

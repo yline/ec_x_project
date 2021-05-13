@@ -7,7 +7,6 @@ import com.flight.canvas.enemy.EnemyComponent
 import com.flight.canvas.bullet.BulletComponent
 import com.flight.canvas.enemy.IEnemy
 import com.flight.canvas.hero.HeroComponent
-import com.flight.canvas.hero.IHero
 import com.flight.canvas.map.InfoComponent
 import com.flight.canvas.supply.Supply1
 import com.flight.canvas.supply.SupplyComponent
@@ -38,6 +37,21 @@ class MainController : BaseComponent() {
         }
     }
 
+    fun onThreadAttackBigBomb(toData: MeasureToData, contextData: ContextData) {
+        // big bomb + enemy;
+        for (iEnemy in toData.enemyList) {
+            val enemyState = iEnemy.getEnemyState()
+            if (enemyState == IEnemy.STATE_BLOW_UP || enemyState == IEnemy.STATE_END) continue
+
+            iEnemy.changeHP(-iEnemy.getCurrentHP())    // 扣光
+            val enemyState2 = iEnemy.getEnemyState()
+            if (enemyState2 == IEnemy.STATE_BLOW_UP || enemyState2 == IEnemy.STATE_END) {
+                contextData.totalScore += iEnemy.getInitScore()
+            }
+        }
+    }
+
+    // 处理 屏幕 内 正常情况下的交互
     fun onThreadAttack(toData: MeasureToData, contextData: ContextData) {
         // hero + supply; supply消失、hero加属性
         for (iSupply in toData.supplyList) {
@@ -72,7 +86,7 @@ class MainController : BaseComponent() {
 
                     val enemyState2 = iEnemy.getEnemyState()
                     if (enemyState2 == IEnemy.STATE_BLOW_UP || enemyState2 == IEnemy.STATE_END) {
-                        contextData.totalScore += iEnemy.getScore()
+                        contextData.totalScore += iEnemy.getInitScore()
                     }
                 }
             }
@@ -86,17 +100,16 @@ class MainController : BaseComponent() {
             // 表示 撞到了
             val iHero = toData.hero
             if (RectF.intersects(iEnemy.getRectF(), iHero.getRectF())) {
-                iEnemy.changeHP(-iHero.getHP())
-                // iHero.changeHP(-iEnemy.getHP())
+                iHero.changeHP(-iEnemy.getCurrentHP())
+                iEnemy.changeHP(-iEnemy.getCurrentHP())    // 扣光
 
                 val enemyState2 = iEnemy.getEnemyState()
                 if (enemyState2 == IEnemy.STATE_BLOW_UP || enemyState2 == IEnemy.STATE_END) {
-                    contextData.totalScore += iEnemy.getScore()
+                    contextData.totalScore += iEnemy.getInitScore()
                 }
 
-                if (iHero.getHeroState() != IHero.STATE_NORMAL) {
-                    contextData.isHeroDestroy = true
-                }
+                // 血量 赋值
+                contextData.heroHP = iHero.getCurrentHP()
             }
         }
     }

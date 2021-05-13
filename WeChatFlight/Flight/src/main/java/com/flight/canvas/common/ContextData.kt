@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Paint
 import android.graphics.RectF
+import com.flight.canvas.hero.IHero
 import java.util.*
 
 /**
@@ -32,14 +33,15 @@ class ContextData(context: Context) {
 
     var totalScore: Long = 0 // 总分
 
-    /* --------------------------------------- */
-    var isPause: Boolean = false
-
-    var isHeroDestroy = false   // 英雄 死亡
-
     var supply1Num: Int = 0 // 装备1 的数量【炸弹】
+    var isUsingSupply1 = false   // 此次是否 正在 使用 大炸弹
+
     var supply2Num: Int = 0 // 装备2 的数量【双子弹】
 
+    var heroHP = IHero.DEFAULT_HP   // 英雄 血量
+
+    /* ---------------------- 其他 数据 ----------------- */
+    var isPause: Boolean = false    // 用户 按下 暂停
 
     fun unInit() {
         // todo 清空一些数据

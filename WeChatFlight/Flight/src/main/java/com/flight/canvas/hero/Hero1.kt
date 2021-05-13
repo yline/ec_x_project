@@ -18,8 +18,8 @@ class Hero1(contextData: ContextData) : IHero(contextData) {
         }
     }
 
-    override fun getHP(): Int {
-        return 1
+    override fun getInitHP(): Int {
+        return DEFAULT_HP
     }
 
 }

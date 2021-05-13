@@ -13,10 +13,9 @@ class BulletComponent : BaseComponent() {
         const val styleDouble = 1 // 杀伤力 2
     }
 
-    private val mRandom: Random = Random()
-
     // bullet 类型
     private var mBulletStyle = 0
+    private var restNormalBulletTime = 0f
 
     // bullet 对象
     private lateinit var mBullet1: IBullet
@@ -60,6 +59,21 @@ class BulletComponent : BaseComponent() {
         // 新的 子弹 出现
         newBullet(contextData.spaceTime, toData.hero.getRectF())?.let {
             mBulletList.add(it)
+        }
+
+        // 中等 子弹 自动倒计时 准备结束
+        if (restNormalBulletTime < 0) {
+            mBulletStyle = styleNormal
+        } else {
+            restNormalBulletTime -= contextData.spaceTime
+        }
+
+        // 子弹类型 升级
+        if (contextData.supply2Num > 0) {
+            contextData.supply2Num = 0
+
+            mBulletStyle = styleDouble
+            restNormalBulletTime = 10f
         }
 
         val height = -12 * contextData.spaceHeight

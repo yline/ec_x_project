@@ -9,6 +9,8 @@ import com.flight.canvas.couter.ICounter
 
 abstract class IHero(private val contextData: ContextData) {
     companion object {
+        const val DEFAULT_HP = 1
+
         const val STATE_NORMAL = 1  // 正常运行
         const val STATE_BLOW_UP = 2 // 爆炸中
         const val STATE_END = 3 // 结束
@@ -38,7 +40,7 @@ abstract class IHero(private val contextData: ContextData) {
         mHeroCenterRectF = RectF(mHeroWidth / 2, mHeroHeight / 2,
                 contextData.mapWidth - mHeroWidth / 2, contextData.mapHeight - mHeroHeight / 2)
 
-        mHP = getHP()
+        mHP = getInitHP()
         mIsBlowUp = false
 
         return this
@@ -73,7 +75,11 @@ abstract class IHero(private val contextData: ContextData) {
 
     abstract fun getSourceArray(state: Int): ICounter
 
-    abstract fun getHP(): Int
+    fun getCurrentHP(): Int {
+        return mHP
+    }
+
+    protected abstract fun getInitHP(): Int
 
     fun draw(canvas: Canvas, paint: Paint, sourceId: Int) {
         val bitmap = BitmapManager.newBitmap(contextData.resources, sourceId)

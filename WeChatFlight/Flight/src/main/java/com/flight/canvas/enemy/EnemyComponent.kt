@@ -6,7 +6,7 @@ import com.yline.log.LogUtil
 import java.util.*
 
 class EnemyComponent : BaseComponent() {
-    private val mRandom: Random = Random()
+    private val random: Random = Random()
 
     private lateinit var mEnemy1: IEnemy
     private lateinit var mEnemy2: IEnemy
@@ -30,10 +30,10 @@ class EnemyComponent : BaseComponent() {
         }
 
         // 重新设值
-        nextEnemyTime = 1.0f + mRandom.nextInt(3)
+        nextEnemyTime = 1.0f + random.nextInt(3)
 
         // 供给 时间 到了
-        val nextInt = mRandom.nextInt(3)
+        val nextInt = random.nextInt(3)
         if (nextInt >= 2) {
             return mEnemy1.clone().init()
         } else if (nextInt == 1) {
