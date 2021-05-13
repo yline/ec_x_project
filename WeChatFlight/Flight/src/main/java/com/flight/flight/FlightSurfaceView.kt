@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
-import com.flight.activity.MainController
+import com.flight.canvas.MainController
 import com.flight.canvas.common.ContextData
 import com.flight.canvas.common.MeasureToData
 import com.flight.utils.ThreadPoolUtil
@@ -31,8 +31,6 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
     private var mMainController: MainController? = null
 
     // 交互数据
-//    private val initData = InitData()
-//    private val measureFromData = MeasureFromData()
     private val measureToData = MeasureToData()
     private val contextData = ContextData(context)
 
@@ -109,10 +107,36 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
                 } catch (ex: Throwable) {
                     LogUtil.e("exception", ex)
                 }
+
+                if (contextData.isHeroDestroy) {
+                    heroBlowUp()
+                }
             }
         }
 
         Thread.sleep(1000)
+    }
+
+    private var isPosting = false
+    private var onFinishListener: ((score: Long) -> Unit)? = null
+
+    fun setOnFinishListener(listener: ((score: Long) -> Unit)?) {
+        this.onFinishListener = listener
+    }
+
+    private fun heroBlowUp() {
+        if (isPosting) return
+        isPosting = true
+
+        postDelayed({
+            isPosting = false
+
+            contextData.isHeroDestroy = false
+            isDrawing = false
+
+            onFinishListener?.invoke(contextData.totalScore)
+            contextData.unInit()
+        }, 2000)
     }
 
     private var downX = 0f
@@ -173,7 +197,4 @@ class FlightSurfaceView constructor(context: Context, attrs: AttributeSet? = nul
         mBgY = y / mScaleY
     }
 
-    fun gameStop() {
-        isDrawing = false
-    }
 }

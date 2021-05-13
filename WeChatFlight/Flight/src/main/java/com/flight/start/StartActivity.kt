@@ -11,15 +11,6 @@ import kotlinx.android.synthetic.main.activity_start.*
 import java.lang.Exception
 
 /**
- * 经验教训几条:
- * 第一:时间类非常重要,一定要封装一个到Activity下面去,单独开一个线程
- * 第二:计数器,就是Counter
- * 第三:准备好一些可以使用的场景,例如dialog,选择情形的demo
- *
- *
- * 第四:再一次体会到了解耦的重要性
- *
- *
  * 接下来,解耦做一些demo吧
  *
  * @author yline

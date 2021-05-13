@@ -1,4 +1,4 @@
-package com.flight.activity
+package com.flight.canvas
 
 import android.graphics.*
 import com.flight.canvas.common.*
@@ -91,19 +91,9 @@ class MainController : BaseComponent() {
                 }
 
                 if (iHero.getHeroState() != IHero.STATE_NORMAL) {
-                    // todo 结束游戏
+                    contextData.isHeroDestroy = true
                 }
             }
-        }
-
-        if (contextData.isHeroDestroy) {
-            if (contextData.heroDestroyTime < System.currentTimeMillis()) {
-                contextData.isHeroDestroy = false
-
-                // 游戏结束	MainActivity 中直接操作了
-                MainFlight.instance.setGameOverCallback(contextData.totalScore)
-            }
-            return
         }
     }
 

@@ -12,10 +12,6 @@ import java.util.*
  * @author yline 5/10/21 -- 10:58 AM
  */
 class ContextData(context: Context) {
-    companion object {
-        const val GAME_OVER_DELAY_TIME = 2_000
-    }
-
     /* -------------------- 初始化就确定的信息 ------------------- */
     val paint: Paint = Paint()  // 默认的
     val random: Random = Random()   // 默认的
@@ -35,10 +31,13 @@ class ContextData(context: Context) {
     var isPause: Boolean = false
 
     var isHeroDestroy = false   // 英雄 死亡
-    var heroDestroyTime = 0     // 英雄 死亡 停止 时间
 
     var supply1Num: Int = 0 // 装备1 的数量【炸弹】
     var supply2Num: Int = 0 // 装备2 的数量【双子弹】
 
     var totalScore: Long = 0 // 总分
+
+    fun unInit() {
+        // todo 清空一些数据
+    }
 }

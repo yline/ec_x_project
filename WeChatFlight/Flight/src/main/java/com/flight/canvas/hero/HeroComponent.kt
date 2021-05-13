@@ -4,7 +4,7 @@ import android.graphics.*
 import com.flight.canvas.common.*
 import com.yline.log.LogUtil
 
-class HeroComponent() : BaseComponent() {
+class HeroComponent : BaseComponent() {
     private lateinit var iHero: IHero
 
     private val heroList = ArrayList<IHero>()

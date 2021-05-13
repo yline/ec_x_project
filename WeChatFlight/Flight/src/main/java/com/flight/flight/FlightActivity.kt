@@ -5,8 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
-import com.flight.activity.MainFlight
-import com.flight.activity.MainFlight.OnGameOverCallback
 import com.flight.start.StartActivity
 import com.yline.base.BaseFragmentActivity
 
@@ -17,7 +15,7 @@ import com.yline.base.BaseFragmentActivity
  * @author yline
  * @date 2016-4-2
  */
-class FlightActivity : BaseFragmentActivity(), OnGameOverCallback {
+class FlightActivity : BaseFragmentActivity() {
     companion object {
         fun launchForResult(activity: Activity?, requestCode: Int) {
             if (null != activity) {
@@ -42,12 +40,12 @@ class FlightActivity : BaseFragmentActivity(), OnGameOverCallback {
         mMainSurfaceView = FlightSurfaceView(this)
         setContentView(mMainSurfaceView)
 
-        MainFlight.instance.setOnGameOverCallback(this)
+        mMainSurfaceView?.setOnFinishListener { score ->
+            showFinishDialog(score)
+        }
     }
 
-    override fun result(score: Long) {
-        mMainSurfaceView!!.gameStop()
-
+    private fun showFinishDialog(score: Long) {
         FlightStopDialog.newInstance()
                 .registerListener { isRestart ->
                     if (isRestart) {

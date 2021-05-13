@@ -1,6 +1,5 @@
 package com.flight.canvas.map
 
-import android.content.Context
 import android.graphics.*
 import com.flight.canvas.BitmapManager
 import com.flight.canvas.common.*

@@ -6,7 +6,7 @@ import com.flight.canvas.common.*
 import com.yline.log.LogUtil
 import java.util.*
 
-class SupplyComponent() : BaseComponent() {
+class SupplyComponent : BaseComponent() {
     private val random: Random = Random()
 
     private lateinit var supply1: ISupply
@@ -70,12 +70,5 @@ class SupplyComponent() : BaseComponent() {
         for (iSupply in this.supplyList) {
             iSupply.draw(canvas, paint)
         }
-    }
-
-    /**
-     * 负责 补给撞击后操作
-     */
-    fun handleHeroAttack(iSupply: ISupply) {
-//        iSupply.disppear()
     }
 }

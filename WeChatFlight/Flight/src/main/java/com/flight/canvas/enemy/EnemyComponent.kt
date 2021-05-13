@@ -5,7 +5,7 @@ import com.flight.canvas.common.*
 import com.yline.log.LogUtil
 import java.util.*
 
-class EnemyComponent() : BaseComponent() {
+class EnemyComponent : BaseComponent() {
     private val mRandom: Random = Random()
 
     private lateinit var mEnemy1: IEnemy
@@ -98,52 +98,5 @@ class EnemyComponent() : BaseComponent() {
             }
         }
     }
-
-//    private var isStart = false
-
-//    /**
-//     * 出界就减少个数
-//     * @param iEnemy
-//     */
-//    private fun reduceEnemyNumber(iEnemy: IEnemy?) {
-//        if (iEnemy is Enemy1) {
-//            mEnemyNumber1 -= 1
-//        } else if (iEnemy is Enemy2) {
-//            mEnemyNumber2 -= 1
-//        } else if (iEnemy is Enemy3) {
-//            mEnemyNumber3 -= 1
-//        }
-//        v("number1 = $mEnemyNumber1,number2 = $mEnemyNumber2,number3 = $mEnemyNumber3")
-//    }
-
-//    /**
-//     * 大炸弹 的操作
-//     * @return
-//     */
-//    fun handleBigBombing(): Int {
-//        var score = 0
-//        for (iEnemy in mEnemyListTotal) {
-//            score += iEnemy.hitted(Int.MAX_VALUE)
-//        }
-//        return score
-//    }
-
-//    /**
-//     * hero撞击后 操作
-//     */
-//    fun handleHeroAttack(iEnemy: IEnemy): Int {
-//        iEnemy.blowUp()
-//        return iEnemy.score
-//    }
-
-//    /**
-//     * 子弹撞击后操作
-//     */
-//    fun handleBulletAttack(iEnemy: IEnemy, atk: Int): Int {
-//        return iEnemy.hitted(atk)
-//    }
-//
-//    val enemyList: List<IEnemy>
-//        get() = mEnemyListTotal
 
 }
