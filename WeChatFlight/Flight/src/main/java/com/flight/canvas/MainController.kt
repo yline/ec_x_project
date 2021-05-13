@@ -8,6 +8,7 @@ import com.flight.canvas.bullet.BulletComponent
 import com.flight.canvas.enemy.IEnemy
 import com.flight.canvas.hero.HeroComponent
 import com.flight.canvas.hero.IHero
+import com.flight.canvas.map.InfoComponent
 import com.flight.canvas.supply.Supply1
 import com.flight.canvas.supply.SupplyComponent
 import kotlin.math.min
@@ -18,10 +19,11 @@ class MainController : BaseComponent() {
     private var heroComponent = HeroComponent()
     private var supplyComponent = SupplyComponent()
     private var enemyComponent = EnemyComponent()
+    private var infoComponent = InfoComponent() // 展示 边角信息
 
     private val componentList: List<BaseComponent> = arrayListOf(
             mapComponent, enemyComponent, supplyComponent,
-            heroComponent, bulletComponent
+            heroComponent, bulletComponent, infoComponent
     )
 
     override fun onMainInit(contextData: ContextData) {
@@ -68,7 +70,8 @@ class MainController : BaseComponent() {
                     iEnemy.changeHP(-iBullet.getATK())
                     iBullet.isAttacked = true
 
-                    if (enemyState == IEnemy.STATE_BLOW_UP || enemyState == IEnemy.STATE_END) {
+                    val enemyState2 = iEnemy.getEnemyState()
+                    if (enemyState2 == IEnemy.STATE_BLOW_UP || enemyState2 == IEnemy.STATE_END) {
                         contextData.totalScore += iEnemy.getScore()
                     }
                 }
@@ -86,7 +89,8 @@ class MainController : BaseComponent() {
                 iEnemy.changeHP(-iHero.getHP())
                 // iHero.changeHP(-iEnemy.getHP())
 
-                if (enemyState == IEnemy.STATE_BLOW_UP || enemyState == IEnemy.STATE_END) {
+                val enemyState2 = iEnemy.getEnemyState()
+                if (enemyState2 == IEnemy.STATE_BLOW_UP || enemyState2 == IEnemy.STATE_END) {
                     contextData.totalScore += iEnemy.getScore()
                 }
 

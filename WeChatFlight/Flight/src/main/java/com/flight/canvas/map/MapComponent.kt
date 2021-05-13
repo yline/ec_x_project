@@ -18,19 +18,6 @@ class MapComponent : BaseComponent() {
     private lateinit var mMapBitmap: Bitmap
     private val mMapPaint = Paint()
 
-    // FPS
-    private lateinit var mCfpsMaker: CFPSMaker
-    private lateinit var mFpsPaint: Paint
-
-    private var scorePaint = Paint()
-
-    private lateinit var mBitmapBigBomb: Bitmap
-    private lateinit var bigBombRect: RectF
-
-    private lateinit var mBitmapPause: Bitmap
-    private lateinit var mBitmapStart: Bitmap
-    private lateinit var pauseRect: RectF
-
     override fun onMainInit(contextData: ContextData) {
         // 背景图
         mMapBitmap = BitmapManager.newBitmap(contextData.resources, R.drawable.background_1)
@@ -40,36 +27,9 @@ class MapComponent : BaseComponent() {
         mMapPaint.color = Color.BLACK
         mMapPaint.isAntiAlias = true
 
-        // FPS
-        mCfpsMaker = CFPSMaker()
-
-        mFpsPaint = Paint()
-        mFpsPaint.color = Color.rgb(60, 60, 60) // 颜色
-        val font = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD_ITALIC) // 字体
-        mFpsPaint.typeface = font
-        mFpsPaint.textSize = 30f
-
-        // score
-        scorePaint.color = Color.rgb(60, 60, 60) // 颜色
-        scorePaint.typeface = font
-        scorePaint.textSize = 30f
-
-        // 大炸弹
-        mBitmapBigBomb = BitmapManager.newBitmap(contextData.resources, R.drawable.bomb)
-        bigBombRect = RectF(0f, 0f, mBitmapBigBomb.width.toFloat(), mBitmapBigBomb.height.toFloat())
-        bigBombRect.offsetTo(20.0f, mMapHeight - 20.0f - mBitmapBigBomb.height)
-
-        // 暂停
-        mBitmapPause = BitmapManager.newBitmap(contextData.resources, R.drawable.game_pause)
-        mBitmapStart = BitmapManager.newBitmap(contextData.resources, R.drawable.game_start)
-        pauseRect = RectF(0.0f, 0.0f, mBitmapPause.width.toFloat(), mBitmapPause.height.toFloat())
-        pauseRect.offsetTo(mMapWidth - 20.0f - mBitmapPause.width, mMapHeight - 20.0f - mBitmapBigBomb.height)
-
         // 赋值
         contextData.mapWidth = mMapWidth
         contextData.mapHeight = mMapHeight
-        contextData.bigBombRect = bigBombRect
-        contextData.pauseRect = pauseRect
     }
 
     // 历史 偏移量
@@ -77,27 +37,11 @@ class MapComponent : BaseComponent() {
 
     override fun onThreadMeasure(contextData: ContextData, toData: MeasureToData) {
         mMapOffsetY = (mMapOffsetY + contextData.spaceHeight) % mMapHeight
-
-        // FPS
-        mCfpsMaker.makeFPS()
     }
 
     override fun onThreadDraw(canvas: Canvas, contextData: ContextData) {
         // 由于未变化之前,因此这里的高度为图片本身的高度而不是窗口的高度
         canvas.drawBitmap(mMapBitmap, 0f, mMapOffsetY - mMapHeight, mMapPaint)
         canvas.drawBitmap(mMapBitmap, 0f, mMapOffsetY, mMapPaint)
-
-        // FPS
-        canvas.drawText(mCfpsMaker.fPS + " FPS", mMapWidth - 155.toFloat(), 30f, mFpsPaint)
-        canvas.drawText("分数:${contextData.totalScore}", 20f, 30f, scorePaint)
-
-        canvas.drawBitmap(mBitmapBigBomb, 20f, mMapHeight - 20 - mBitmapBigBomb.height.toFloat(), scorePaint)
-        canvas.drawText("×${contextData.supply1Num}", 20 + mBitmapBigBomb.width.toFloat(), mMapHeight - 30.toFloat(), scorePaint)
-
-        if (!contextData.isPause) {
-            canvas.drawBitmap(mBitmapPause, pauseRect.left, pauseRect.top, scorePaint)
-        } else {
-            canvas.drawBitmap(mBitmapStart, pauseRect.left, pauseRect.top, scorePaint)
-        }
     }
 }

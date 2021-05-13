@@ -27,6 +27,11 @@ class ContextData(context: Context) {
     var spaceTime: Float = 0.0f // 单位 s
     var spaceHeight: Float = 0.0f    // 单位 px
 
+    /* -------------------- 单次 计算 结束的数据 ------------------- */
+    var showFPS: String = "FPS: 30.0"
+
+    var totalScore: Long = 0 // 总分
+
     /* --------------------------------------- */
     var isPause: Boolean = false
 
@@ -35,7 +40,6 @@ class ContextData(context: Context) {
     var supply1Num: Int = 0 // 装备1 的数量【炸弹】
     var supply2Num: Int = 0 // 装备2 的数量【双子弹】
 
-    var totalScore: Long = 0 // 总分
 
     fun unInit() {
         // todo 清空一些数据
